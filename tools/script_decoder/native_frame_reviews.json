@@ -491,12 +491,12 @@
     "file:include/direction_animation.h": {
       "kind": "file",
       "file": "include/direction_animation.h",
-      "sha256": "c02a796c5dd50ca3bb1f2322af32baea61f61b91302cead1f4299ab8d72de242"
+      "sha256": "7f90d3ced50c3ed5f94bced08667ac79daf765941d8b58f60f7f11ca67d7a992"
     },
     "file:include/direction_animation_types.h": {
       "kind": "file",
       "file": "include/direction_animation_types.h",
-      "sha256": "82506e5f032bbc145cefad1ed15d3b129706899a67d87c1074e2e40ddee0009b"
+      "sha256": "f4810717dbc47709386fdb13be840d8f6ee78010b603192809b6c4f823e740a1"
     },
     "file:include/effect_emitter.h": {
       "kind": "file",
@@ -936,7 +936,7 @@
     "file:include/progress_field_ids.h": {
       "kind": "file",
       "file": "include/progress_field_ids.h",
-      "sha256": "c740b1e61b4cdab3a98a09c22a47df9c40f8beb07c6a470222e411f634ae8dde"
+      "sha256": "47013b3598f6c0a73a63ac9062b54f8de471798f03cef972dc2e2f916bab6f29"
     },
     "file:include/progress_field_types.h": {
       "kind": "file",
@@ -1461,7 +1461,7 @@
     "file:src/game/save_progress.c": {
       "kind": "file",
       "file": "src/game/save_progress.c",
-      "sha256": "35ec8f69fc10d2ebcbd9a180628a6ebd8e16ea28d7ce6bc04304a6e264820b34"
+      "sha256": "bfacf771e08bd6ce948dfbc8f590460ac97fdb723834813ee04193291d678190"
     },
     "file:src/game/search_tree.c": {
       "kind": "file",
@@ -2527,7 +2527,7 @@
       "kind": "function",
       "file": "src/game/save_progress.c",
       "function": "directionAnimationSetNextPoseAngles",
-      "sha256": "3267e7fbd508506bc3330568dd2a402a044e87f0f250a607657af838cbf7bcd7"
+      "sha256": "9277ed3043299e8ad49290674b707e0688bad6b955e0665540efc8f3ff06650e"
     },
     "function:src/game/save_progress.c:directionAnimationStartMotion": {
       "kind": "function",
@@ -2539,7 +2539,7 @@
       "kind": "function",
       "file": "src/game/save_progress.c",
       "function": "directionPoseSetAngles",
-      "sha256": "53b79badebc48161aee7682e2728408d1437bbd7950dad094a91b060e7900ff0"
+      "sha256": "58d09e0eb9dc56f3de3748b7be0eac93255e9bc145286c20121c00235715b14c"
     },
     "function:src/game/save_progress.c:progressAddValue": {
       "kind": "function",
@@ -4299,7 +4299,7 @@
     },
     {
       "file": "native_frame_reviews/src__ovl__script_demo_item_commands.json",
-      "sha256": "8050a202cf25a32f7a1f1324c878b0b1600f244cebc6087219b80a8efc0f0c15"
+      "sha256": "8b1713d56b7000d934189c9e58459bce84711bdfd45c4ebcb8c5e726ab9a88fc"
     }
   ]
 }

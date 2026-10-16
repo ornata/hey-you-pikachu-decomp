@@ -44,7 +44,7 @@ HpHdr gObjectResponseHeap;
 /// Only the keyed-pool prefix has established consumers; preserve the full allocation.
 typedef struct ObjectResponseRegistry {
     KeyedPool pool;  ///< Responses indexed by target handle.
-    u8 unknown20[8]; ///< Reserved storage with no established interpretation.
+    u8 unknown20[8]; ///< Uninterpreted trailing bytes; reserved intent is not established.
 } ObjectResponseRegistry;
 
 typedef char ObjectResponseRegistrySizeCheck[(sizeof(ObjectResponseRegistry) == 0x28) ? 1 : -1];

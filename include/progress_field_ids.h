@@ -33,7 +33,9 @@ enum {
     PROGRESS_FIELD_TOGEPI_HATCHED = 22,   ///< Togepi egg has completed its transformation into Togepi.
     PROGRESS_FIELD_TOGEPI_EGG_GROWTH_STAGE = 23, ///< Egg growth advanced by qualifying Abra-shop item turn-ins.
     PROGRESS_FIELD_TOGEPI_HATCH_SIZE = 24, ///< Normalized Togepi size captured from voice-message progress at hatching.
-    PROGRESS_FIELD_CUPCAKE_ACQUIRED = 27,  ///< Cupcake acquisition recorded; does not imply current possession.
+    PROGRESS_FIELD_CHAPTER_FIVE_TOGETHER_NARRATION_RECORDED =
+        25, ///< Chapter-five together narration processed; the front-yard sequence resets this gate.
+    PROGRESS_FIELD_CUPCAKE_ACQUIRED = 27,    ///< Cupcake acquisition recorded; does not imply current possession.
     PROGRESS_FIELD_BEACH_BALL_ACQUIRED = 28, ///< Beach ball acquisition recorded; does not imply current possession.
     PROGRESS_FIELD_FLYING_ACORN_ACQUIRED =
         29, ///< Flying acorn acquisition recorded; does not imply current possession.
@@ -174,6 +176,8 @@ enum {
         115, ///< Springleaf field resident slot 3: zero/one Oddish, two/three Gloom, four or above Vileplume.
     PROGRESS_FIELD_SPRINGLEAF_FIELD_GROWTH_STAGE_SLOT_4 =
         116, ///< Springleaf field resident slot 4: zero/one Oddish, two/three Gloom, four or above Vileplume.
+    PROGRESS_FIELD_SHOPPING_ERRAND_BEST_TIME_SECONDS =
+        117, ///< Fastest errand seconds, truncated and clamped to 255; zero is the unset sentinel.
     PROGRESS_FIELD_BUTTERFREE_HATCH_COUNT = 118, ///< Recorded Viridian-deep Metapod-to-Butterfree transformations.
     PROGRESS_FIELD_VIRIDIAN_CATERPIE_GROWTH_STAGE_SLOT_0 =
         119, ///< Viridian-deep Caterpie slot 0 growth stage; cleared when its next evolution is recorded.
@@ -205,6 +209,8 @@ enum {
         132, ///< Viridian-deep Metapod slot 8 growth stage; cleared when its next evolution is recorded.
     PROGRESS_FIELD_VIRIDIAN_METAPOD_GROWTH_STAGE_SLOT_9 =
         133, ///< Viridian-deep Metapod slot 9 growth stage; cleared when its next evolution is recorded.
+    PROGRESS_FIELD_MEGAPHONE_GAME_BEST_TIME_SECONDS =
+        134, ///< Fastest eligible megaphone-game seconds; setup can initialize the U8 record to 255.
     PROGRESS_FIELD_TREASURE_HUNT_BEST_CHEST_COUNT =
         136, ///< Largest saved number of treasure chests opened during one Cobalt-island visit.
     PROGRESS_FIELD_TREASURE_CHEST_UNEARTHING_RECORDED =
@@ -248,6 +254,8 @@ enum {
     PROGRESS_FIELD_FISHING_ALL_WORLD_RECORDS_NOTICE_RECORDED =
         159,                                      ///< All-world-record congratulations path processed.
     PROGRESS_FIELD_FRONT_YARD_DOOR_ENABLED = 160, ///< Bedroom passage to the front yard replaces its initial proxy.
+    PROGRESS_FIELD_CHAPTER_SEVEN_MORNING_GREETING_RECORDED =
+        161, ///< Chapter-seven morning-greeting sequence recorded, including its timeout outcome.
     PROGRESS_FIELD_QUIZ_VARIANT_UNLOCK_STAGE =
         162, ///< Zero: picture quiz; one: shadow unlocked; two: strobe-shadow unlocked.
     PROGRESS_FIELD_PICTURE_QUIZ_HIGH_SCORE_BITS_0_7 = 163,  ///< Bits 0 through 7 of the saved picture quiz high score.
@@ -263,6 +271,12 @@ enum {
         170, ///< Bits 8 through 11 of the saved strobe-shadow quiz high score.
     PROGRESS_FIELD_STROBE_SHADOW_QUIZ_HIGH_SCORE_BITS_12_13 =
         171, ///< Bits 12 through 13 of the saved strobe-shadow quiz high score.
+    PROGRESS_FIELD_OCHRE_COOKING_RESULT_RECORDED =
+        172, ///< Cooking result-recording point reached, regardless of dish quality.
+    PROGRESS_FIELD_ABRA_SHOPPING_WRAP_UP_RECORDED =
+        173, ///< Shopping wrap-up reached; does not establish a successful purchase.
+    PROGRESS_FIELD_HAUNTER_INTERACTION_RECORDED = 174, ///< Haunter reaction recorded, for either random response.
+    PROGRESS_FIELD_DIGLETT_ENCOUNTER_RECORDED = 175, ///< Diglett encounter exit recorded, including cancellation paths.
     PROGRESS_FIELD_FRIENDSHIP_MILESTONE_0_EARNED =
         176, ///< Saved award flag for friendship milestone 0; initial meeting does not increase friendship level.
     PROGRESS_FIELD_FRIENDSHIP_MILESTONE_1_EARNED = 177,  ///< Saved award flag for friendship milestone 1.

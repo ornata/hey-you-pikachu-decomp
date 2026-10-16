@@ -43,6 +43,13 @@ item and player storage, scene resources, MIDI/sequence playback and audio
 lifetimes. Target size/offset assertions constrain the recovered layouts;
 [OPAQUE_LAYOUTS.json](OPAQUE_LAYOUTS.json) retains unresolved-member evidence.
 
+Actor and item direction poses now expose ambient RGB and two directional-light
+slots in the original RSP layout. The named view reuses SDK component records
+without imposing the eight-byte alignment of `Lights2` on enclosing game state.
+Direction vectors are signed bytes at pose offsets 0x10 and 0x20; reset retains
+its separate word-copy view for matching. `directionPoseSetAngles` borrows a
+complete pose and changes one direction while preserving colors and slot tails.
+
 The retained native-command table has 278 actor-only handlers. Object-kind
 lifecycle, drawing, child-drawing and response slots agree across the audited
 180 kinds (537 populated slots). Item kind/mode tables have 189 populated slots;

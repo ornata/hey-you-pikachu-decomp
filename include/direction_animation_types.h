@@ -1,15 +1,31 @@
 /// \file
-/// Defines paired direction poses and angular playback state shared by actor and item rendering.
+/// Defines two-light RSP poses and angular playback state shared by actor and item rendering.
 
 #ifndef DIRECTION_ANIMATION_TYPES_H
 #define DIRECTION_ANIMATION_TYPES_H
 
 #include <ultra64.h>
 
-/// Packed pose containing the two directions consumed by lighting commands.
-/// Raw storage preserves the original four-byte-compatible enclosing layout.
-typedef struct DirectionPose {
-    u8 raw[0x28]; ///< Packed pose bytes, including direction vectors at 0x10 and 0x20.
+/// One directional light in a sixteen-byte RSP transfer slot.
+/// The SDK component view avoids the stronger alignment of its Light union.
+typedef struct DirectionLightSlot {
+    Light_t light;           ///< Diffuse RGB, repeated RGB and signed direction components.
+    u8 retainedSlotBytes[4]; ///< Preserved trailing bytes completing the transfer slot.
+} DirectionLightSlot;
+
+/// Ambient color and two directional lights submitted by actor and item drawing.
+typedef struct DirectionPoseLighting {
+    Ambient_t ambient;            ///< Ambient RGB and the repeated RGB required by the RSP format.
+    DirectionLightSlot lights[2]; ///< Directional-light colors and animated directions.
+} DirectionPoseLighting;
+
+/// Two-light pose used by direction animation, retaining its original byte alignment.
+/// Drawing interprets these bytes as Lights2; using that SDK type here would
+/// impose eight-byte alignment and change enclosing actor and item layouts.
+/// Reset copies retain a separate word-aligned view to preserve matching code.
+typedef union DirectionPose {
+    DirectionPoseLighting lighting; ///< Named RSP color and direction components.
+    u8 raw[0x28];                   ///< Complete retained representation, including transfer-slot tails.
 } DirectionPose;
 
 /// Angular rates supplied for one direction during timed motion.
@@ -51,6 +67,16 @@ typedef struct DirectionAnimation {
 /// \pre The mode must select a valid handler and the selected pose must remain live.
 /// The callback borrows the state for this call and does not take ownership.
 typedef void (*DirectionAnimationUpdateHandler)(DirectionAnimation *animation, s32 poseIndex);
+
+typedef char DirectionLightSlotSizeCheck[(sizeof(DirectionLightSlot) == 0x10) ? 1 : -1];
+typedef char DirectionPoseLightingSizeCheck[(sizeof(DirectionPoseLighting) == 0x28) ? 1 : -1];
+typedef char DirectionPoseLightsOffsetCheck[((u32) & ((DirectionPose *)0)->lighting.lights == 8) ? 1 : -1];
+typedef char DirectionPoseFirstDirectionOffsetCheck[((u32) & ((DirectionPose *)0)->lighting.lights[0].light.dir == 0x10)
+                                                        ? 1
+                                                        : -1];
+typedef char
+    DirectionPoseSecondDirectionOffsetCheck[((u32) & ((DirectionPose *)0)->lighting.lights[1].light.dir == 0x20) ? 1
+                                                                                                                 : -1];
 
 typedef char DirectionAngularRatesSizeCheck[(sizeof(DirectionAngularRates) == 8) ? 1 : -1];
 typedef char DirectionAngularMotionSizeCheck[(sizeof(DirectionAngularMotion) == 0x10) ? 1 : -1];

@@ -46,18 +46,18 @@ EepromRecordSizeTable gEepromRecordPayloadSizes = {{1, PROGRESS_SAVE_RECORD_BYTE
 /// \note Original identifier: \c D_8009A754 (0x8009A754).
 extern s32 gProgressFieldTypes[];
 
-/// Sets one direction in a pose from pitch and yaw angles.
+/// Set one directional light's orientation while preserving the pose's colors.
 /// \param pitch Direction pitch in degrees.
 /// \param yaw Direction yaw in degrees.
 /// \param pose Pose that receives the direction.
 /// \param index Direction index within the pose, zero or one.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80031F50 (0x80031F50).
-void directionPoseSetAngles(f32 pitch, f32 yaw, u8 *pose, s32 index) {
-    f32 sp1C[3];
+void directionPoseSetAngles(f32 pitch, f32 yaw, DirectionPose *pose, s32 index) {
+    f32 direction[3];
 
-    vector3FromPitchYawDegrees(pitch, yaw, sp1C);
-    vector3PackNormalBytes(sp1C, pose + 0x10 + (index * 0x10));
+    vector3FromPitchYawDegrees(pitch, yaw, direction);
+    vector3PackNormalBytes(direction, (u8 *)pose->lighting.lights[index].light.dir);
 }
 
 /// Sets one direction in the next pose of a direction animation.
@@ -72,7 +72,7 @@ void directionAnimationSetNextPoseAngles(DirectionAnimation *animation, f32 pitc
     u8 *d = (u8 *)animation;
 
     d += (flag ^ 1) * 0x28;
-    directionPoseSetAngles(pitch, yaw, d, index);
+    directionPoseSetAngles(pitch, yaw, (DirectionPose *)d, index);
 }
 
 /// Smoothed frame duration in seconds used by gameplay and animation updates.
@@ -103,7 +103,7 @@ void directionAnimationAdvancePose(DirectionAnimation *animation, s32 poseIndex)
         while (s->yaw >= 360.0f) {
             s->yaw -= 360.0f;
         }
-        directionPoseSetAngles(s->pitch, s->yaw, ((DirectionPose *)animation)[poseIndex].raw, i);
+        directionPoseSetAngles(s->pitch, s->yaw, &animation->poses[poseIndex], i);
     }
 }
 

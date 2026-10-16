@@ -42,7 +42,7 @@ extern s32 gEyeCatchStage;
 extern s32 gEyeCatchForegroundImage;
 /// Resident eye-catch layout, selection weights, borrowed animation keys and backdrop colors.
 typedef struct EyeCatchGroup {
-    u8 unknown000[2];             ///< Bytes without an established consumer or meaning.
+    u8 descriptorOrdinalBytes[2]; ///< Big-endian descriptor ordinal, zero through five; selection uses array position.
     u8 selectionWeights[2];       ///< Selection weights for progress at most twelve and greater than twelve.
     TextureRectangle *rectangles; ///< Borrowed negative-texture-terminated list, adjusted once at startup.
     s16 originX, originY;         ///< Base screen position for static and animated rectangles.

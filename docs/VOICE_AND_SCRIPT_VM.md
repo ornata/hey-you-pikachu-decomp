@@ -1017,7 +1017,6 @@ routine gates the corresponding modes. Two-bit storage also admits three, whose
 meaning is not established by those progression writes. Togepi hatching is
 recorded after the kind-transformation native returns. These are script and
 producer meanings, not claims that every path is reachable in a live session.
-Field 93 remains numeric because its visit/tutorial milestone is unresolved.
 The lucky-hook flag names persistent fishing access rather than current item
 ownership or a particular narrative episode.
 
@@ -1026,19 +1025,45 @@ Further decoded producer/consumer links recover these saved roles:
 | Field | Meaning |
 | --- | --- |
 | 21 | Forest Togepi-egg encounter recorded; enables the unhatched egg at Abra shop. |
+| 25 | Chapter-five together narration recorded; the front-yard sequence resets this gate. |
 | 31 | Lucky hook and expanded fishing residents unlocked. |
 | 100 | Next meadow visit uses five Vileplume; cleared on arrival. |
 | 111 | Special Oddish growth/scale progress; the recovered threshold phase resets at forty. |
+| 117 | Best shopping-errand elapsed seconds; zero denotes an unset record. |
+| 134 | Best eligible megaphone-game elapsed seconds; setup can store 255 as a sentinel. |
 | 154 | Lucky-hook explanation path processed. |
 | 155 | Adaptive fishing proficiency, zero through fifteen. Success raises it; failure paths halve it; it also affects fishing-resident size. |
 | 156 / 157 | Cumulative caught-Pokemon count / largest single-visit count. Storage caps them at 65535 / 255. |
 | 158 / 159 | All-species / all-world-record congratulations paths recorded. |
+| 161 | Chapter-seven morning-greeting sequence recorded, including its timeout outcome. |
+| 172 | Ochre cooking result-recording point reached, before later presentation and regardless of dish quality. |
+| 173 | Abra shopping wrap-up reached, including alternate item/egg branches; not proof of a purchase. |
+| 174 | Haunter interaction reached its recorded reaction point, for either random response. |
+| 175 | Diglett encounter reached its common exit, including command/cancellation paths without a stumble. |
 
 The fishing script's labels and arithmetic distinguish proficiency, cumulative
 catches and the best daily count. One-shot notice flags record script processing,
 not proof that the player saw the dialogue. The meadow flag is pending setup,
 rather than a permanent evolution ledger. Egg-found state does not identify an
 item owner or current holder. These names retain those narrower established roles.
+
+Both best-time fields use unsigned eight-bit storage: elapsed values are truncated
+to integers and clamped to zero through 255. Shopping time is captured after the
+requested-item closing sequence, and a zero record is reinitialized. The megaphone
+game excludes its timeout path from record improvements; setup while the completed
+disappearance count is zero requests five minutes, which clamps to 255. These are
+bounded script records, not unbounded timing minima or voice-recognition latency.
+The best-time writers include arithmetic and integer pass-through producers that
+the structural request inventory does not fully link; their selector/value chains
+were reviewed directly in the authenticated script instructions. An unlinked
+request in that inventory is not evidence that a field has no writer.
+
+The chapter-seven bedroom sequence requires its greeting flag to be clear and
+records it after the greeting helper returns. The helper can return after ten
+seconds without a recognized greeting. The four other event flags have located
+script writers and matching debug-menu labels; their later presentation or
+interaction outcomes are distinct from the recording points. These links cover
+retained direct operands, not arbitrary computed selectors or runtime reachability.
 
 Progress read contracts require a direct field in 0–243 or an area-relative
 selector that resolves to one. Bit 30 selects a row from the seven-row table;

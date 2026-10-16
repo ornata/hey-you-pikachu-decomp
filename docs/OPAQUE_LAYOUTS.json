@@ -8,11 +8,11 @@
       "member": "unknown016",
       "line": 28,
       "declaration": "u8 unknown016[2];",
-      "known_facts": "The 0x2C-byte action resource is copied into actor state beginning at 0xEC; these bytes lie between continuationAction and movementScale.",
-      "reason": "The role of this exact byte range is not established by the current producer/consumer evidence; retaining its offset name avoids unsupported semantics.",
-      "next_evidence": "Compare authored action resources and trace whole-action copies and accesses to actor state at 0x102 before deciding whether these bytes are padding or a field.",
+      "known_facts": "All 330 original 0x2C-byte ActionDefinition records at 8006B590 have zero in bytes 0x16..0x17, authenticated against the ROM/ELF. Whole-record copies in actionTryApplyCompatibleRecord (8000EA88), actionLoadRecordByIndex (8000EBA0) and actionResolveNextTransition (8000ECB4) carry those bytes into actor state 0x102..0x103. They therefore participate in resource copying even without a scalar interpretation.",
+      "reason": "Zero-only authored values and structural copying do not establish whether these two bytes are padding, reserved resource data or an interpreted field. No semantic rename is supported.",
+      "next_evidence": "Find a nonzero valid authored resource variant or a behavioral scalar consumer of actor-state 0x102..0x103; preserve the resource/state correspondence and distinguish copy-loop accesses from interpretation.",
       "matching_constraint": "Preserve declared width, signedness, extent and surrounding offsets; require the unchanged ROM and strict original-object baseline for any replacement.",
-      "evidence": "include/action_definition_types.h (record declaration and neighboring layout checks)"
+      "evidence": "include/action_definition_types.h; include/actor_script.h action-resource offset check; src/game/motion_playback.c:actionTryApplyCompatibleRecord, actionLoadRecordByIndex and actionResolveNextTransition; original Ghidra 8000EA88/8000EBA0/8000ECB4 (copy-loop overlap warnings considered with matching source); authenticated 330-record table SHA256 cbd5311a63002099defc4dd3b7e3f27fbad19c5d9aeb390bfa2fcda5d73e041e."
     },
     {
       "file": "include/actor_script.h",
@@ -20,11 +20,11 @@
       "member": "unknown05C",
       "line": 55,
       "declaration": "u8 unknown05C[4];",
-      "known_facts": "Actor state is allocated and cleared as 0x408 bytes; established neighboring fields and shared offset checks constrain this declaration.",
-      "reason": "The role of this exact byte range is not established by the current producer/consumer evidence; retaining its offset name avoids unsupported semantics.",
-      "next_evidence": "Trace actor initialization, action resource copies, kind callbacks and biased or script-driven accesses at this exact offset; a missing direct member reference does not establish unused storage.",
+      "known_facts": "Original actorInitializeModelState allocates and clears 0x408 bytes. 0x5C..0x5F lies after the two modelDrawLists pointers and before directionAnimation at 0x60. The complete range is subsequently read into the borrowed presentation snapshot by 80028518; whole-state copying is an actual consumer but does not interpret its value. The inspected initializer has no separately named store into this gap.",
+      "reason": "Allocation, clearing, neighboring offsets and opaque whole-state copying are established, but no discriminating scalar consumer establishes a field meaning or proves padding.",
+      "next_evidence": "Trace a valid biased/interior/computed load or store that interprets this exact range, separating whole-record copies from scalar use. Do not remove or rename it as padding from alignment or lack of a direct member reference.",
       "matching_constraint": "Preserve declared width, signedness, extent and surrounding offsets; require the unchanged ROM and strict original-object baseline for any replacement.",
-      "evidence": "include/actor_script.h (record declaration and neighboring layout checks)"
+      "evidence": "include/actor_script.h; src/game/actor_model_motion.c:actorInitializeModelState (original Ghidra 80014FE4); src/game/collection_presentation.c:presentationSaveActiveActor (original Ghidra 80028518 whole 0x408-byte state snapshot)."
     },
     {
       "file": "include/actor_script.h",
@@ -32,11 +32,11 @@
       "member": "unknown0DC",
       "line": 57,
       "declaration": "u8 unknown0DC[4];",
-      "known_facts": "Actor state is allocated and cleared as 0x408 bytes; established neighboring fields and shared offset checks constrain this declaration.",
-      "reason": "The role of this exact byte range is not established by the current producer/consumer evidence; retaining its offset name avoids unsupported semantics.",
-      "next_evidence": "Trace actor initialization, action resource copies, kind callbacks and biased or script-driven accesses at this exact offset; a missing direct member reference does not establish unused storage.",
+      "known_facts": "Original actorInitializeModelState allocates and clears 0x408 bytes. 0xDC..0xDF lies after the complete 0x7C-byte DirectionAnimation at 0x60 and before environmentColor at 0xE0. The complete range is subsequently read into the borrowed presentation snapshot by 80028518; whole-state copying is an actual consumer but does not interpret its value. The inspected initializer has no separately named store into this gap.",
+      "reason": "Allocation, clearing, neighboring offsets and opaque whole-state copying are established, but no discriminating scalar consumer establishes a field meaning or proves padding.",
+      "next_evidence": "Trace a valid biased/interior/computed load or store that interprets this exact range, separating whole-record copies from scalar use. Do not remove or rename it as padding from alignment or lack of a direct member reference.",
       "matching_constraint": "Preserve declared width, signedness, extent and surrounding offsets; require the unchanged ROM and strict original-object baseline for any replacement.",
-      "evidence": "include/actor_script.h (record declaration and neighboring layout checks)"
+      "evidence": "include/actor_script.h; src/game/actor_model_motion.c:actorInitializeModelState (original Ghidra 80014FE4); src/game/collection_presentation.c:presentationSaveActiveActor (original Ghidra 80028518 whole 0x408-byte state snapshot)."
     },
     {
       "file": "include/actor_script.h",
@@ -44,11 +44,11 @@
       "member": "unknown102",
       "line": 69,
       "declaration": "u8 unknown102[2];",
-      "known_facts": "Actor state is allocated and cleared as 0x408 bytes; established neighboring fields and shared offset checks constrain this declaration.",
-      "reason": "The role of this exact byte range is not established by the current producer/consumer evidence; retaining its offset name avoids unsupported semantics.",
-      "next_evidence": "Trace actor initialization, action resource copies, kind callbacks and biased or script-driven accesses at this exact offset; a missing direct member reference does not establish unused storage.",
+      "known_facts": "All 330 original 0x2C-byte ActionDefinition records at 8006B590 have zero in bytes 0x16..0x17, authenticated against the ROM/ELF. Whole-record copies in actionTryApplyCompatibleRecord (8000EA88), actionLoadRecordByIndex (8000EBA0) and actionResolveNextTransition (8000ECB4) carry those bytes into actor state 0x102..0x103. They therefore participate in resource copying even without a scalar interpretation. Actor storage is also cleared during 0x408-byte initialization and read by whole-state presentation snapshots.",
+      "reason": "Zero-only authored values and structural copying do not establish whether these two bytes are padding, reserved resource data or an interpreted field. No semantic rename is supported.",
+      "next_evidence": "Find a nonzero valid authored resource variant or a behavioral scalar consumer of actor-state 0x102..0x103; preserve the resource/state correspondence and distinguish copy-loop accesses from interpretation.",
       "matching_constraint": "Preserve declared width, signedness, extent and surrounding offsets; require the unchanged ROM and strict original-object baseline for any replacement.",
-      "evidence": "include/actor_script.h (record declaration and neighboring layout checks)"
+      "evidence": "include/action_definition_types.h; include/actor_script.h action-resource offset check; src/game/motion_playback.c:actionTryApplyCompatibleRecord, actionLoadRecordByIndex and actionResolveNextTransition; original Ghidra 8000EA88/8000EBA0/8000ECB4 (copy-loop overlap warnings considered with matching source); authenticated 330-record table SHA256 cbd5311a63002099defc4dd3b7e3f27fbad19c5d9aeb390bfa2fcda5d73e041e."
     },
     {
       "file": "include/actor_script.h",
@@ -56,11 +56,11 @@
       "member": "unknown122",
       "line": 80,
       "declaration": "u8 unknown122[2];",
-      "known_facts": "Actor state is allocated and cleared as 0x408 bytes; established neighboring fields and shared offset checks constrain this declaration.",
-      "reason": "The role of this exact byte range is not established by the current producer/consumer evidence; retaining its offset name avoids unsupported semantics.",
-      "next_evidence": "Trace actor initialization, action resource copies, kind callbacks and biased or script-driven accesses at this exact offset; a missing direct member reference does not establish unused storage.",
+      "known_facts": "Original actorInitializeModelState allocates and clears 0x408 bytes. 0x122..0x123 lies between the signed pendingAction halfword at 0x120 and nextRequestId at 0x124. The complete range is subsequently read into the borrowed presentation snapshot by 80028518; whole-state copying is an actual consumer but does not interpret its value. The inspected initializer has no separately named store into this gap.",
+      "reason": "Allocation, clearing, neighboring offsets and opaque whole-state copying are established, but no discriminating scalar consumer establishes a field meaning or proves padding.",
+      "next_evidence": "Trace a valid biased/interior/computed load or store that interprets this exact range, separating whole-record copies from scalar use. Do not remove or rename it as padding from alignment or lack of a direct member reference.",
       "matching_constraint": "Preserve declared width, signedness, extent and surrounding offsets; require the unchanged ROM and strict original-object baseline for any replacement.",
-      "evidence": "include/actor_script.h (record declaration and neighboring layout checks)"
+      "evidence": "include/actor_script.h; src/game/actor_model_motion.c:actorInitializeModelState (original Ghidra 80014FE4); src/game/collection_presentation.c:presentationSaveActiveActor (original Ghidra 80028518 whole 0x408-byte state snapshot)."
     },
     {
       "file": "include/actor_script.h",
@@ -68,11 +68,11 @@
       "member": "unknown142",
       "line": 90,
       "declaration": "u8 unknown142[2];",
-      "known_facts": "Actor state is allocated and cleared as 0x408 bytes; established neighboring fields and shared offset checks constrain this declaration.",
-      "reason": "The role of this exact byte range is not established by the current producer/consumer evidence; retaining its offset name avoids unsupported semantics.",
-      "next_evidence": "Trace actor initialization, action resource copies, kind callbacks and biased or script-driven accesses at this exact offset; a missing direct member reference does not establish unused storage.",
+      "known_facts": "Original actorInitializeModelState allocates and clears 0x408 bytes. 0x142..0x143 lies between the signed pendingActionKind halfword at 0x140 and primaryCueClock at 0x144. The complete range is subsequently read into the borrowed presentation snapshot by 80028518; whole-state copying is an actual consumer but does not interpret its value. The inspected initializer has no separately named store into this gap.",
+      "reason": "Allocation, clearing, neighboring offsets and opaque whole-state copying are established, but no discriminating scalar consumer establishes a field meaning or proves padding.",
+      "next_evidence": "Trace a valid biased/interior/computed load or store that interprets this exact range, separating whole-record copies from scalar use. Do not remove or rename it as padding from alignment or lack of a direct member reference.",
       "matching_constraint": "Preserve declared width, signedness, extent and surrounding offsets; require the unchanged ROM and strict original-object baseline for any replacement.",
-      "evidence": "include/actor_script.h (record declaration and neighboring layout checks)"
+      "evidence": "include/actor_script.h; src/game/actor_model_motion.c:actorInitializeModelState (original Ghidra 80014FE4); src/game/collection_presentation.c:presentationSaveActiveActor (original Ghidra 80028518 whole 0x408-byte state snapshot)."
     },
     {
       "file": "include/actor_script.h",
@@ -128,11 +128,11 @@
       "member": "unknown06C",
       "line": 14,
       "declaration": "u8 unknown06C[4];",
-      "known_facts": "The item owns a 0xF0-byte allocation; direction playback begins at 0x70 and ends at 0xEC.",
-      "reason": "The role of this exact byte range is not established by the current producer/consumer evidence; retaining its offset name avoids unsupported semantics.",
-      "next_evidence": "Trace item initialization, transforms, physics and lifecycle callbacks for writes or reads in the exact gap, including interior direction-state aliases.",
+      "known_facts": "Original itemAllocateState at 8011386C allocates and clears the full 0xF0 bytes. 0x6C..0x6F lies after idleMotionDelay and before direction playback at 0x70. The initializer invokes directionAnimationReset at state +0x70, stores idleMotionDelay at +0x68 and two lighting pointers at +0x60/+0x64. These established writes do not assign a separate meaning to this exact gap.",
+      "reason": "The allocation and clear are proven; adjacent direction/lighting roles do not establish a scalar purpose or prove the gap removable.",
+      "next_evidence": "Find a valid item lifecycle, physics, transform or callback consumer that interprets these exact bytes, including computed/interior aliases. Keep the full allocation and offsets until such evidence exists.",
       "matching_constraint": "Preserve declared width, signedness, extent and surrounding offsets; require the unchanged ROM and strict original-object baseline for any replacement.",
-      "evidence": "include/item_state.h (record declaration and neighboring layout checks)"
+      "evidence": "include/item_state.h; src/ovl/item_registry.c:itemAllocateState; original Ghidra 8011386C allocation/clear and neighboring stores; complete DirectionAnimation size/offset assertions."
     },
     {
       "file": "include/item_state.h",
@@ -140,11 +140,11 @@
       "member": "unknown0EC",
       "line": 16,
       "declaration": "u8 unknown0EC[4];",
-      "known_facts": "The item owns a 0xF0-byte allocation; direction playback begins at 0x70 and ends at 0xEC.",
-      "reason": "The role of this exact byte range is not established by the current producer/consumer evidence; retaining its offset name avoids unsupported semantics.",
-      "next_evidence": "Trace item initialization, transforms, physics and lifecycle callbacks for writes or reads in the exact gap, including interior direction-state aliases.",
+      "known_facts": "Original itemAllocateState at 8011386C allocates and clears the full 0xF0 bytes. 0xEC..0xEF is the final four bytes after the complete DirectionAnimation ends at 0xEC. The initializer invokes directionAnimationReset at state +0x70, stores idleMotionDelay at +0x68 and two lighting pointers at +0x60/+0x64. These established writes do not assign a separate meaning to this exact gap.",
+      "reason": "The allocation and clear are proven; adjacent direction/lighting roles do not establish a scalar purpose or prove the gap removable.",
+      "next_evidence": "Find a valid item lifecycle, physics, transform or callback consumer that interprets these exact bytes, including computed/interior aliases. Keep the full allocation and offsets until such evidence exists.",
       "matching_constraint": "Preserve declared width, signedness, extent and surrounding offsets; require the unchanged ROM and strict original-object baseline for any replacement.",
-      "evidence": "include/item_state.h (record declaration and neighboring layout checks)"
+      "evidence": "include/item_state.h; src/ovl/item_registry.c:itemAllocateState; original Ghidra 8011386C allocation/clear and neighboring stores; complete DirectionAnimation size/offset assertions."
     },
     {
       "file": "include/maze_types.h",
@@ -152,11 +152,11 @@
       "member": "unknown010",
       "line": 64,
       "declaration": "s32 unknown010;",
-      "known_facts": "The 0x14-byte cell classification record contains borrowed terrain, optional initialization and cleanup hooks, and a borrowed model template preceding this word. The trailing word is zero in all 1,554 scene/cell pairs reachable from the 23 retained authored grids; their lifecycle hooks are also null. All 23 configured event-link lists begin with a null handler. The survey establishes authored reachability, not cell-table allocation bounds or behavior after resource edits; absolute grid addresses were resolved within the selected overlay, not across overlays.",
-      "reason": "The role of this exact byte range is not established by the current producer/consumer evidence; retaining its offset name avoids unsupported semantics.",
-      "next_evidence": "Find a nonzero authored variant or an actual read/write consumer of offset 0x10 before assigning semantics. Zero-only retail contents and alignment do not establish whether this is unused storage, a flag or another field.",
+      "known_facts": "The 0x14-byte cell classification record contains borrowed terrain, optional initialization and cleanup hooks, and a borrowed model template preceding this word. The trailing word is zero in all 1,554 scene/cell pairs reachable from the 23 retained authored grids; their lifecycle hooks are also null. All 23 configured event-link lists begin with a null handler. The survey establishes authored reachability, not cell-table allocation bounds or behavior after resource edits; absolute grid addresses were resolved within the selected overlay, not across overlays. Original mazeConfigureNodeModel (8010D658) reads cell-record offsets 0, 4 and 0xC; mazeDestroyNode (8010E0E0) reads the leave hook at offset 8. Neither inspected cell-lifecycle helper reads the trailing cell word. Their node-position accesses at node +0x10 are a different record domain.",
+      "reason": "The existing zero-only authored survey and inspected cell-lifecycle helpers supply no discriminator for the final word. They do not prove a complete-table unused field or establish padding.",
+      "next_evidence": "Find a nonzero authored variant or a genuine cell-record +0x10 consumer through direct or biased indexing, keeping MazeNode coordinate offsets and per-scene overlays separate from SceneCellType offsets.",
       "matching_constraint": "Preserve declared width, signedness, extent and surrounding offsets; require the unchanged ROM and strict original-object baseline for any replacement.",
-      "evidence": "include/maze_types.h; src/ovl/area_terrain_maze.c (mazeConfigureNodeModel, mazeDestroyNode); src/scenes/*.c (authored grid samplers); survey read authored signed indices from every non-null layer of all 23 cubic scene grids, including cell zero, within each configuration's selected linked overlay section"
+      "evidence": "include/maze_types.h; src/ovl/area_terrain_maze.c (mazeConfigureNodeModel, mazeDestroyNode); src/scenes/*.c (authored grid samplers); survey read authored signed indices from every non-null layer of all 23 cubic scene grids, including cell zero, within each configuration's selected linked overlay section; original Ghidra mazeConfigureNodeModel 8010D658 and mazeDestroyNode 8010E0E0 scoped cell-field accesses."
     },
     {
       "file": "include/midi_reader_types.h",
@@ -164,11 +164,11 @@
       "member": "unknown00D",
       "line": 27,
       "declaration": "u8 unknown00D[3];",
-      "known_facts": "The running-status byte is at 0xC and the cartridge-reader prefix begins at 0x10.",
+      "known_facts": "Original midiReaderOpen (0x80007808) initializes cursor fields, byte running status at 0xC and the cartridge-reader prefix at 0x10. Reviewed cursor, mark and event paths do not establish a role for 0xD..0xF.",
       "reason": "The role of this exact byte range is not established by the current producer/consumer evidence; retaining its offset name avoids unsupported semantics.",
-      "next_evidence": "Trace MIDI open, event parsing, reset and mark restore for accesses to bytes 0xD through 0xF; alignment is not enough to classify padding.",
+      "next_evidence": "Trace biased or whole-reader accesses beyond the reviewed open/event/mark paths, or find an independent reader schema; alignment alone does not establish padding.",
       "matching_constraint": "Preserve declared width, signedness, extent and surrounding offsets; require the unchanged ROM and strict original-object baseline for any replacement.",
-      "evidence": "include/midi_reader_types.h (record declaration and neighboring layout checks)"
+      "evidence": "Original Ghidra instruction review authenticated against ROM-backed linked ELF spans; include/midi_reader_types.h. Local bounded audit: build/script-decoder/layout-evidence-review/audio-midi-opaque-member-review.json"
     },
     {
       "file": "include/midi_sequence_types.h",
@@ -176,11 +176,11 @@
       "member": "unknown5",
       "line": 20,
       "declaration": "u8 unknown5[3];",
-      "known_facts": "Mark save/restore retains cursor and running status; the final three bytes are not written by the named mark helpers.",
+      "known_facts": "Original midiReaderSaveMark (0x80007924) stores only the cursor word at zero and running-status byte at four; midiReaderRestoreMark (0x8000790C) reads those same five bytes. Neither helper transfers or initializes bytes five through seven.",
       "reason": "The role of this exact byte range is not established by the current producer/consumer evidence; retaining its offset name avoids unsupported semantics.",
-      "next_evidence": "Trace whole-mark copies and externally supplied loop marks, checking for consumers beyond the saved status byte.",
+      "next_evidence": "Trace whole-mark copies and externally supplied loop marks beyond these five-byte helpers; their transfer width does not establish the tail as padding.",
       "matching_constraint": "Preserve declared width, signedness, extent and surrounding offsets; require the unchanged ROM and strict original-object baseline for any replacement.",
-      "evidence": "include/midi_sequence_types.h (record declaration and neighboring layout checks)"
+      "evidence": "Original Ghidra instruction review authenticated against ROM-backed linked ELF spans; include/midi_sequence_types.h. Local bounded audit: build/script-decoder/layout-evidence-review/audio-midi-opaque-member-review.json"
     },
     {
       "file": "include/midi_sequence_types.h",
@@ -188,11 +188,11 @@
       "member": "unknown446",
       "line": 28,
       "declaration": "s16 unknown446;",
-      "known_facts": "The embedded reader ends at 0x444; division, tempo and the double playback rate constrain the following gaps.",
+      "known_facts": "Original midiSequenceStart (0x8000522C) writes division as a halfword at 0x444 and tempo as a word at 0x448. The reviewed initialization and tempo paths establish no separate role for the intervening halfword.",
       "reason": "The role of this exact byte range is not established by the current producer/consumer evidence; retaining its offset name avoids unsupported semantics.",
-      "next_evidence": "Trace sequence allocation/reset, tempo events, loop restore and control-wrapper consumers at the declared offset, including biased double-word accesses.",
+      "next_evidence": "Inspect biased and whole-state accesses outside the reviewed initialization/tempo paths, or an independent original schema; do not treat this halfword as part of division.",
       "matching_constraint": "Preserve declared width, signedness, extent and surrounding offsets; require the unchanged ROM and strict original-object baseline for any replacement.",
-      "evidence": "include/midi_sequence_types.h (record declaration and neighboring layout checks)"
+      "evidence": "Original Ghidra instruction review authenticated against ROM-backed linked ELF spans; include/midi_sequence_types.h. Local bounded audit: build/script-decoder/layout-evidence-review/audio-midi-opaque-member-review.json"
     },
     {
       "file": "include/midi_sequence_types.h",
@@ -200,11 +200,11 @@
       "member": "unknown44C",
       "line": 30,
       "declaration": "s32 unknown44C;",
-      "known_facts": "The embedded reader ends at 0x444; division, tempo and the double playback rate constrain the following gaps.",
+      "known_facts": "Original midiSequenceStart (0x8000522C) stores tempo at 0x448 and initializes double playback rate at 0x450 to 1.0. The reviewed tempo-event path updates the word at 0x448, not 0x44C.",
       "reason": "The role of this exact byte range is not established by the current producer/consumer evidence; retaining its offset name avoids unsupported semantics.",
-      "next_evidence": "Trace sequence allocation/reset, tempo events, loop restore and control-wrapper consumers at the declared offset, including biased double-word accesses.",
+      "next_evidence": "Trace computed state accesses and control-wrapper consumers for this exact word; adjacent tempo/rate fields do not identify another tempo value or prove padding.",
       "matching_constraint": "Preserve declared width, signedness, extent and surrounding offsets; require the unchanged ROM and strict original-object baseline for any replacement.",
-      "evidence": "include/midi_sequence_types.h (record declaration and neighboring layout checks)"
+      "evidence": "Original Ghidra instruction review authenticated against ROM-backed linked ELF spans; include/midi_sequence_types.h. Local bounded audit: build/script-decoder/layout-evidence-review/audio-midi-opaque-member-review.json"
     },
     {
       "file": "include/midi_sequence_types.h",
@@ -212,11 +212,11 @@
       "member": "unknown5B4",
       "line": 50,
       "declaration": "u8 unknown5B4[4];",
-      "known_facts": "Reset request precedes this four-byte gap and queued stop delay follows it.",
+      "known_facts": "Original sequenceControlStart (0x80005808) sets the reset request at 0x5B0 and the double stop delay at 0x5B8; the reviewed control-start path establishes no role for the intervening four bytes.",
       "reason": "The role of this exact byte range is not established by the current producer/consumer evidence; retaining its offset name avoids unsupported semantics.",
-      "next_evidence": "Trace control-stream generation, stop/reset requests and allocation clearing for direct or computed accesses to 0x5B4.",
+      "next_evidence": "Inspect control-stream generation, stop/reset processing and biased/whole-state accesses outside the reviewed start path for this exact gap.",
       "matching_constraint": "Preserve declared width, signedness, extent and surrounding offsets; require the unchanged ROM and strict original-object baseline for any replacement.",
-      "evidence": "include/midi_sequence_types.h (record declaration and neighboring layout checks)"
+      "evidence": "Original Ghidra instruction review authenticated against ROM-backed linked ELF spans; include/midi_sequence_types.h. Local bounded audit: build/script-decoder/layout-evidence-review/audio-midi-opaque-member-review.json"
     },
     {
       "file": "include/motion_playback_types.h",
@@ -260,11 +260,11 @@
       "member": "unknown040",
       "line": 68,
       "declaration": "u8 unknown040[0xC];",
-      "known_facts": "The shared player prefix is 0x100 bytes; established mode, focus and profile members constrain the remaining declarations.",
-      "reason": "The role of this exact byte range is not established by the current producer/consumer evidence; retaining its offset name avoids unsupported semantics.",
-      "next_evidence": "Trace player initialization, profile persistence, control modes and aliased global addresses at this exact offset; defaults alone do not establish calendar or profile semantics.",
+      "known_facts": "Original playerResetProfile (800214E0) clears the complete 0x100-byte primary player record. The twelve bytes at 0x40..0x4B lie after focusRemaining and before companionMode; no interpretation is established. playerSaveState (80111AC4) reads the entire record into gSavedPlayerState at 80133E10; playerRestoreState (80111B08) copies all 0x100 bytes back before refreshing the camera. These opaque copies are real consumers and preserve this storage across the temporary snapshot.",
+      "reason": "Clearing and temporary whole-record save/restore establish storage behavior, not a gameplay role. The neighboring focus timer and companion mode do not establish that this gap is a vector, timer or removable padding.",
+      "next_evidence": "Trace a scalar consumer of player or saved-player bytes 0x40..0x4B through direct, biased or computed pointers. A whole-record copy or missing direct Ghidra symbol is insufficient.",
       "matching_constraint": "Preserve declared width, signedness, extent and surrounding offsets; require the unchanged ROM and strict original-object baseline for any replacement.",
-      "evidence": "include/player_types.h (record declaration and neighboring layout checks)"
+      "evidence": "include/player_types.h; src/game/player_profile.c:playerResetProfile; src/ovl/player_companion.c:playerSaveState/playerRestoreState; original Ghidra 800214E0, 80111AC4 and 80111B08; direct xrefs to 800EF794/800EF795 identify only the initializer stores in that xref view, not a whole-program absence proof."
     },
     {
       "file": "include/player_types.h",
@@ -272,11 +272,11 @@
       "member": "unknown0F4",
       "line": 87,
       "declaration": "s8 unknown0F4;",
-      "known_facts": "The shared player prefix is 0x100 bytes; established mode, focus and profile members constrain the remaining declarations. Profile initialization supplies six at 0xF4 and eight at 0xF5.",
-      "reason": "The role of this exact byte range is not established by the current producer/consumer evidence; retaining its offset name avoids unsupported semantics.",
-      "next_evidence": "Trace player initialization, profile persistence, control modes and aliased global addresses at this exact offset; defaults alone do not establish calendar or profile semantics.",
+      "known_facts": "Original playerResetProfile (800214E0) clears the complete 0x100-byte primary player record. The signed byte at player +0xF4 (800EF794) is assigned 6 by the store at 80021550. playerSaveState (80111AC4) reads the entire record into gSavedPlayerState at 80133E10; playerRestoreState (80111B08) copies all 0x100 bytes back before refreshing the camera. These opaque copies are real consumers and preserve this storage across the temporary snapshot.",
+      "reason": "Clearing/defaults and temporary whole-record save/restore establish storage behavior, not its gameplay role. The values six and eight alone do not justify birthday/calendar/profile semantics.",
+      "next_evidence": "Trace a scalar consumer of the primary or saved record through direct, biased or computed pointers. For the two initialized bytes, require a reader that distinguishes their roles; a whole-record copy or missing direct Ghidra xref is insufficient.",
       "matching_constraint": "Preserve declared width, signedness, extent and surrounding offsets; require the unchanged ROM and strict original-object baseline for any replacement.",
-      "evidence": "include/player_types.h (record declaration and neighboring layout checks)"
+      "evidence": "include/player_types.h; src/game/player_profile.c:playerResetProfile; src/ovl/player_companion.c:playerSaveState/playerRestoreState; original Ghidra 800214E0, 80111AC4 and 80111B08; direct xrefs to 800EF794/800EF795 identify only the initializer stores in that xref view, not a whole-program absence proof."
     },
     {
       "file": "include/player_types.h",
@@ -284,11 +284,11 @@
       "member": "unknown0F5",
       "line": 88,
       "declaration": "s8 unknown0F5;",
-      "known_facts": "The shared player prefix is 0x100 bytes; established mode, focus and profile members constrain the remaining declarations. Profile initialization supplies six at 0xF4 and eight at 0xF5.",
-      "reason": "The role of this exact byte range is not established by the current producer/consumer evidence; retaining its offset name avoids unsupported semantics.",
-      "next_evidence": "Trace player initialization, profile persistence, control modes and aliased global addresses at this exact offset; defaults alone do not establish calendar or profile semantics.",
+      "known_facts": "Original playerResetProfile (800214E0) clears the complete 0x100-byte primary player record. The signed byte at player +0xF5 (800EF795) is assigned 8 by the store at 80021554. playerSaveState (80111AC4) reads the entire record into gSavedPlayerState at 80133E10; playerRestoreState (80111B08) copies all 0x100 bytes back before refreshing the camera. These opaque copies are real consumers and preserve this storage across the temporary snapshot.",
+      "reason": "Clearing/defaults and temporary whole-record save/restore establish storage behavior, not its gameplay role. The values six and eight alone do not justify birthday/calendar/profile semantics.",
+      "next_evidence": "Trace a scalar consumer of the primary or saved record through direct, biased or computed pointers. For the two initialized bytes, require a reader that distinguishes their roles; a whole-record copy or missing direct Ghidra xref is insufficient.",
       "matching_constraint": "Preserve declared width, signedness, extent and surrounding offsets; require the unchanged ROM and strict original-object baseline for any replacement.",
-      "evidence": "include/player_types.h (record declaration and neighboring layout checks)"
+      "evidence": "include/player_types.h; src/game/player_profile.c:playerResetProfile; src/ovl/player_companion.c:playerSaveState/playerRestoreState; original Ghidra 800214E0, 80111AC4 and 80111B08; direct xrefs to 800EF794/800EF795 identify only the initializer stores in that xref view, not a whole-program absence proof."
     },
     {
       "file": "include/scene_types.h",
@@ -368,11 +368,11 @@
       "member": "unknown033",
       "line": 21,
       "declaration": "u8 unknown033;",
-      "known_facts": "The retained voice has note/volume fields before the first gap and double pitch at 0x40 after the second.",
+      "known_facts": "Original sequenceEngineNoteOn (0x8000658C) initializes channel, key and velocity at 0x30..0x32, while separately assigning literal five to ALVoiceConfig.priority. This dataflow does not identify byte 0x33 as priority.",
       "reason": "The role of this exact byte range is not established by the current producer/consumer evidence; retaining its offset name avoids unsupported semantics.",
-      "next_evidence": "Trace voice assignment, modulation, note-off and synthesizer submission for accesses to the declared byte range, including packed control copies.",
+      "next_evidence": "Trace byte 0x33 through voice allocation, SDK submission and computed aliases; the separately supplied SDK priority is not evidence for naming this byte.",
       "matching_constraint": "Preserve declared width, signedness, extent and surrounding offsets; require the unchanged ROM and strict original-object baseline for any replacement.",
-      "evidence": "include/sequence_driver_types.h (record declaration and neighboring layout checks)"
+      "evidence": "Original Ghidra instruction review authenticated against ROM-backed linked ELF spans; include/sequence_driver_types.h. Local bounded audit: build/script-decoder/layout-evidence-review/audio-midi-opaque-member-review.json"
     },
     {
       "file": "include/sequence_driver_types.h",
@@ -380,11 +380,11 @@
       "member": "unknown03E",
       "line": 27,
       "declaration": "u8 unknown03E[2];",
-      "known_facts": "The retained voice has note/volume fields before the first gap and double pitch at 0x40 after the second.",
+      "known_facts": "Reviewed original voice paths use the signed portamento halfword at 0x3C and double pitch at 0x40; neither neighboring access establishes a role for bytes 0x3E..0x3F.",
       "reason": "The role of this exact byte range is not established by the current producer/consumer evidence; retaining its offset name avoids unsupported semantics.",
-      "next_evidence": "Trace voice assignment, modulation, note-off and synthesizer submission for accesses to the declared byte range, including packed control copies.",
+      "next_evidence": "Trace all voice-state aliases, modulation and submission paths for an independent use of this exact gap; preserve neighboring halfword and double access widths.",
       "matching_constraint": "Preserve declared width, signedness, extent and surrounding offsets; require the unchanged ROM and strict original-object baseline for any replacement.",
-      "evidence": "include/sequence_driver_types.h (record declaration and neighboring layout checks)"
+      "evidence": "Original Ghidra instruction review authenticated against ROM-backed linked ELF spans; include/sequence_driver_types.h. Local bounded audit: build/script-decoder/layout-evidence-review/audio-midi-opaque-member-review.json"
     },
     {
       "file": "include/sequence_engine_types.h",
@@ -392,11 +392,11 @@
       "member": "unknown0A",
       "line": 27,
       "declaration": "u8 unknown0A;",
-      "known_facts": "Recovered controller fields constrain the byte at 0xA and the tail after tremolo depth at 0x18.",
+      "known_facts": "Original sequenceEngineDispatchMidiEvent (0x80006E08) ignores polyphonic and channel aftertouch (0xA0 and 0xD0). Controller reset at 0x80005EC4 and the reviewed controller paths assign the established fields, without establishing this byte as pressure or priority.",
       "reason": "The role of this exact byte range is not established by the current producer/consumer evidence; retaining its offset name avoids unsupported semantics.",
-      "next_evidence": "Trace controller event decoding and channel initialization/reset for mappings to this byte range; compare packed event formats with actual stored access widths.",
+      "next_evidence": "Find an actual reader/writer of channel byte 0xA through computed aliases or another version; MIDI format resemblance does not establish a pressure field.",
       "matching_constraint": "Preserve declared width, signedness, extent and surrounding offsets; require the unchanged ROM and strict original-object baseline for any replacement.",
-      "evidence": "include/sequence_engine_types.h (record declaration and neighboring layout checks)"
+      "evidence": "Original Ghidra instruction review authenticated against ROM-backed linked ELF spans; include/sequence_engine_types.h. Local bounded audit: build/script-decoder/layout-evidence-review/audio-midi-opaque-member-review.json"
     },
     {
       "file": "include/sequence_engine_types.h",
@@ -404,11 +404,11 @@
       "member": "unknown019",
       "line": 39,
       "declaration": "u8 unknown019[3];",
-      "known_facts": "Recovered controller fields constrain the byte at 0xA and the tail after tremolo depth at 0x18.",
+      "known_facts": "The established channel stride is 0x1C and known controller fields end with tremolo depth at 0x18. Original reset and reviewed controller handlers establish no consumer for 0x19..0x1B.",
       "reason": "The role of this exact byte range is not established by the current producer/consumer evidence; retaining its offset name avoids unsupported semantics.",
-      "next_evidence": "Trace controller event decoding and channel initialization/reset for mappings to this byte range; compare packed event formats with actual stored access widths.",
+      "next_evidence": "Trace remaining channel aliases and whole-record transfers beyond reset/controller paths; absence in those bounded paths does not prove padding.",
       "matching_constraint": "Preserve declared width, signedness, extent and surrounding offsets; require the unchanged ROM and strict original-object baseline for any replacement.",
-      "evidence": "include/sequence_engine_types.h (record declaration and neighboring layout checks)"
+      "evidence": "Original Ghidra instruction review authenticated against ROM-backed linked ELF spans; include/sequence_engine_types.h. Local bounded audit: build/script-decoder/layout-evidence-review/audio-midi-opaque-member-review.json"
     },
     {
       "file": "include/sequence_engine_types.h",
@@ -416,11 +416,11 @@
       "member": "unknown1D6",
       "line": 52,
       "declaration": "u8 unknown1D6[2];",
-      "known_facts": "Master volume precedes the gap at 0x1D6; event limit at 0x1F1 precedes the two bytes before eventBuffer.",
+      "known_facts": "Original reviewed sequence paths separately access master volume as a halfword at 0x1D4 and fade remaining as a double at 0x1D8. These access widths do not establish a role for 0x1D6..0x1D7.",
       "reason": "The role of this exact byte range is not established by the current producer/consumer evidence; retaining its offset name avoids unsupported semantics.",
-      "next_evidence": "Trace registration, fade updates and event-buffer ownership paths for accesses to the exact gap; do not infer alignment-only semantics.",
+      "next_evidence": "Inspect registration, fade and whole-sequence aliases for this exact gap; adjacency to a double does not prove padding.",
       "matching_constraint": "Preserve declared width, signedness, extent and surrounding offsets; require the unchanged ROM and strict original-object baseline for any replacement.",
-      "evidence": "include/sequence_engine_types.h (record declaration and neighboring layout checks)"
+      "evidence": "Original Ghidra instruction review authenticated against ROM-backed linked ELF spans; include/sequence_engine_types.h. Local bounded audit: build/script-decoder/layout-evidence-review/audio-midi-opaque-member-review.json"
     },
     {
       "file": "include/sequence_engine_types.h",
@@ -428,11 +428,11 @@
       "member": "unknown1F2",
       "line": 58,
       "declaration": "u8 unknown1F2[2];",
-      "known_facts": "Master volume precedes the gap at 0x1D6; event limit at 0x1F1 precedes the two bytes before eventBuffer.",
+      "known_facts": "Original reviewed sequence paths separately use pending event length at 0x1F0, event limit at 0x1F1 and the event-buffer pointer at 0x1F4. No halfword event field at 0x1F2 is established.",
       "reason": "The role of this exact byte range is not established by the current producer/consumer evidence; retaining its offset name avoids unsupported semantics.",
-      "next_evidence": "Trace registration, fade updates and event-buffer ownership paths for accesses to the exact gap; do not infer alignment-only semantics.",
+      "next_evidence": "Trace remaining event-buffer ownership and whole-record accesses for bytes 0x1F2..0x1F3; preserve the established byte and pointer widths.",
       "matching_constraint": "Preserve declared width, signedness, extent and surrounding offsets; require the unchanged ROM and strict original-object baseline for any replacement.",
-      "evidence": "include/sequence_engine_types.h (record declaration and neighboring layout checks)"
+      "evidence": "Original Ghidra instruction review authenticated against ROM-backed linked ELF spans; include/sequence_engine_types.h. Local bounded audit: build/script-decoder/layout-evidence-review/audio-midi-opaque-member-review.json"
     },
     {
       "file": "include/toolbox_types.h",
@@ -488,11 +488,11 @@
       "member": "unknown553",
       "line": 39,
       "declaration": "u8 unknown553;",
-      "known_facts": "Three playback rates, three ValueTracks, double-buffered drawing commands and a collision key constrain this private layout.",
-      "reason": "The role of this exact byte range is not established by the current producer/consumer evidence; retaining its offset name avoids unsupported semantics.",
-      "next_evidence": "Trace actor part initialization, texture updates, collision registration and command-buffer construction at the exact gaps; packed color writes may cover more than named components.",
+      "known_facts": "The 0x558-byte private state is fully cleared by actorPartInitializeAnimatedTextures (80013848). The initializer separately writes RGB bytes at 0x550/0x551/0x552, leaving 0x553 covered only by the clear. Original actorPartBuildAnimatedTextureCommands (80013EDC) reads exactly those three tint bytes and encodes a fixed alpha of 255; it does not use 0x553 as alpha. The aligned collision key begins at 0x554.",
+      "reason": "The adjacent tint is established as RGB, but there is no evidence that this byte is alpha or another semantic field. Its cleared value and position before an aligned word do not prove removable padding.",
+      "next_evidence": "Find an actual byte-wide or packed consumer of 0x553 outside the inspected RGB builder/initializer before assigning a role; preserve the explicit byte and collision-key offset.",
       "matching_constraint": "Preserve declared width, signedness, extent and surrounding offsets; require the unchanged ROM and strict original-object baseline for any replacement.",
-      "evidence": "src/game/actor_model_parts.c (record declaration and neighboring layout checks)"
+      "evidence": "src/game/actor_model_parts.c:ActorPartTextureState, actorPartInitializeAnimatedTextures and actorPartBuildAnimatedTextureCommands; original Ghidra 80013848/80013EDC (three RGB loads plus fixed 0xFF alpha)."
     },
     {
       "file": "src/game/attached_effect.c",
@@ -512,23 +512,11 @@
       "member": "unknown20",
       "line": 47,
       "declaration": "u8 unknown20[8];",
-      "known_facts": "The registry contains a keyed pool followed by eight retained bytes at 0x20.",
+      "known_facts": "Original response code 0x8001C460..0x8001C84C passes base 0x800B6B68 to keyedPoolInitialize. That initializer writes only the 0x20-byte prefix and separately allocated entries. Capacity accounting reads prefix offsets 0x14/0x1C; the reviewed owning unit does not access the eight-byte tail.",
       "reason": "The role of this exact byte range is not established by the current producer/consumer evidence; retaining its offset name avoids unsupported semantics.",
-      "next_evidence": "Trace registry initialization, capacity accounting, destruction and separate symbol aliases for uses of the retained tail.",
+      "next_evidence": "Trace global/interior aliases and other consumers outside this bounded unit. The initializer does not clear the tail; neither reserved intent nor padding is established.",
       "matching_constraint": "Preserve declared width, signedness, extent and surrounding offsets; require the unchanged ROM and strict original-object baseline for any replacement.",
-      "evidence": "src/game/doors_object_responses.c (record declaration and neighboring layout checks)"
-    },
-    {
-      "file": "src/game/eye_catch.c",
-      "record": "EyeCatchGroup",
-      "member": "unknown000",
-      "line": 44,
-      "declaration": "u8 unknown000[2];",
-      "known_facts": "The first two bytes precede two selection weights; the latter are selected by progress at most twelve versus greater than twelve.",
-      "reason": "The role of this exact byte range is not established by the current producer/consumer evidence; retaining its offset name avoids unsupported semantics.",
-      "next_evidence": "Trace all group table consumers and packed first-word accesses to distinguish the first two resource bytes from the proven selection weights.",
-      "matching_constraint": "Preserve declared width, signedness, extent and surrounding offsets; require the unchanged ROM and strict original-object baseline for any replacement.",
-      "evidence": "src/game/eye_catch.c (record declaration and neighboring layout checks)"
+      "evidence": "Original Ghidra instruction review authenticated against ROM-backed linked ELF spans; src/game/doors_object_responses.c. Local bounded audit: build/script-decoder/layout-evidence-review/opaque-small-layout-audit.md"
     },
     {
       "file": "src/game/sound_effect_player.c",
@@ -536,11 +524,11 @@
       "member": "unknown04C",
       "line": 17,
       "declaration": "s32 unknown04C;",
-      "known_facts": "The private 0x50-byte playback slot ends with an unresolved word after pan.",
+      "known_facts": "Original sound-effect code 0x800206B0..0x800214D8 uses pan at 0x48 but has no identified slot-tail access at 0x4C. Creation at 0x8002138C allocates stride 0x50 and initializes slot identifiers, not this tail; SDK calls receive the separately bounded embedded voice at slot+8. This is a bounded owning-unit audit, not whole-ROM absence proof.",
       "reason": "The role of this exact byte range is not established by the current producer/consumer evidence; retaining its offset name avoids unsupported semantics.",
-      "next_evidence": "Trace audio-slot allocation, reuse and all parameter setters for accesses to the final word, including callback-side integer address views.",
+      "next_evidence": "Trace computed slot aliases and SDK pointer extents outside the reviewed unit, or obtain original layout evidence; natural eight-byte tail alignment does not prove padding.",
       "matching_constraint": "Preserve declared width, signedness, extent and surrounding offsets; require the unchanged ROM and strict original-object baseline for any replacement.",
-      "evidence": "src/game/sound_effect_player.c (record declaration and neighboring layout checks)"
+      "evidence": "Original Ghidra instruction review authenticated against ROM-backed linked ELF spans; src/game/sound_effect_player.c. Local bounded audit: build/script-decoder/layout-evidence-review/opaque-small-layout-audit.md"
     },
     {
       "file": "src/game/title_screen.c",
@@ -548,11 +536,11 @@
       "member": "unknown4",
       "line": 97,
       "declaration": "f32 unknown4;",
-      "known_facts": "Reset sets the middle float to zero; fade drawing uses the separate finished and alpha fields.",
+      "known_facts": "Original titleLogoResetFade at 0x8003431C stores float zero at state+4. The complete drawing function at 0x80034338..0x800344E4 updates alpha at +8 and completion at +0, without an identified read or nonzero write at +4. Current symbol mappings expose no +4 interior alias; this is not a whole-program absence proof.",
       "reason": "The role of this exact byte range is not established by the current producer/consumer evidence; retaining its offset name avoids unsupported semantics.",
-      "next_evidence": "Trace all retained-symbol aliases and title lifecycle paths for reads or nonzero writes of the middle float; one reset does not establish a timer.",
+      "next_evidence": "Trace computed aliases and other title lifecycle consumers outside the reviewed reset/draw pair before naming this float as a timer, phase or progress.",
       "matching_constraint": "Preserve declared width, signedness, extent and surrounding offsets; require the unchanged ROM and strict original-object baseline for any replacement.",
-      "evidence": "src/game/title_screen.c (record declaration and neighboring layout checks)"
+      "evidence": "Original Ghidra instruction review authenticated against ROM-backed linked ELF spans; src/game/title_screen.c. Local bounded audit: build/script-decoder/layout-evidence-review/opaque-small-layout-audit.md"
     },
     {
       "file": "src/ovl/area_terrain_maze.c",
