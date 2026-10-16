@@ -166,7 +166,7 @@ void springleafFieldInitializeObjects(void) {
     runtimeCheckResetCheckpoint((const char *)D_80159474_scene_springleaf_field, 1);
     springleafFieldPrepareEvolvedResidents();
     springleafFieldResetCompletedGrowth();
-    if (progressGetValue(0x4F) == 0) {
+    if (progressGetValue(PROGRESS_FIELD_SPRINGLEAF_WATERING_INTRODUCTION_RECORDED) == 0) {
         position[0] = 72.0F;
         position[1] = D_801594F0_scene_springleaf_field;
         position[2] = 59.0F;

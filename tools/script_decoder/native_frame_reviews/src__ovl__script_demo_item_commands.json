@@ -1,0 +1,99 @@
+{
+  "callbacks": [
+    {
+      "function": "scriptCommandAdvanceFriendship",
+      "file": "src/ovl/script_demo_item_commands.c",
+      "sha256": "2f51fee4d4aa0ca54b70c07b0d8bb3dd9ffea65f2b3956fa4b1155af03b402a8",
+      "effect": "replace_argument_with_scalar",
+      "arguments": 1,
+      "stack_delta": 0,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "result_semantics": "Replace milestone with awarded progress flag0xB0..0xC3 or-1 if already earned. New nonzero milestones increment primary-player friendshipLevel by exactly one with u8 wrap; milestone0 leaves level unchanged. Store the awarded milestone; do not enforce milestone ordering.",
+      "dependencies": [
+        "function:src/ovl/script_vm.c:scriptVmPopInteger",
+        "function:src/ovl/script_vm.c:scriptVmPopValue",
+        "function:src/ovl/script_vm.c:scriptValueGetInteger",
+        "function:src/game/save_progress.c:progressResolveFieldId",
+        "function:src/game/save_progress.c:progressGetValue",
+        "function:src/game/save_progress.c:progressSetValue",
+        "function:src/game/save_progress.c:progressReadFieldValue",
+        "function:src/game/save_progress.c:progressStoreFieldValue",
+        "file:include/progress_fields.h",
+        "file:include/progress_value.h",
+        "file:include/progress_field_types.h",
+        "file:src/game/save_progress.c",
+        "function:src/ovl/player_companion.c:playerGetFriendshipMilestoneFlag",
+        "function:src/ovl/player_companion.c:playerAwardFriendshipMilestone",
+        "file:include/player_friendship.h",
+        "file:include/player_types.h",
+        "file:include/player_profile.h",
+        "file:src/ovl/player_companion.c",
+        "file:include/player_state.h"
+      ],
+      "preconditions": [
+        "All consumed operands lie above protected locals/frame metadata. Integer/code-reference payloads or finite s32-representable floats are supported; floats truncate toward zero.",
+        "The live actor retains its captured VM and valid owned value storage through the synchronous call. VM/value/actor storage is disjoint from writable profile counters, progress record and primary player fields. No concurrent mutation, context replacement or destruction is covered.",
+        "Only established pop/push value/depth effects and the stated gameplay storage writes are reviewed. Scheduling returns continue; no deferred action is installed. Retail reachability, subsequent lifetimes and EEPROM persistence are outside this source/Ghidra review.",
+        "Progress storage is initialized: resolved field ID is0..243, encoding is0..7, signed limits match its representation, word/halfword locations are aligned, and its full write range lies within the116-byte save record. Packed fields fit wholly within one byte.",
+        "An area-relative selector must index valid selector/current-area storage and resolve to a valid field, never the missing-field sentinel-1. Current area and selector tables remain stable; add resolves separately before reading and writing. Unsupported selectors/layouts are not checked by the helper.",
+        "Milestone is0..19 and the retained20-word milestone-to-progress table remains valid. Its mapped flag has initialized packed-one storage. The borrowed primary player is writable at friendshipLevel+0xF6 and friendshipMilestone+0xF8.",
+        "Already-earned flag leaves player/save storage unchanged and returns-1. A new flag is written before player fields; no atomic transaction is promised. Level increment wraps modulo256; valid title lookup afterward is a separate precondition."
+      ],
+      "evidence": "Source and read-only original Ghidra80121770/80112598/801125AC, original20-word table at80123EB0 and packed-one catalog entries: one integer pop, earned early return-1, progress flag write, conditional byte level increment and milestone word store, saved-VM integer push, continue. Runtime review not performed for this entry."
+    },
+    {
+      "function": "scriptCommandGetItemClass",
+      "file": "src/ovl/script_demo_item_commands.c",
+      "sha256": "4e9da5d216e1adfb3a9ff89d688fd5cda1f92dee0a6e45c92fa2e8f8664df00b",
+      "effect": "replace_argument_with_scalar",
+      "arguments": 1,
+      "stack_delta": 0,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "result_semantics": "Replace item kind with the sign-extended eight-bit class from catalog offset0x71.",
+      "dependencies": [
+        "function:src/ovl/script_vm.c:scriptVmPopInteger",
+        "function:src/ovl/script_vm.c:scriptVmPopValue",
+        "function:src/ovl/script_vm.c:scriptValueGetInteger",
+        "file:include/object_types.h",
+        "file:include/actor_script.h",
+        "file:include/script_vm.h",
+        "function:src/ovl/item_registry.c:itemGetClass",
+        "file:src/ovl/item_registry.c",
+        "file:include/item_kind.h"
+      ],
+      "preconditions": [
+        "Numeric operands lie above every protected local/frame record. Integer/code-reference payloads and finite floats whose truncation is s32-representable are supported. Captured actor, ActorScriptState, VM and owned value storage remain live.",
+        "VM/value storage, borrowed globals/catalogs/objects and helper C-stack temporaries do not overlap. Only immediate reviewed pop/push depth/value writes and expressly documented external fields change; no concurrent context replacement, retail reachability or later lifetime behavior is established.",
+        "Kind must be0..165; indexing is unchecked. The authored field is u8 but original lb/helper s8 result sign-extends, so bytes128..255 yield negative s32 results. No live-handle or availability query occurs."
+      ]
+    },
+    {
+      "function": "scriptCommandIsItemInCategory",
+      "file": "src/ovl/script_demo_item_commands.c",
+      "sha256": "2cb8546e5196472501df68e21bd2fa60107a06ebd6ade0ca1890ac476a740ba0",
+      "effect": "replace_arguments_with_scalar",
+      "arguments": 2,
+      "stack_delta": -1,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "result_semantics": "Replace item kind followed by category index with integer1 iff kind falls in the inclusive signed minimum/maximum range, otherwise0.",
+      "dependencies": [
+        "function:src/ovl/script_vm.c:scriptVmPopInteger",
+        "function:src/ovl/script_vm.c:scriptVmPopValue",
+        "function:src/ovl/script_vm.c:scriptValueGetInteger",
+        "file:include/object_types.h",
+        "file:include/actor_script.h",
+        "file:include/script_vm.h",
+        "function:src/ovl/item_registry.c:itemKindIsInCategory",
+        "file:src/ovl/item_registry.c"
+      ],
+      "preconditions": [
+        "Numeric operands lie above every protected local/frame record. Integer/code-reference payloads and finite floats whose truncation is s32-representable are supported. Captured actor, ActorScriptState, VM and owned value storage remain live.",
+        "VM/value storage, borrowed globals/catalogs/objects and helper C-stack temporaries do not overlap. Only immediate reviewed pop/push depth/value writes and expressly documented external fields change; no concurrent context replacement, retail reachability or later lifetime behavior is established.",
+        "Category index must be0..18; indexing is unchecked. Kind may be any s32 because it is compared against range endpoints rather than used as a catalog index. Category records have stride0xC and signed bounds at+4/+8; leading category identifier is not used."
+      ]
+    }
+  ]
+}

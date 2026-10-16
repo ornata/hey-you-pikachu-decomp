@@ -17,11 +17,155 @@ request footprint does not establish the later handler's writes or operands.
 
 import hashlib
 import json
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 import re
+import tempfile
 
 from .context import ROOT
 from tools.source_quality import code_only
+
+
+def _review_directory(root):
+    """Keep index reads and writes inside the selected repository."""
+    directory = root / 'tools/script_decoder'
+    if not directory.resolve().is_relative_to(root.resolve()):
+        raise ValueError('native-review index escapes its repository')
+    return directory
+
+
+def _review_part_path(root, relative):
+    """Restrict review parts to ordinary JSON files in the review directory."""
+    if not isinstance(relative, str) or not re.fullmatch(r'native_frame_reviews/[A-Za-z0-9_-]+\.json', relative):
+        raise ValueError('invalid native-review part path')
+    directory = _review_directory(root)
+    path = directory / relative
+    parts_directory = (directory / 'native_frame_reviews').resolve()
+    if parts_directory.parent != directory.resolve() or path.resolve().parent != parts_directory:
+        raise ValueError('native-review part escapes its directory')
+    return path
+
+
+def _callbacks_by_name(callbacks):
+    """Reject ambiguous identities before assembling or publishing reviews."""
+    if not isinstance(callbacks, list):
+        raise ValueError('native-review callbacks must be a list')
+    result = {}
+    for row in callbacks:
+        if not isinstance(row, dict) or not isinstance(row.get('function'), str) or not row['function']:
+            raise ValueError('native-review callback requires a function name')
+        if row['function'] in result:
+            raise ValueError('duplicate native-review callback: ' + row['function'])
+        result[row['function']] = row
+    return result
+
+
+def load_review_manifest(root=ROOT, manifest=None):
+    """Load inline or indexed reviews without changing any frozen source evidence.
+
+    Schema three indexes checksummed callback parts by source unit. Their exact
+    order is retained separately; missing, altered or ambiguous parts fail closed.
+    The returned inline schema two is compatible with dependency expansion.
+    """
+    root = Path(root)
+    directory = _review_directory(root)
+    if manifest is None:
+        manifest = json.loads((directory / 'native_frame_reviews.json').read_text())
+    if not isinstance(manifest, dict):
+        raise ValueError('native-review manifest must be an object')
+    if manifest.get('schema_version', 1) != 3:
+        _callbacks_by_name(manifest['callbacks'])
+        return manifest
+    if 'callbacks' in manifest:
+        raise ValueError('indexed native reviews cannot also contain inline callbacks')
+    order, parts = manifest.get('callback_order'), manifest.get('callback_files')
+    if (not isinstance(order, list) or any(not isinstance(name, str) for name in order) or
+            len(set(order)) != len(order) or not isinstance(parts, list)):
+        raise ValueError('invalid native-review part index')
+    callbacks, paths = [], set()
+    for part in parts:
+        if not isinstance(part, dict) or set(part) != {'file', 'sha256'}:
+            raise ValueError('invalid native-review part record')
+        path = _review_part_path(root, part['file'])
+        if part['file'] in paths:
+            raise ValueError('duplicate native-review part path')
+        paths.add(part['file'])
+        data = path.read_bytes()
+        if hashlib.sha256(data).hexdigest() != part['sha256']:
+            raise ValueError('native-review part checksum differs: ' + part['file'])
+        content = json.loads(data)
+        if not isinstance(content, dict) or set(content) != {'callbacks'}:
+            raise ValueError('invalid native-review part contents')
+        _callbacks_by_name(content['callbacks'])
+        callbacks.extend(content['callbacks'])
+    by_name = _callbacks_by_name(callbacks)
+    if set(by_name) != set(order):
+        raise ValueError('native-review callback order differs from indexed parts')
+    result = {key: value for key, value in manifest.items() if key not in ('callback_order', 'callback_files')}
+    result.update(schema_version=2, callbacks=[by_name[name] for name in order])
+    return result
+
+
+def review_manifest_fingerprint(root=ROOT):
+    """Bind the complete logical review set, including every indexed callback."""
+    manifest = expand_review_dependencies(load_review_manifest(root))
+    data = json.dumps(manifest, sort_keys=True, separators=(',', ':')).encode()
+    return hashlib.sha256(data).hexdigest()
+
+
+def _replace_review_file(path, data):
+    """Replace a file without following preexisting temporary-file symlinks."""
+    temporary = None
+    try:
+        with tempfile.NamedTemporaryFile(dir=path.parent, prefix='.' + path.name + '.',
+                                         suffix='.tmp', delete=False) as output:
+            temporary = Path(output.name)
+            output.write(data)
+        temporary.replace(path)
+    finally:
+        if temporary is not None:
+            temporary.unlink(missing_ok=True)
+
+
+def write_review_manifest(manifest, root=ROOT):
+    """Publish compact, indexed reviews while preserving all source fingerprints.
+
+    Part checksums authenticate storage, not source semantics. Replacing the index
+    last prevents partially written parts from silently becoming active reviews.
+    Only previously indexed parts that are no longer referenced are removed.
+    """
+    root = Path(root)
+    path = _review_directory(root) / 'native_frame_reviews.json'
+    previous = json.loads(path.read_text()) if path.exists() else {}
+    compacted = compact_review_dependencies(load_review_manifest(root, manifest))
+    callbacks = compacted.pop('callbacks')
+    _callbacks_by_name(callbacks)
+    groups, sources = {}, {}
+    for row in callbacks:
+        source = PurePosixPath(row['file'])
+        if source.is_absolute() or '..' in source.parts or source.suffix != '.c':
+            raise ValueError('invalid callback source unit')
+        relative = 'native_frame_reviews/' + '__'.join(source.with_suffix('').parts) + '.json'
+        _review_part_path(root, relative)
+        if relative in sources and sources[relative] != row['file']:
+            raise ValueError('callback source units have conflicting part names')
+        sources[relative] = row['file']
+        groups.setdefault(relative, []).append(row)
+    previous_paths = [_review_part_path(root, part['file'])
+                      for part in previous.get('callback_files', [])] if previous.get('schema_version') == 3 else []
+    parts = []
+    for relative, rows in sorted(groups.items()):
+        target = _review_part_path(root, relative)
+        target.parent.mkdir(parents=True, exist_ok=True)
+        data = (json.dumps(dict(callbacks=rows), indent=2) + '\n').encode()
+        _replace_review_file(target, data)
+        parts.append(dict(file=relative, sha256=hashlib.sha256(data).hexdigest()))
+    compacted.update(schema_version=3, callback_order=[row['function'] for row in callbacks], callback_files=parts)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    _replace_review_file(path, (json.dumps(compacted, indent=2) + '\n').encode())
+    retained = {_review_part_path(root, part['file']) for part in parts}
+    for obsolete in previous_paths:
+        if obsolete not in retained:
+            obsolete.unlink(missing_ok=True)
 
 
 def fingerprint(code):
@@ -201,8 +345,7 @@ def compact_review_dependencies(manifest):
 
 def native_frame_reviews(root=ROOT, manifest=None):
     """Activate only explicitly reviewed callbacks with unchanged dependencies."""
-    if manifest is None:
-        manifest = json.loads((root / 'tools/script_decoder/native_frame_reviews.json').read_text())
+    manifest = load_review_manifest(root, manifest)
     manifest = expand_review_dependencies(manifest)
     cache, stale_dependencies, stale_callbacks, stale_callback_dependencies = {}, [], [], {}
 
@@ -253,7 +396,8 @@ def native_frame_reviews(root=ROOT, manifest=None):
                              ('replace_arguments_with_scalar', 4, -3),
                              ('replace_arguments_with_scalar', 5, -4),
                              ('replace_arguments_with_scalar', 6, -5),
-                             ('replace_arguments_with_scalar', 7, -6)) and
+                             ('replace_arguments_with_scalar', 7, -6),
+                             ('replace_arguments_with_scalar', 8, -7)) and
                             type(review['arguments']) is int and type(review['stack_delta']) is int)
         action_request = (review['effect'] == 'select_action_handler' and
                           type(review['arguments']) is int and review['arguments'] == 0 and

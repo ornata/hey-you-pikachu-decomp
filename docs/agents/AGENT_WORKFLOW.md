@@ -111,6 +111,13 @@ Use `python3 tools/native_commands.py --json` for the current selector catalog.
 The check requires the linked build; it does not infer stack effects or cover
 arbitrary caller-supplied VM tables.
 
+Use `load_review_manifest()` and `write_review_manifest()` from
+`tools.script_decoder.native_frames` to read and persist native storage reviews.
+The root index lists checksummed callback files grouped by source unit; do not
+replace it with a flat callback array. These APIs preserve source fingerprints;
+they never renew evidence after source changes. Dependency expansion and compaction
+operate on the loaded manifest, with legacy inline schemas still readable.
+
 `make check-object-draw-callbacks` validates lifecycle, drawing, child-drawing and response
 callback signatures for known retail kinds zero through 0xB3 and runs under
 `make verify`. Alternate tables and resource validity are outside this check.

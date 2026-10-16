@@ -1,0 +1,2098 @@
+{
+  "callbacks": [
+    {
+      "function": "actorScriptPushTimer",
+      "file": "src/ovl/actor_script_action_commands.c",
+      "sha256": "78efbe421c180f47c6d20ffcba3efc2e5eb62e5438832224001e233ec32135ec",
+      "effect": "append_scalar",
+      "arguments": 0,
+      "stack_delta": 1,
+      "result_tag": "float",
+      "scheduling": "continue"
+    },
+    {
+      "function": "actorScriptYield",
+      "file": "src/ovl/actor_script_action_commands.c",
+      "sha256": "2e6a0257f19222d964c1af0d42e4753817f9839733a0d7a40cfb2c45992b173f",
+      "effect": "append_scalar",
+      "arguments": 0,
+      "stack_delta": 1,
+      "result_tag": "integer",
+      "scheduling": "yield"
+    },
+    {
+      "function": "actorScriptPushActionScriptStopped",
+      "file": "src/ovl/actor_script_action_commands.c",
+      "sha256": "291d22a5c91cf232599952cd53d42baedca32c7896c1e4726f68c51cb7fb1c74",
+      "effect": "append_scalar",
+      "arguments": 0,
+      "stack_delta": 1,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "dependencies": [
+        "function:src/game/action_script.c:actionScriptIsStopped"
+      ],
+      "preconditions": [
+        "Actor state is valid; sequencing activity is separate from independent motion playback."
+      ]
+    },
+    {
+      "function": "actorScriptStartActionAndWait",
+      "file": "src/ovl/actor_script_action_commands.c",
+      "sha256": "f02855c163d7b5d3190066df597e81b82b5b5764bfbb5fee0c2a6af3d293bcc0",
+      "effect": "select_action_handler",
+      "arguments": 0,
+      "stack_delta": 0,
+      "result_tag": "none",
+      "scheduling": "wait_for_action",
+      "coverage": "immediate_request_only",
+      "action_handler": 2,
+      "dependencies": [
+        "function:src/ovl/actor_script_actions.c:actorBeginScriptActionHandler",
+        "file:include/actor_script_action.h"
+      ],
+      "preconditions": [
+        "Actor and its retained VM are valid, separate from value storage. The immediate request only selects actionHandler and sets actionInitializing to one.",
+        "The request returns scheduling result two without reading or writing stack operands. Deferred handler operands, results, context replacement and write effects remain unreviewed; this contract must not clear that deferred frontier."
+      ],
+      "deferred_review": {
+        "action_handler": 2,
+        "effect": "start_program_then_conditional_zero_append",
+        "arguments": 1,
+        "initialization_stack_delta": -1,
+        "initialization_scheduling": "wait_for_action",
+        "waiting_stack_delta": 0,
+        "completion_stack_delta": 1,
+        "waiting_scheduling": "wait_for_action",
+        "completion_scheduling": "yield",
+        "dependencies": [
+          "function:src/ovl/actor_script_actions.c:actorScriptDispatchActionHandler",
+          "function:src/ovl/actor_script_actions.c:actorScriptPlayAction",
+          "function:src/ovl/actor_script_actions.c:actorScriptWaitForSequencerStop",
+          "function:src/game/action_script.c:actionScriptStart",
+          "function:src/game/action_script.c:actionScriptIsStopped",
+          "function:src/ovl/script_vm.c:scriptVmPopInteger",
+          "function:src/ovl/script_vm.c:scriptVmPopValue",
+          "function:src/ovl/script_vm.c:scriptValueGetInteger",
+          "function:src/ovl/script_vm.c:actorUpdateScriptVm",
+          "file:include/action_script_ids.h"
+        ],
+        "preconditions": [
+          "The initializing selector-two handler has one valid numeric program ID above protected locals/frame metadata. Integer/code-reference payloads or finite floats representable as s32 are supported; floats truncate toward zero.",
+          "The program ID has a valid retained table entry. ACTION_SCRIPT_NO_PROGRAM (-1) is an original-target exception requiring its authenticated null backing; other invalid indices and portable host C semantics are outside this review.",
+          "Actor state, VM and owned value storage remain intact and nonoverlapping. Scheduler updates clear initialization after dispatch, so polling does not consume the program again. One free completion slot remains above protected records.",
+          "Initialization selects commands and resets only the eight established sequencer fields; independent motion is preserved and the handler returns waiting even for no commands. Later polls leave values unchanged while commands remain, or append integer zero and yield when stopped.",
+          "These footprints do not establish command advancement, termination, rendering, retail path feasibility or arbitrary concurrent context/state replacement."
+        ]
+      }
+    },
+    {
+      "function": "actorScriptStartLoopExitAndWait",
+      "file": "src/ovl/actor_script_action_commands.c",
+      "sha256": "d34c2103eadd02855ea664f39ba3d0c87c65d8e9bbd7bab55ab775f9f6493f4f",
+      "effect": "select_action_handler",
+      "arguments": 0,
+      "stack_delta": 0,
+      "result_tag": "none",
+      "scheduling": "wait_for_action",
+      "coverage": "immediate_request_only",
+      "action_handler": 3,
+      "dependencies": [
+        "function:src/ovl/actor_script_actions.c:actorBeginScriptActionHandler",
+        "file:include/actor_script_action.h"
+      ],
+      "preconditions": [
+        "Actor and its retained VM are valid, separate from value storage. The immediate request only selects actionHandler and sets actionInitializing to one.",
+        "The request returns scheduling result two without reading or writing stack operands. Deferred handler operands, results, context replacement and write effects remain unreviewed; this contract must not clear that deferred frontier."
+      ],
+      "deferred_review": {
+        "action_handler": 3,
+        "effect": "loop_exit_then_conditional_zero_append",
+        "arguments": 0,
+        "waiting_stack_delta": 0,
+        "completion_stack_delta": 1,
+        "waiting_scheduling": "wait_for_action",
+        "completion_scheduling": "yield",
+        "dependencies": [
+          "function:src/ovl/actor_script_actions.c:actorScriptDispatchActionHandler",
+          "function:src/ovl/actor_script_actions.c:actorScriptWaitForSequencerStop",
+          "function:src/game/motion_playback.c:actionRequestLoopExit",
+          "function:src/game/action_script.c:actionScriptIsStopped",
+          "function:src/ovl/script_vm.c:actorUpdateScriptVm"
+        ],
+        "preconditions": [
+          "While waiting, the selected handler remains three; the actor and its VM stay intact with nonoverlapping actor state and owned value storage. Protected locals and frame metadata lie below active depth and one free result slot remains.",
+          "The loop-exit request writes only the actor halfword. A nonnull sequencer command leaves the stack unchanged; a null command appends integer zero and yields. The scheduler clears initialization and does not resume bytecode in that same update.",
+          "These footprints do not establish future command advancement, termination, rendered motion, retail feasibility or arbitrary concurrent changes."
+        ]
+      }
+    },
+    {
+      "function": "actorScriptStartLoopExitAndWaitAlternate",
+      "file": "src/ovl/actor_script_action_commands.c",
+      "sha256": "0327d97e99dd4754196e089287d4dca8119b04b767ea42cd39b3197b355dca48",
+      "effect": "select_action_handler",
+      "arguments": 0,
+      "stack_delta": 0,
+      "result_tag": "none",
+      "scheduling": "wait_for_action",
+      "coverage": "immediate_request_only",
+      "action_handler": 3,
+      "dependencies": [
+        "function:src/ovl/actor_script_actions.c:actorBeginScriptActionHandler",
+        "file:include/actor_script_action.h"
+      ],
+      "preconditions": [
+        "Actor and its retained VM are valid, separate from value storage. The immediate request only selects actionHandler and sets actionInitializing to one.",
+        "The request returns scheduling result two without reading or writing stack operands. Deferred handler operands, results, context replacement and write effects remain unreviewed; this contract must not clear that deferred frontier."
+      ],
+      "deferred_review": {
+        "action_handler": 3,
+        "effect": "loop_exit_then_conditional_zero_append",
+        "arguments": 0,
+        "waiting_stack_delta": 0,
+        "completion_stack_delta": 1,
+        "waiting_scheduling": "wait_for_action",
+        "completion_scheduling": "yield",
+        "dependencies": [
+          "function:src/ovl/actor_script_actions.c:actorScriptDispatchActionHandler",
+          "function:src/ovl/actor_script_actions.c:actorScriptWaitForSequencerStop",
+          "function:src/game/motion_playback.c:actionRequestLoopExit",
+          "function:src/game/action_script.c:actionScriptIsStopped",
+          "function:src/ovl/script_vm.c:actorUpdateScriptVm"
+        ],
+        "preconditions": [
+          "While waiting, the selected handler remains three; the actor and its VM stay intact with nonoverlapping actor state and owned value storage. Protected locals and frame metadata lie below active depth and one free result slot remains.",
+          "The loop-exit request writes only the actor halfword. A nonnull sequencer command leaves the stack unchanged; a null command appends integer zero and yields. The scheduler clears initialization and does not resume bytecode in that same update.",
+          "These footprints do not establish future command advancement, termination, rendered motion, retail feasibility or arbitrary concurrent changes."
+        ]
+      }
+    },
+    {
+      "function": "actorScriptStartInterruptibleAction",
+      "file": "src/ovl/actor_script_action_commands.c",
+      "sha256": "a729f1789dc1954ffbe491604c46f0b63d2dc58d8c789cc0c5a8996c37ecffbc",
+      "effect": "select_action_handler",
+      "arguments": 0,
+      "stack_delta": 0,
+      "result_tag": "none",
+      "scheduling": "wait_for_action",
+      "coverage": "immediate_request_only",
+      "action_handler": 5,
+      "dependencies": [
+        "function:src/ovl/actor_script_actions.c:actorBeginScriptActionHandler",
+        "file:include/actor_script_action.h"
+      ],
+      "preconditions": [
+        "Actor and its retained VM are valid, separate from value storage. The immediate request only selects actionHandler and sets actionInitializing to one.",
+        "The request returns scheduling result two without reading or writing stack operands. Deferred handler phases are reviewed separately under their source-bound ownership and stack conditions."
+      ],
+      "deferred_review": {
+        "action_handler": 5,
+        "effect": "start_program_then_message_or_sequencer_result",
+        "arguments": 1,
+        "dependencies": [
+          "function:src/ovl/actor_script_actions.c:actorScriptDispatchActionHandler",
+          "function:src/ovl/actor_script_actions.c:actorScriptPlayAction",
+          "function:src/ovl/actor_script_actions.c:actorScriptWaitForSequencerStop",
+          "function:src/game/action_script.c:actionScriptStart",
+          "function:src/game/action_script.c:actionScriptIsStopped",
+          "function:src/ovl/script_vm.c:scriptVmPopInteger",
+          "function:src/ovl/script_vm.c:scriptVmPopValue",
+          "function:src/ovl/script_vm.c:scriptValueGetInteger",
+          "function:src/ovl/script_vm.c:actorUpdateScriptVm",
+          "file:include/action_script_ids.h",
+          "function:src/ovl/actor_script_actions.c:actorScriptPlayInterruptibleAction",
+          "function:src/ovl/actor_script_actions.c:actorScriptWaitForActionOrMessage",
+          "function:src/ovl/actor_script_actions.c:actorScriptThrowHeldItem",
+          "function:src/ovl/actor_script_actions.c:actorScriptAcquireItem",
+          "function:src/game/action_script.c:actionScriptStop",
+          "function:src/game/action_script.c:actionScriptIsStoppedAndLastActionEnded",
+          "function:src/game/action_script.c:actionScriptHasLastActionEnded",
+          "function:src/game/motion_playback.c:actionGetStoredRequestId",
+          "function:src/game/motion_playback.c:actionRequestLoopExit",
+          "function:src/game/motion_playback.c:actionCancelPendingRequest",
+          "function:src/ovl/actor_script_queries.c:actorGetHeldItemKind",
+          "function:src/game/object_hierarchy.c:objectFindLiveByHandle",
+          "function:src/game/keyed_pool.c:keyedPoolGetValue",
+          "function:src/game/keyed_pool.c:keyedPoolFindEntry",
+          "file:include/object_types.h",
+          "file:include/actor_script.h",
+          "file:include/script_vm.h",
+          "file:include/item_types.h",
+          "file:include/keyed_pool_types.h",
+          "file:include/object_flags.h",
+          "function:src/ovl/script_vm.c:scriptVmPopInteger",
+          "function:src/ovl/script_vm.c:scriptVmPopFloat",
+          "function:src/ovl/script_vm.c:scriptVmPopValue",
+          "function:src/ovl/script_vm.c:scriptValueGetInteger",
+          "function:src/ovl/script_vm.c:scriptValueGetFloat",
+          "file:include/motion_playback_types.h",
+          "file:include/action_definition_types.h",
+          "file:include/actor_action_callbacks.h",
+          "file:include/actor_action_cue.h",
+          "function:src/ovl/script_vm.c:actorUpdateScriptVm"
+        ],
+        "preconditions": [
+          "Actor, actor state, VM and owned value storage remain live, separate and nonoverlapping with helper-written motion/sequencer/pool state and C stack. The same VM is selected throughout any helper chain; concurrent replacement/destruction and arbitrary world-update lifetime effects are excluded.",
+          "All consumed numeric operands lie above protected locals/frame metadata. Integer/code-reference values and finite signed32-representable float values are supported for integer conversion; float conversion of the search-range operand is valid. Appending a later result requires one free value slot above protected storage.",
+          "Whenever a branch starts a timed program, its ID selects a retained readable entry. ACTION_SCRIPT_NO_PROGRAM(-1) uses the authenticated original-target null predecessor backing; other invalid indices and portable host indexing are outside this review. No command executes during startup; only established sequencer fields reset, without stopping independent motion.",
+          "The normal actorUpdateScriptVm wrapper clears actionInitializing after dispatch. These handlers leave that flag unchanged; direct repeated initializing calls can consume operands repeatedly and are not an ordinary action trajectory. Phase footprints do not prove sequencing advancement, eventual completion or gameplay reachability.",
+          "Initializing always consumes the program and waits, even with a pending message. Noninitial dispatch gives a nonzero pending message priority over sequencing status: it appends the raw signed flag, requests loop exit, cancels pending action fields and stops command execution. Mailbox flag and payload remain intact; no Boolean normalization or acknowledgement occurs.",
+          "Without a pending message, an active command waits without stack effects; a null command appends0 and yields. Stop writes loopExitRequested1, pendingAction-1, pendingRequestId0, pendingActionKind0, commandNULL and selectedProgramId-1. Other sequencer counters/timers, sound handle and active motion remain unchanged."
+        ],
+        "evidence": "OriginalGhidra801168A8/80116900/80116984/801188D4 and existingselector2 source review; static evidence only.",
+        "phase_gate": "action_initializing_then_message_or_sequence_stop",
+        "phases": [
+          {
+            "phase": "initialize",
+            "consumed_arguments": 1,
+            "stack_delta": -1,
+            "scheduling": "wait_for_action"
+          },
+          {
+            "phase": "wait",
+            "consumed_arguments": 0,
+            "stack_delta": 0,
+            "scheduling": "wait_for_action"
+          },
+          {
+            "phase": "interrupt",
+            "consumed_arguments": 0,
+            "stack_delta": 1,
+            "scheduling": "yield",
+            "result": "pending_message_word"
+          },
+          {
+            "phase": "complete",
+            "consumed_arguments": 0,
+            "stack_delta": 1,
+            "scheduling": "yield",
+            "result": 0
+          }
+        ],
+        "result_tag": "integer"
+      }
+    },
+    {
+      "function": "actorScriptStartHeldItemThrow",
+      "file": "src/ovl/actor_script_action_commands.c",
+      "sha256": "0ab9b3538f532fa681a2af30219a39fc716456dba766e76056b84335d3e81a68",
+      "effect": "select_action_handler",
+      "arguments": 0,
+      "stack_delta": 0,
+      "result_tag": "none",
+      "scheduling": "wait_for_action",
+      "coverage": "immediate_request_only",
+      "action_handler": 6,
+      "dependencies": [
+        "function:src/ovl/actor_script_actions.c:actorBeginScriptActionHandler",
+        "file:include/actor_script_action.h"
+      ],
+      "preconditions": [
+        "Actor and its retained VM are valid, separate from value storage. The immediate request only selects actionHandler and sets actionInitializing to one.",
+        "The request returns scheduling result two without reading or writing stack operands. Deferred handler phases are reviewed separately under their source-bound ownership and stack conditions."
+      ],
+      "deferred_review": {
+        "action_handler": 6,
+        "effect": "held_handle_gate_start_program_then_sequencer_result",
+        "arguments": 1,
+        "dependencies": [
+          "function:src/ovl/actor_script_actions.c:actorScriptDispatchActionHandler",
+          "function:src/ovl/actor_script_actions.c:actorScriptPlayAction",
+          "function:src/ovl/actor_script_actions.c:actorScriptWaitForSequencerStop",
+          "function:src/game/action_script.c:actionScriptStart",
+          "function:src/game/action_script.c:actionScriptIsStopped",
+          "function:src/ovl/script_vm.c:scriptVmPopInteger",
+          "function:src/ovl/script_vm.c:scriptVmPopValue",
+          "function:src/ovl/script_vm.c:scriptValueGetInteger",
+          "function:src/ovl/script_vm.c:actorUpdateScriptVm",
+          "file:include/action_script_ids.h",
+          "function:src/ovl/actor_script_actions.c:actorScriptPlayInterruptibleAction",
+          "function:src/ovl/actor_script_actions.c:actorScriptWaitForActionOrMessage",
+          "function:src/ovl/actor_script_actions.c:actorScriptThrowHeldItem",
+          "function:src/ovl/actor_script_actions.c:actorScriptAcquireItem",
+          "function:src/game/action_script.c:actionScriptStop",
+          "function:src/game/action_script.c:actionScriptIsStoppedAndLastActionEnded",
+          "function:src/game/action_script.c:actionScriptHasLastActionEnded",
+          "function:src/game/motion_playback.c:actionGetStoredRequestId",
+          "function:src/game/motion_playback.c:actionRequestLoopExit",
+          "function:src/game/motion_playback.c:actionCancelPendingRequest",
+          "function:src/ovl/actor_script_queries.c:actorGetHeldItemKind",
+          "function:src/game/object_hierarchy.c:objectFindLiveByHandle",
+          "function:src/game/keyed_pool.c:keyedPoolGetValue",
+          "function:src/game/keyed_pool.c:keyedPoolFindEntry",
+          "file:include/object_types.h",
+          "file:include/actor_script.h",
+          "file:include/script_vm.h",
+          "file:include/item_types.h",
+          "file:include/keyed_pool_types.h",
+          "file:include/object_flags.h",
+          "function:src/ovl/script_vm.c:scriptVmPopInteger",
+          "function:src/ovl/script_vm.c:scriptVmPopFloat",
+          "function:src/ovl/script_vm.c:scriptVmPopValue",
+          "function:src/ovl/script_vm.c:scriptValueGetInteger",
+          "function:src/ovl/script_vm.c:scriptValueGetFloat",
+          "file:include/motion_playback_types.h",
+          "file:include/action_definition_types.h",
+          "file:include/actor_action_callbacks.h",
+          "file:include/actor_action_cue.h",
+          "function:src/ovl/script_vm.c:actorUpdateScriptVm"
+        ],
+        "preconditions": [
+          "Actor, actor state, VM and owned value storage remain live, separate and nonoverlapping with helper-written motion/sequencer/pool state and C stack. The same VM is selected throughout any helper chain; concurrent replacement/destruction and arbitrary world-update lifetime effects are excluded.",
+          "All consumed numeric operands lie above protected locals/frame metadata. Integer/code-reference values and finite signed32-representable float values are supported for integer conversion; float conversion of the search-range operand is valid. Appending a later result requires one free value slot above protected storage.",
+          "Whenever a branch starts a timed program, its ID selects a retained readable entry. ACTION_SCRIPT_NO_PROGRAM(-1) uses the authenticated original-target null predecessor backing; other invalid indices and portable host indexing are outside this review. No command executes during startup; only established sequencer fields reset, without stopping independent motion.",
+          "The normal actorUpdateScriptVm wrapper clears actionInitializing after dispatch. These handlers leave that flag unchanged; direct repeated initializing calls can consume operands repeatedly and are not an ordinary action trajectory. Phase footprints do not prove sequencing advancement, eventual completion or gameplay reachability.",
+          "Initializing always consumes the program. A zero raw heldItemHandle appends-1 and yields; any nonzero raw handle starts the selected program and waits, with no live-handle lookup. Program validity is required only on the startup branch.",
+          "Noninitial dispatch waits while commands remain; a stopped sequencer appends0 and yields regardless of held-item state. No synchronous item release, launch or throw occurs; the result does not prove a successful throw."
+        ],
+        "evidence": "OriginalGhidra801168A8/80116900/80116984/801188D4 and existingselector2 source review; static evidence only.",
+        "phase_gate": "action_initializing_then_sequence_stop",
+        "phases": [
+          {
+            "phase": "initialize_reject",
+            "consumed_arguments": 1,
+            "stack_delta": 0,
+            "scheduling": "yield",
+            "result": -1
+          },
+          {
+            "phase": "initialize_accept",
+            "consumed_arguments": 1,
+            "stack_delta": -1,
+            "scheduling": "wait_for_action"
+          },
+          {
+            "phase": "wait",
+            "consumed_arguments": 0,
+            "stack_delta": 0,
+            "scheduling": "wait_for_action"
+          },
+          {
+            "phase": "complete",
+            "consumed_arguments": 0,
+            "stack_delta": 1,
+            "scheduling": "yield",
+            "result": 0
+          }
+        ],
+        "result_tag": "integer"
+      }
+    },
+    {
+      "function": "actorScriptStartItemAcquisition",
+      "file": "src/ovl/actor_script_action_commands.c",
+      "sha256": "2e2f049ea226405d621a36a2b9508ed4041e1289504520f9b76e953329796fca",
+      "effect": "select_action_handler",
+      "arguments": 0,
+      "stack_delta": 0,
+      "result_tag": "none",
+      "scheduling": "wait_for_action",
+      "coverage": "immediate_request_only",
+      "action_handler": 7,
+      "dependencies": [
+        "function:src/ovl/actor_script_actions.c:actorBeginScriptActionHandler",
+        "file:include/actor_script_action.h"
+      ],
+      "preconditions": [
+        "Actor and its retained VM are valid, separate from value storage. The immediate request only selects actionHandler and sets actionInitializing to one.",
+        "The request returns scheduling result two without reading or writing stack operands. Deferred handler phases are reviewed separately under their source-bound ownership and stack conditions."
+      ],
+      "deferred_review": {
+        "action_handler": 7,
+        "effect": "acquisition_settings_then_handle_gate_or_full_action_poll",
+        "arguments": 3,
+        "dependencies": [
+          "function:src/ovl/actor_script_actions.c:actorScriptDispatchActionHandler",
+          "function:src/ovl/actor_script_actions.c:actorScriptPlayAction",
+          "function:src/ovl/actor_script_actions.c:actorScriptWaitForSequencerStop",
+          "function:src/game/action_script.c:actionScriptStart",
+          "function:src/game/action_script.c:actionScriptIsStopped",
+          "function:src/ovl/script_vm.c:scriptVmPopInteger",
+          "function:src/ovl/script_vm.c:scriptVmPopValue",
+          "function:src/ovl/script_vm.c:scriptValueGetInteger",
+          "function:src/ovl/script_vm.c:actorUpdateScriptVm",
+          "file:include/action_script_ids.h",
+          "function:src/ovl/actor_script_actions.c:actorScriptPlayInterruptibleAction",
+          "function:src/ovl/actor_script_actions.c:actorScriptWaitForActionOrMessage",
+          "function:src/ovl/actor_script_actions.c:actorScriptThrowHeldItem",
+          "function:src/ovl/actor_script_actions.c:actorScriptAcquireItem",
+          "function:src/game/action_script.c:actionScriptStop",
+          "function:src/game/action_script.c:actionScriptIsStoppedAndLastActionEnded",
+          "function:src/game/action_script.c:actionScriptHasLastActionEnded",
+          "function:src/game/motion_playback.c:actionGetStoredRequestId",
+          "function:src/game/motion_playback.c:actionRequestLoopExit",
+          "function:src/game/motion_playback.c:actionCancelPendingRequest",
+          "function:src/ovl/actor_script_queries.c:actorGetHeldItemKind",
+          "function:src/game/object_hierarchy.c:objectFindLiveByHandle",
+          "function:src/game/keyed_pool.c:keyedPoolGetValue",
+          "function:src/game/keyed_pool.c:keyedPoolFindEntry",
+          "file:include/object_types.h",
+          "file:include/actor_script.h",
+          "file:include/script_vm.h",
+          "file:include/item_types.h",
+          "file:include/keyed_pool_types.h",
+          "file:include/object_flags.h",
+          "function:src/ovl/script_vm.c:scriptVmPopInteger",
+          "function:src/ovl/script_vm.c:scriptVmPopFloat",
+          "function:src/ovl/script_vm.c:scriptVmPopValue",
+          "function:src/ovl/script_vm.c:scriptValueGetInteger",
+          "function:src/ovl/script_vm.c:scriptValueGetFloat",
+          "file:include/motion_playback_types.h",
+          "file:include/action_definition_types.h",
+          "file:include/actor_action_callbacks.h",
+          "file:include/actor_action_cue.h",
+          "function:src/ovl/script_vm.c:actorUpdateScriptVm"
+        ],
+        "preconditions": [
+          "Actor, actor state, VM and owned value storage remain live, separate and nonoverlapping with helper-written motion/sequencer/pool state and C stack. The same VM is selected throughout any helper chain; concurrent replacement/destruction and arbitrary world-update lifetime effects are excluded.",
+          "All consumed numeric operands lie above protected locals/frame metadata. Integer/code-reference values and finite signed32-representable float values are supported for integer conversion; float conversion of the search-range operand is valid. Appending a later result requires one free value slot above protected storage.",
+          "Whenever a branch starts a timed program, its ID selects a retained readable entry. ACTION_SCRIPT_NO_PROGRAM(-1) uses the authenticated original-target null predecessor backing; other invalid indices and portable host indexing are outside this review. No command executes during startup; only established sequencer fields reset, without stopping independent motion.",
+          "The normal actorUpdateScriptVm wrapper clears actionInitializing after dispatch. These handlers leave that flag unchanged; direct repeated initializing calls can consume operands repeatedly and are not an ordinary action trajectory. Phase footprints do not prove sequencing advancement, eventual completion or gameplay reachability.",
+          "Operand push order is program, item-kind filter, search range. Initialization stores the popped range as f32 and filter as s32 before popping the program and checking the raw held handle. These settings are retained even on early completion; no search or acquisition executes synchronously.",
+          "A nonzero raw held handle bypasses startup and appends actorGetHeldItemKind, including0 for a stale or destruction-pending lookup, then yields. A zero raw held handle starts the program and waits. The original positive-capacity object pool, chains and live entries are valid; any resolved held object has valid ItemStatePrefix because the lookup does not validate its kind.",
+          "Later completion requires commandNULL AND nonzero lastRequestId AND(current active requestID0 OR unsigned lastRequestId<current active requestID). It appends the sign-extended s16 item kind, or0 when lookup is not live. Other polls wait without operand writes. Startup resets lastRequestId0, so a program that records no action request can keep waiting after commands stop."
+        ],
+        "evidence": "OriginalGhidra801168A8/80116900/80116984/801188D4 and existingselector2 source review; static evidence only.",
+        "phase_gate": "action_initializing_then_sequence_and_last_action_end",
+        "phases": [
+          {
+            "phase": "initialize_existing_handle",
+            "consumed_arguments": 3,
+            "stack_delta": -2,
+            "scheduling": "yield",
+            "result": "held_item_kind"
+          },
+          {
+            "phase": "initialize_start",
+            "consumed_arguments": 3,
+            "stack_delta": -3,
+            "scheduling": "wait_for_action"
+          },
+          {
+            "phase": "wait",
+            "consumed_arguments": 0,
+            "stack_delta": 0,
+            "scheduling": "wait_for_action"
+          },
+          {
+            "phase": "complete",
+            "consumed_arguments": 0,
+            "stack_delta": 1,
+            "scheduling": "yield",
+            "result": "held_item_kind"
+          }
+        ],
+        "result_tag": "integer"
+      }
+    },
+    {
+      "function": "actorScriptStartEatingHeldItem",
+      "file": "src/ovl/actor_script_action_commands.c",
+      "sha256": "37140cb04864edd195e351a537a2febf75f86ce174eda94d49cc91157d92998e",
+      "effect": "select_action_handler",
+      "arguments": 0,
+      "stack_delta": 0,
+      "result_tag": "none",
+      "scheduling": "wait_for_action",
+      "coverage": "immediate_request_only",
+      "action_handler": 8,
+      "dependencies": [
+        "function:src/ovl/actor_script_actions.c:actorBeginScriptActionHandler",
+        "file:include/actor_script_action.h"
+      ],
+      "preconditions": [
+        "Actor and its retained VM are valid, separate from value storage. The immediate request only selects actionHandler and sets actionInitializing to one.",
+        "The request returns scheduling result two without reading or writing stack operands. Deferred selector8 effects are covered separately by the source-bound conditional phase review."
+      ],
+      "deferred_review": {
+        "action_handler": 8,
+        "effect": "eat_with_early_rejection_or_result_before_followup",
+        "arguments": 1,
+        "result_tag": "integer",
+        "followup_action_handler": 1,
+        "dependencies": [
+          "file:src/ovl/actor_script_actions.c",
+          "file:src/ovl/item_registry.c",
+          "file:src/ovl/actor_script_queries.c",
+          "file:src/ovl/actor_target_interaction.c",
+          "file:src/ovl/item_special_behaviors.c",
+          "file:src/game/object_hierarchy.c",
+          "file:src/game/heap.c",
+          "file:src/game/keyed_pool.c",
+          "file:src/game/node_pool.c",
+          "file:src/game/search_tree.c",
+          "file:src/game/animation_tracks.c",
+          "file:src/game/save_progress.c",
+          "file:src/game/action_script.c",
+          "file:src/game/collision_grid.c",
+          "file:src/game/actor_model_parts.c",
+          "file:src/game/hud.c",
+          "file:src/ovl/area_terrain_maze.c",
+          "file:include/item_kind.h",
+          "file:include/item_state.h",
+          "file:include/item_types.h",
+          "file:include/object_types.h",
+          "file:include/object_template.h",
+          "file:include/object_kind_callbacks.h",
+          "file:include/keyed_pool_types.h",
+          "file:include/maze_types.h",
+          "file:include/actor_script_action.h",
+          "file:include/actor_script.h",
+          "file:include/action_script_types.h",
+          "file:include/animation_tracks.h",
+          "file:include/action_script_playback.h",
+          "file:include/action_script_ids.h",
+          "function:src/ovl/script_vm.c:scriptVmPopInteger",
+          "function:src/ovl/script_vm.c:scriptVmPopFloat",
+          "function:src/ovl/script_vm.c:scriptVmPopValue",
+          "function:src/ovl/script_vm.c:scriptValueGetInteger",
+          "function:src/ovl/script_vm.c:scriptValueGetFloat",
+          "function:src/game/save_progress.c:progressResolveFieldId",
+          "function:src/game/save_progress.c:progressGetValue",
+          "function:src/game/save_progress.c:progressSetValue",
+          "function:src/game/save_progress.c:progressReadFieldValue",
+          "function:src/game/save_progress.c:progressStoreFieldValue",
+          "file:include/progress_fields.h",
+          "file:include/progress_value.h",
+          "file:include/progress_field_types.h",
+          "function:src/game/save_progress.c:progressAddValue",
+          "file:include/game_heap.h",
+          "file:include/heap_types.h",
+          "file:include/node_pool.h",
+          "file:include/search_tree_types.h",
+          "file:include/scene_types.h",
+          "file:include/direction_animation_types.h",
+          "file:docs/LOCAL_SDK_FILES.json",
+          "file:config/pikachu.yaml",
+          "file:config/symbol_addrs.txt",
+          "file:tools/materialize_ultralib.py",
+          "function:src/ovl/script_vm.c:actorUpdateScriptVm"
+        ],
+        "phases": [
+          {
+            "phase": "initialize_reject",
+            "condition": "Held item missing or flags bit0x800000 set",
+            "stack_delta": 0,
+            "consumed_arguments": 1,
+            "result": -1,
+            "scheduling": "yield"
+          },
+          {
+            "phase": "initialize_accept",
+            "condition": "Live eligible held item",
+            "stack_delta": -1,
+            "consumed_arguments": 1,
+            "scheduling": "wait_for_action",
+            "writes": "Item shrinking bit0x20000000; actor timed-program selection"
+          },
+          {
+            "phase": "wait",
+            "condition": "Timed sequence remains active",
+            "stack_delta": 0,
+            "scheduling": "wait_for_action",
+            "consumed_arguments": 0
+          },
+          {
+            "phase": "consume_and_finish",
+            "condition": "Sequence stopped and no live held handle after consumption attempt",
+            "stack_delta": 1,
+            "result": "pre_consumption_item_history",
+            "scheduling": "yield",
+            "consumed_arguments": 0,
+            "result_description": "-1 if item missing before attempt, otherwise one for pickup-history bit0x02000000 or zero"
+          },
+          {
+            "phase": "consume_and_followup",
+            "condition": "Sequence stopped and actor held handle remains live after consumption attempt",
+            "stack_delta": 1,
+            "result": "pre_consumption_item_history",
+            "scheduling": "wait_for_action",
+            "writes": "Start timed program0x4F; switch handler to1",
+            "consumed_arguments": 0,
+            "result_description": "Same pre-attempt result",
+            "next_action_handler": 1
+          },
+          {
+            "phase": "followup_wait_or_finish",
+            "condition": "Handler1 polls sequence stop",
+            "stack_delta": 0,
+            "scheduling": "wait_for_action_or_yield",
+            "writes": "No appended result",
+            "consumed_arguments": 0
+          }
+        ],
+        "preconditions": [
+          "At each deferred invocation, the same actor, actor state, retained VM and value allocation are valid and intact. The initial numeric timed-program operand lies above all protected locals/frame metadata; later result append has one free slot above protected storage. All involved live objects and resources, heap/registry metadata and C-stack storage are disjoint from VM value storage and context.",
+          "Every live held handle resolves to a valid initialized retail item kind0..165 with valid owner state. Mutable item flags are permitted; no restriction to initial catalog eligibility flags or banana replacement is imposed. The full frozen catalog gives39 nonzero replacement target kinds; their authenticated template traversal has39 distinct templates with runtime kinds0/0x98, both null initialization callbacks. The catalog, model links and kind initializer table retain these retail bindings.",
+          "All object, item and collision pools/search trees are initialized, valid and acyclic, with original object/item comparators and sufficient free entries. Game heap is valid and has sufficient nonoverlapping storage for the complete replacement hierarchy, matrix buffers, item state and lighting allocation; constructors do not handle allocation failure safely. Tree splaying, keyed-pool relocation/removal and active-list insertion may mutate registry storage disjoint from VM payloads.",
+          "Actor/item owner handles and hierarchy roots resolve to valid corresponding state records. Release callbacks are exactly the retail light-bulb and cap callbacks, with valid terminating animation0xF3 and hierarchy scaling. actorTryHoldItem only changes ownership/mode and handles; it does not invoke held-update callbacks synchronously.",
+          "Replacement item coordinates/rotations/scales and optional negative-Y terrain queries satisfy finite arithmetic, array bounds, nonzero grid dimensions, positive search spacing and terminating finite area hierarchy requirements. Terrain queries read terrain and write only their C-stack cache; no scene callback executes. Material animation indices/programs and direction/lighting resources are valid and initialization terminates.",
+          "Old item destruction unregisters collision, removes the item search node and marks its hierarchy for deferred destruction; it does not free item state or invoke the item destructor immediately. Destruction sweeps and arbitrary updates do not interleave a handler invocation. Their later lifetime effects are not established by this frame footprint.",
+          "Timed-program selections, including followup0x4F, resolve valid retail table entries. actionScriptStart selects/reset fields but does not execute sequencer commands here. actor action-resource adjustment changes the valid root actor resource and HUD timer only. The consumer result describes the item before transformation and does not guarantee actual consumption.",
+          "Original SDK zero/copy primitives and ROM resources are authenticated by the strict matching build; source review alone does not authenticate their bytes. Intervening world updates and destruction sweeps require separate actor/VM lifetime evidence."
+        ],
+        "phase_gate": "action_initializing_then_sequence_stop",
+        "replacement_domain": {
+          "item_catalog_location": {
+            "address": 2148686400,
+            "rom_offset": 846784,
+            "section": ".ovl"
+          },
+          "item_catalog_sha256": "9d0236268ce71a9aa43dd18458974d00f57995483ac75075270fed209557da14",
+          "replacement_targets": [
+            3,
+            4,
+            5,
+            8,
+            12,
+            19,
+            21,
+            22,
+            24,
+            27,
+            28,
+            29,
+            34,
+            36,
+            38,
+            42,
+            48,
+            49,
+            60,
+            61,
+            62,
+            63,
+            64,
+            65,
+            77,
+            79,
+            90,
+            91,
+            95,
+            96,
+            97,
+            149,
+            150,
+            157,
+            158,
+            159,
+            160,
+            161,
+            162
+          ],
+          "templates": [
+            {
+              "address": 2148679568,
+              "kind": 0,
+              "sibling": 0,
+              "child": 0,
+              "sha256": "a101ca139d06a290220abce1fe8b5774a9df4def272cd6553e878cb5d8d54395"
+            },
+            {
+              "address": 2148680520,
+              "kind": 0,
+              "sibling": 0,
+              "child": 0,
+              "sha256": "180aaf034a4c2e4bda8601f09d8f408cca8daa27b2fcbc8b149bd763750c2763"
+            },
+            {
+              "address": 2148682312,
+              "kind": 0,
+              "sibling": 0,
+              "child": 0,
+              "sha256": "532b89dd1c17bfece4b9aa7e80f1d6808af34c7baaaa16454bffd34f4c3c82ee"
+            },
+            {
+              "address": 2148683152,
+              "kind": 0,
+              "sibling": 0,
+              "child": 0,
+              "sha256": "6d8fbeac3f7ed8aaeee6305abb3bbe663a1a4c07b4381809db0599e22535f43f"
+            },
+            {
+              "address": 2148682032,
+              "kind": 0,
+              "sibling": 0,
+              "child": 0,
+              "sha256": "ce4eeae073df894fff495dc2715b538cc4fed0376ad7e4e1c8a26981dde1be4e"
+            },
+            {
+              "address": 2148681920,
+              "kind": 0,
+              "sibling": 0,
+              "child": 0,
+              "sha256": "7467d78fae83e4b510b9e9ea1e9199c2ecd3e29d06082257114016b60ac95dca"
+            },
+            {
+              "address": 2148682088,
+              "kind": 0,
+              "sibling": 0,
+              "child": 0,
+              "sha256": "dbcc0e30dbcd601e5a4c71ee491d0bd315f4245c331f7d1fd0e9ec163dca490a"
+            },
+            {
+              "address": 2148681976,
+              "kind": 0,
+              "sibling": 0,
+              "child": 0,
+              "sha256": "099cd36bfe514b8308bb84a5fcc68e108c26c700906938f9f1addfdd4460d2cf"
+            },
+            {
+              "address": 2148681528,
+              "kind": 0,
+              "sibling": 0,
+              "child": 0,
+              "sha256": "49e4c689417b86def596be6a7e560baac2dabdcbe5722dfd8772cd8aae32617e"
+            },
+            {
+              "address": 2148682368,
+              "kind": 0,
+              "sibling": 0,
+              "child": 0,
+              "sha256": "910e0829610f7529dc9830e1ac84ba256c36ed439d2d138a94db2095029bb659"
+            },
+            {
+              "address": 2148682760,
+              "kind": 0,
+              "sibling": 0,
+              "child": 0,
+              "sha256": "0d05f6bef44749f187293bf6ef93446ecd338598327d9f5d749679119cad3ff2"
+            },
+            {
+              "address": 2148680632,
+              "kind": 0,
+              "sibling": 0,
+              "child": 0,
+              "sha256": "0ad38e22f00901574f20d8299718a513c6b278fbeda82bd6fd2dd0f5217c3e59"
+            },
+            {
+              "address": 2148680800,
+              "kind": 0,
+              "sibling": 0,
+              "child": 2148680856,
+              "sha256": "cae5584f4832d835900e7f389466659895d8e589b1a56b5a75d06b8d93b9ff80"
+            },
+            {
+              "address": 2148680856,
+              "kind": 0,
+              "sibling": 0,
+              "child": 0,
+              "sha256": "e19f7ecae90134c5d1e3480cf79495d2b4a1a2973db3d489b2cc8f0659b2a75e"
+            },
+            {
+              "address": 2148680576,
+              "kind": 0,
+              "sibling": 0,
+              "child": 0,
+              "sha256": "e34fd4b889f651d0aa67b23fde4cf4ae384e4ff62dbbfe42c678abca4ce8d125"
+            },
+            {
+              "address": 2148680744,
+              "kind": 0,
+              "sibling": 0,
+              "child": 0,
+              "sha256": "14e21e6b2f58a915d0b97888fcd92e5d3ad480ce9716f207db327f1008a6a7d2"
+            },
+            {
+              "address": 2148685728,
+              "kind": 0,
+              "sibling": 0,
+              "child": 0,
+              "sha256": "f33eca7044ddd89e38787c742873c8d72b8f5efd3fff607521d590d49a440b64"
+            },
+            {
+              "address": 2148682816,
+              "kind": 0,
+              "sibling": 0,
+              "child": 2148682872,
+              "sha256": "0191ce5e633591db6ff2cc91f3e6040834f1ffedd66def6fe28407d711ae9bb2"
+            },
+            {
+              "address": 2148682872,
+              "kind": 152,
+              "sibling": 0,
+              "child": 2148682928,
+              "sha256": "f97afe78ed4c354343db3925934f5d24ff87f1cbdf9fd9fd67dfc429d7476e26"
+            },
+            {
+              "address": 2148682928,
+              "kind": 152,
+              "sibling": 0,
+              "child": 0,
+              "sha256": "9ec8505f068d0b2218375dfc69bda1c8e09b17151588202ddaad7a321ca5f396"
+            },
+            {
+              "address": 2148681360,
+              "kind": 0,
+              "sibling": 0,
+              "child": 0,
+              "sha256": "f0c17e10b1caaa071de30539aa6ce24666df8504ec7b88d882bc4dcbc5c1da53"
+            },
+            {
+              "address": 2148684104,
+              "kind": 0,
+              "sibling": 0,
+              "child": 2148684160,
+              "sha256": "ad8300fb42a7260844b1bc608ffa3846c0bdb8cbeb1fff67d4e871fceda7bf83"
+            },
+            {
+              "address": 2148684160,
+              "kind": 0,
+              "sibling": 0,
+              "child": 2148684216,
+              "sha256": "4e194b11d7aee7ca14e78b2a9457dd5eb334bc9f1bd57c3e00b6c85d03cf2ca0"
+            },
+            {
+              "address": 2148684216,
+              "kind": 0,
+              "sibling": 0,
+              "child": 2148684272,
+              "sha256": "8d8fd53b6cca852b28902a7f641b46557814c6345fa228d7f2729b5596a511e4"
+            },
+            {
+              "address": 2148684272,
+              "kind": 0,
+              "sibling": 0,
+              "child": 2148684328,
+              "sha256": "fffba2fb0a34c3115db4e268002445d47075b0b72bea470b2a3f576eed467c3b"
+            },
+            {
+              "address": 2148684328,
+              "kind": 0,
+              "sibling": 0,
+              "child": 2148684384,
+              "sha256": "924f73518907fc8aca34a99433a1160baaf888eac724fd49f3c32da8578d4ab3"
+            },
+            {
+              "address": 2148684384,
+              "kind": 0,
+              "sibling": 0,
+              "child": 2148684440,
+              "sha256": "0a02c0cc4e7d5f67b360f65f4724575dc47f844b3eb3b91b5767218cef1cfd8b"
+            },
+            {
+              "address": 2148684440,
+              "kind": 0,
+              "sibling": 0,
+              "child": 2148684496,
+              "sha256": "1a009986879f62c0b7b31b3ab2a31283eb6d65532d2a3530ab7989e577afabd1"
+            },
+            {
+              "address": 2148684496,
+              "kind": 0,
+              "sibling": 2148684720,
+              "child": 2148684552,
+              "sha256": "55fbf51cdaa1ff55dc8ef98aff1ad7ebdcad5759fb631ae5137bc510d05c6113"
+            },
+            {
+              "address": 2148684720,
+              "kind": 0,
+              "sibling": 0,
+              "child": 2148684776,
+              "sha256": "423cf1593cfed72da32ef1ba0a8c4b86438e78194e1c4b1dcd3805c29e233417"
+            },
+            {
+              "address": 2148684776,
+              "kind": 0,
+              "sibling": 0,
+              "child": 2148684832,
+              "sha256": "4ab8303eaddfef78b25abca99108482c492de26ffabcf7f21ffaa03655371443"
+            },
+            {
+              "address": 2148684832,
+              "kind": 0,
+              "sibling": 0,
+              "child": 0,
+              "sha256": "b4e4626b6cf2da64da9701cc47645fabda4f96a20e336dd3b1c58b23d44d757d"
+            },
+            {
+              "address": 2148684552,
+              "kind": 0,
+              "sibling": 2148684608,
+              "child": 0,
+              "sha256": "f386346d6772bd45186a5ce53e828775bceaec5d584407f0a586f980dc720cb1"
+            },
+            {
+              "address": 2148684608,
+              "kind": 0,
+              "sibling": 0,
+              "child": 2148684664,
+              "sha256": "91b7ff6d8de52ec0642cba708b642f61be5c88c7326cda6e3c2f5b9f1980abc7"
+            },
+            {
+              "address": 2148684664,
+              "kind": 0,
+              "sibling": 0,
+              "child": 0,
+              "sha256": "0534d768a183ff1a7d0021fbe233986a59dfec03aa57bcd088610c18b71689f4"
+            },
+            {
+              "address": 2148686344,
+              "kind": 0,
+              "sibling": 0,
+              "child": 0,
+              "sha256": "e124f20e3d35e829d3638cce4bb48597b36edce9ae39898f72843a13a4fa43aa"
+            },
+            {
+              "address": 2148679736,
+              "kind": 0,
+              "sibling": 0,
+              "child": 2148679792,
+              "sha256": "64b161dc896e2e5eda54cd6059fd5058dcd1cc724f900eb173aba5b273525bc2"
+            },
+            {
+              "address": 2148679792,
+              "kind": 152,
+              "sibling": 0,
+              "child": 0,
+              "sha256": "e64bf06f7a873b3753869669f7d093e496f8af3042aca9230129e647214ed7c5"
+            },
+            {
+              "address": 2148686120,
+              "kind": 0,
+              "sibling": 0,
+              "child": 0,
+              "sha256": "390ab62402294195b5f0060787a1abe0c29d9c3c551fb55601d5d3db79b5cae2"
+            }
+          ],
+          "initializers": {
+            "0": 0,
+            "152": 0
+          }
+        },
+        "evidence": "Original Ghidra80116A4C confirms initial rejection, accepted program start, pre-consumption result and handler-one handoff. All166 catalog replacement entries and39 distinct nonzero target templates authenticated against ROM; their initializer kinds0/0x98 are NULL. Common item creation, direct terrain queries, registry/collision removal and retail release hooks close synchronous writes. Original actorTryHoldItem invokes no held-update callback in this path. Explicit phases retain result-before-followup ordering; no runtime or whole-world lifetime claim."
+      }
+    },
+    {
+      "function": "actorScriptStartCostedAction",
+      "file": "src/ovl/actor_script_action_commands.c",
+      "sha256": "c14067257a79ceda6f79bbdd78d4c5529b7d860b310d29f368d5c92f79fcae51",
+      "effect": "select_action_handler",
+      "arguments": 0,
+      "stack_delta": 0,
+      "result_tag": "none",
+      "scheduling": "wait_for_action",
+      "coverage": "immediate_request_only",
+      "action_handler": 9,
+      "dependencies": [
+        "function:src/ovl/actor_script_actions.c:actorBeginScriptActionHandler",
+        "file:include/actor_script_action.h"
+      ],
+      "preconditions": [
+        "Actor and its retained VM are valid, separate from value storage. The immediate request only selects actionHandler and sets actionInitializing to one.",
+        "The request returns scheduling result two without reading or writing stack operands. Deferred handler operands, results, context replacement and write effects remain unreviewed; this contract must not clear that deferred frontier."
+      ],
+      "deferred_review": {
+        "action_handler": 9,
+        "effect": "costed_program_then_conditional_result_append",
+        "arguments": 2,
+        "initialization_stack_delta": -2,
+        "initialization_scheduling": "wait_for_action",
+        "waiting_stack_delta": 0,
+        "completion_stack_delta": 1,
+        "waiting_scheduling": "wait_for_action",
+        "completion_scheduling": "yield",
+        "dependencies": [
+          "function:src/ovl/actor_script_actions.c:actorScriptDispatchActionHandler",
+          "function:src/ovl/actor_script_actions.c:actorScriptPerformCostedAction",
+          "function:src/game/action_script.c:actionScriptStart",
+          "function:src/game/action_script.c:actionScriptIsStopped",
+          "function:src/game/actor_model_parts.c:actorAdjustActionMeter",
+          "function:src/game/hud.c:hudExtendHorizontalMotionDisplay",
+          "function:src/ovl/script_vm.c:scriptVmPopInteger",
+          "function:src/ovl/script_vm.c:scriptVmPopValue",
+          "function:src/ovl/script_vm.c:scriptValueGetInteger",
+          "function:src/ovl/script_vm.c:actorUpdateScriptVm",
+          "file:src/ovl/actor_script_actions.c",
+          "file:src/game/actor_model_parts.c",
+          "file:src/game/hud.c",
+          "file:include/action_script_ids.h"
+        ],
+        "preconditions": [
+          "Two numeric startup operands, cost selector then repetition count, lie above protected locals and frame metadata. Integer/code-reference values or finite s32-representable floats are supported; floats truncate toward zero. Selector is zero through four in the authenticated retained table prefix. Repetition count and resource calculations must remain valid finite gameplay values.",
+          "Actor state, owning-root state, VM, value storage and HUD scalar are valid and do not alias protected VM storage. The owning root may be this actor or a distinct valid actor. The root resource is adjusted while admission checks read the script actor resource; this review does not silently equate the two.",
+          "Initialization consumes the count and selector, selects the accepted or insufficient timed program, and always returns waiting. The resource check can be disabled without disabling the charge. The meter helper clamps to zero through 100 and may extend the HUD timer; target-burst allowance and retained outcome are actor-state writes.",
+          "Scheduler initialization clearing prevents repeated operand consumption. Running polls leave values unchanged; stopped polls append the current retained integer outcome and yield, with a free result slot. Initial outcomes zero and three may be changed to one by separate response handlers before completion.",
+          "The five records occupy an authenticated 80-byte prefix ending at the next named data view. Program advancement, other response writes, eventual completion, retail reachability, lifetime and concurrent state/context replacement are outside this footprint review."
+        ]
+      }
+    },
+    {
+      "function": "actorScriptStartTextWindow",
+      "file": "src/ovl/actor_script_action_commands.c",
+      "sha256": "400e0de358cd27b11d5c0a7fd7b3c86137392ce8419e900541e3820f2e77a67b",
+      "effect": "select_action_handler",
+      "arguments": 0,
+      "stack_delta": 0,
+      "result_tag": "none",
+      "scheduling": "wait_for_action",
+      "coverage": "immediate_request_only",
+      "action_handler": 13,
+      "dependencies": [
+        "function:src/ovl/actor_script_actions.c:actorBeginScriptActionHandler",
+        "file:include/actor_script_action.h"
+      ],
+      "preconditions": [
+        "Actor and its retained VM are valid, separate from value storage. The immediate request only selects actionHandler and sets actionInitializing to one.",
+        "The request returns scheduling result two without reading or writing stack operands. Deferred selector13 is covered separately by its source-bound mode gate review."
+      ],
+      "deferred_review": {
+        "action_handler": 13,
+        "effect": "poll_game_mode_then_replace_text_window_arguments",
+        "arguments": 3,
+        "phase_gate": "runtime_game_mode_only",
+        "waiting_stack_delta": 0,
+        "completion_stack_delta": -2,
+        "waiting_scheduling": "wait_for_action",
+        "completion_scheduling": "yield",
+        "waiting_condition": "gRuntimeGameMode==GAME_MODE_TEXT_WINDOW(3)",
+        "consumption": "indicator,style,viewMode pop only on completion path; integer0 pushed",
+        "uses_initialization_flag": false,
+        "waiting_game_mode": 3,
+        "completion_result": 0,
+        "dependencies": [
+          "function:src/game/rom_cache.c:romCacheRead",
+          "function:src/game/rom_cache.c:romCacheAllocateEntry",
+          "function:src/game/rom_cache.c:romCacheRemoveEntry",
+          "function:src/game/rom_cache.c:romCacheReclaimAndAllocateEntry",
+          "function:src/game/rom_cache.c:romCacheSynchronizeAndClearState",
+          "function:src/game/rom_cache.c:romCacheWaitForReads",
+          "function:src/game/rom_dma.c:romDmaReadQueued",
+          "function:src/game/rom_dma.c:romDmaSubmitRead",
+          "function:src/game/rom_dma.c:romDmaPollQueue",
+          "function:src/game/rom_dma.c:romDmaAcknowledgeCompletion",
+          "function:src/game/rom_dma.c:romDmaWaitForQueue",
+          "function:src/game/keyed_pool.c:keyedPoolGetValueAndMoveToEnd",
+          "function:src/game/keyed_pool.c:keyedPoolFindEntry",
+          "function:src/game/keyed_pool.c:keyedPoolUnlinkOrderedEntry",
+          "function:src/game/keyed_pool.c:keyedPoolAppendOrderedEntry",
+          "function:src/game/keyed_pool.c:keyedPoolHasAvailableEntry",
+          "function:src/game/keyed_pool.c:keyedPoolIterateFirst",
+          "function:src/game/keyed_pool.c:keyedPoolIterateNext",
+          "function:src/game/keyed_pool.c:keyedPoolRemoveFirstForKey",
+          "function:src/game/keyed_pool.c:keyedPoolRemoveEntry",
+          "function:src/game/keyed_pool.c:keyedPoolReleaseEntry",
+          "function:src/game/keyed_pool.c:keyedPoolRelocateEntry",
+          "function:src/game/keyed_pool.c:keyedPoolInsert",
+          "function:src/game/keyed_pool.c:keyedPoolAcquireEntry",
+          "function:src/game/heap.c:heapAllocLocal",
+          "function:src/game/heap.c:heapSplitBlock",
+          "function:src/game/heap.c:heapValidateBlock",
+          "function:src/game/heap.c:heapDebugReportBlock",
+          "function:src/game/heap.c:heapDebugNoOp",
+          "function:src/game/heap.c:heapFreeLocal",
+          "function:src/game/heap.c:heapCombinePreviousFree",
+          "function:src/game/heap.c:heapCombineNextFree",
+          "function:src/game/graphics_text.c:fontImageReadGlyph",
+          "function:src/game/graphics_text.c:fontCacheReadGlyph",
+          "function:src/game/graphics_text.c:fontCacheWaitForReads",
+          "file:src/game/heap.c",
+          "file:src/game/graphics_text.c",
+          "file:src/game/rom_dma.c",
+          "file:include/game_heap.h",
+          "file:include/heap_types.h",
+          "file:include/rom_cache.h",
+          "file:include/rom_dma.h",
+          "file:include/keyed_pool.h",
+          "file:include/keyed_pool_types.h",
+          "file:include/font_image_types.h",
+          "file:include/heap_alloc.h",
+          "file:include/heap_free.h",
+          "file:include/PR/os_message.h",
+          "file:include/PR/os_pi.h",
+          "file:include/PR/os_thread.h",
+          "file:include/PR/os_exception.h",
+          "file:include/PR/os_cache.h",
+          "file:include/PR/os_reg.h",
+          "file:include/PR/os_internal.h",
+          "file:include/PR/ultratypes.h",
+          "file:docs/LOCAL_SDK_FILES.json",
+          "file:config/pikachu.yaml",
+          "file:config/symbol_addrs.txt",
+          "file:tools/materialize_ultralib.py",
+          "file:src/game/text_window.c",
+          "file:src/game/audio_worker_string_utils.c",
+          "file:src/game/runtime.c",
+          "file:src/game/save_progress.c",
+          "file:include/text_window.h",
+          "file:include/text_image.h",
+          "file:include/text_image_configurations.h",
+          "file:include/player_types.h",
+          "file:include/player_state.h",
+          "file:include/runtime_mode.h",
+          "file:include/progress_field_ids.h",
+          "file:include/progress_fields.h",
+          "file:include/progress_field_types.h",
+          "file:include/progress_value.h",
+          "file:include/string_bytes.h",
+          "file:include/script_vm.h",
+          "file:include/script_value.h",
+          "file:include/actor_script.h",
+          "file:include/object_types.h",
+          "file:include/actor_script_action.h",
+          "file:include/PR/mbi.h",
+          "function:src/ovl/script_vm.c:scriptVmPopInteger",
+          "function:src/ovl/script_vm.c:scriptVmPopValue",
+          "function:src/ovl/script_vm.c:scriptValueGetInteger",
+          "function:src/ovl/script_vm.c:scriptVmPushInteger",
+          "function:src/ovl/script_vm.c:scriptVmPushValue",
+          "function:src/ovl/script_vm.c:scriptValueSetInteger",
+          "function:src/ovl/player_companion.c:playerSetControllerPort",
+          "file:build/asm/game/font_glyph_metrics.s",
+          "file:build/asm/os/bzero.s",
+          "file:build/asm/os/recvmesg.s",
+          "file:build/asm/os/pidma.s",
+          "file:build/asm/libc/bcopy.s",
+          "file:build/asm/os/virtualtophysical.s",
+          "file:build/asm/os/sendmesg.s",
+          "file:build/asm/os/pigetcmdq.s",
+          "file:build/asm/os/invaldcache.s",
+          "file:build/asm/os/devmgr.s",
+          "file:build/asm/os/startthread.s",
+          "file:build/asm/os/createmesgqueue.s",
+          "file:build/asm/os/exceptasm.s",
+          "file:build/asm/os/pirawdma.s",
+          "file:include/PR/R4300.h",
+          "file:Makefile",
+          "function:src/ovl/actor_script_actions.c:actorScriptOpenTextWindow",
+          "function:src/ovl/actor_script_actions.c:actorScriptDispatchActionHandler",
+          "function:src/ovl/actor_script_actions.c:actorBeginScriptActionHandler"
+        ],
+        "preconditions": [
+          "Initialized font RomCache800F2A60, owned16-aligned heap/storage, valid positive-capacity keyed pool and unique key-to-entry mapping. Cache metadata/index entries/heap/free lists/request records/completion backing are live and disjoint from VM/actor/value buffers, image output, source text/fonts and outstanding display-list references. No concurrent cache traversal/read/release/destruction or heap mutation.",
+          "Valid circular heap block chain entirely within owned region, aligned block headers with magicA5, truthful size/tag/free state and reciprocal links. Every allocation request and rounding size+15, allocationheader+16 and splitthreshold+0x30 fit u32 without overflow; selected blocks and new headers wholly inside region. Enough successful allocations for requested glyph and caller image/scratch. heapAllocLocal can returnNULL; cacheRead nevertheless dereferences NULL after failed reclaim, so exhaustion is excluded explicitly.",
+          "Cache miss reclamation must obtain a pool entry and sufficiently large heap allocation before reaching a pinned(flags&3) or absent traversal entry. Only removable ordered prefix may be reclaimed; arbitrary unpinned entries later in list do not ensure success. Any hit with smaller stored size is unconditionally freed regardless of flags: it must have no in-flight DMA, CPU borrower or graphics borrower. Existing sufficient hit owns at least requested data extent.",
+          "Keyed-pool capacity>0, active/free membership consistent, hash chains and ordered links valid/acyclic, any relocation target reserved from free storage, affected predecessor/neighbor pointers valid within entries allocation. Removal relocates collision entries, so clients retain values(CacheEnt), not stable KeyedPoolEntry addresses; no external live iterator promise survives cacheRead.",
+          "DmaQueue capacity>0; pending0..capacity; cursor0..capacity-1; capacity OSIoMesg records and capacity message backing live; all pending records distinct and destinations allocated until their matching completions. Only this serialized producer submits to its private queue and only its poll/wait consumes. Every request uses normal-priority FIFO PI submission and fixed original serial worker; requests from other queues must not invalidate same-queue completion ordering. A completed-oldest slot can be reused only after its completion is consumed; counter-only polling does not identify arbitrary out-of-order completions.",
+          "For each glyph miss, ROM source/glyph extent and each<=0x4000 chunk are valid original PI-read requests, with hardware-required alignment/size and no address wrap. Destination is cached KSEG0,16-aligned from heap, and each invalidated cache line lies in its owned allocation including trailing padding. FontImage bytes=width*height/2 fits positive signed32 and CacheEnt size+16 fits; system glyph size128. No destination overlaps allocator/index/request/queue metadata.",
+          "Original PI manager active, fixed rawDMA8005A030, valid live kernel/event/access queues/thread contexts and supplied original cart base. Each nonblocking normal osSendMesg command submission has capacity and succeeds; each DMA starts and finishes; matching event and private completion message are delivered without drop/spurious messages; progress permits worker execution. Game ignores submit status and increments pending even if failed, so errors/starvation are outside returning contract and can hang waits. No cache/queue/request storage is freed until outstanding DMA completes.",
+          "Original authenticated ROM SDK plus trackedSDKmanifest/config/materializer and exact local SDK headers are required; standalone source-frame fingerprints do not authenticate assembly. Synchronous footprint includes queue/backing/threadcontext/cache-state writes; worker adds PI MMIO/kernel/event/access writes and exact bounded destination DMA. Other-thread VM mutation/context replacement remains excluded. Alignedpartial final cacheline can writeback owned padding; requests>=8192 can index-writeback/invalidate whole D-cache, requiring coherent initialized original kernel/RAM and no conflicting DMA/CPU owners.",
+          "Borrowed glyph pointer is used only after status4 calls fontCacheWaitForReads; status3 requires no pending transfer for that entry. Use flag(mask1) remains until explicit releaseUses outside creation. Caller may not release/evict glyph while row copy/graphics references are live. WaitForReads completes all pending transfers, but only clears pending flag(mask2) on contiguous ordered tail suffix; older pendingflags may remain conservative, and no blanket all-flags-cleared invariant is assumed.",
+          "Owned text-window pending buffer2500bytes,11-slot page-history ring, two buffers of five page-image pointers, prompt pointer and state/style/view/indicator fields are initialized and disjoint from actor/VM/protected values. Stored descriptors/pixels are valid unique owned game-heap allocations; no pending graphics command/CPU borrower references an image being destroyed. Font descriptors/metrics/ROM data and page text remain borrowed; image creation does not extend those input lifetimes.",
+          "All decoded characters and controls are complete/supported and advance their cursor. Each49-byte prepared line boundary ends on a complete encoded character/control and each returned continuation is within retained input. Page parser consumes<=49bytes per line and atmost5lines into50-byte stack scratch; after five full lines it returns input+1, so an extra readable byte/valid continuation is required even when no page delimiter was consumed. No semantic claim that it preserves every input byte.",
+          "Custom font metrics are valid: W=measuredWidth+measuredWidth%4,H=fontheight,R=fontwidth/2, with positive W/H, even W and all intermediate products/offsets signed32-representable. Each glyph placement independently has crop=left/2>=0,ink=imageWidth/2>=0,crop+ink<=R and0<=x,x+ink<=W/2; glyph source has H*R readable bytes. Position controls set x=value/2(0..999); color controls yield0..15; later position resets do not justify earlier out-of-bounds placements. Per-row R-byte scratch allocations succeed and are freed after copy; final16-byte descriptor owns pixels.",
+          "For generic system-font dispatch only: NULL font emptytext returnsNULL; nonempty firstmin(strlen,128)bytes contain complete supported characters, no splitwide cutoff. Narrow metrics width0..8,copyBytes=(width+1)/2 and centering(7-width)/4 fit4-byte cell; baseline/height select valid active rows and readable glyph bytes. Wide glyph has128bytes. System-font table indices/ROM offsets are valid; sixteen-row allocation min(strlen,128)*64bytes and descriptor succeed. Window-specific valid style-table pointers select custom fonts, notNULL.",
+          "Enter-mode immediate call has room for one appended value. History write/oldest indices are0..10 BEFORE first indexed store; buffer toggle begins0or1; style selects actual initialized gTextImageConfigurations entry. Borrowed pending/history/continuation text remains live while retained for later page navigation. Selecting/displaying a page does not transfer or copy entire source-text ownership.",
+          "Enter-mode progress field4 is authenticated resident PROGRESS_ENCODING_S32 with signed32 limits; initialized field byteOffset names aligned inbounds writable save storage. ElapsedSeconds>=checkpointSeconds with difference<=INT_MAX and oldField4+amount signed32-representable. Original code uses low32 elapsed difference, then updates full64 checkpoint; noEEPROM request/save callback occurs. Requestmode3 also writes entryPending1,startMilliseconds low32,renderPrimed0 and primaryplayer controllerPort-1.",
+          "Deferred selector13 checks runtime mode3 before actor/VM access and returns WAIT_FOR_ACTION2 without consuming any operand. Otherwise bottom-to-top indicator,style,viewMode are numeric signed32-convertible operands above protectedlocals; pops viewMode thenstyle thenindicator, callsOpen, pushes integer0 and yields1 regardless Openreturn. It doesnot read actionInitializing. Style/view/indicator are stored raw after successful inactiveOpen; future draw safety requires valid style/indicator resources.",
+          "Open on state!=INACTIVE4 returns0 without image mutations; wrapper nevertheless consumes3 and pushes0. Inactive path zeroes2500pendingbytes, resets borrowed continuation and history indices, frees oldpromptimage/pixels then builds fixed defaultfont prompt, setsOPENING0/timestamp and storesindicator/view/style. No runtime mode change or line-page construction is part of this selector13 path.",
+          "Complete immediate returning footprint is reviewed under the resource/allocation/PI prerequisites, including cachemiss and eviction. No later rendering, text-window update/close, gameplay reachability or unconditional transport liveness is claimed. Actor/VM remain live through queue waits; arbitrary other-thread VM/context mutation is excluded. Static original-instruction evidence only; runtime untested."
+        ],
+        "evidence": "Independent source and original Ghidra reviews of window ownership, glyph/control bounds, runtime accounting and the complete font-cache/heap/queued-PI helper closure. Original8011C53C enters mode and appends0;80117014 mode3gate before actor access, then3pops/open/push0/yield1.8002C874/8002C1A0/8002C03C/8002BF48 close page ring/buffer/lineimage ownership;8002C348/8002C1E4/8002BFE8 close inactive opening/defaultprompt ownership.8003DDC0 generic textimage dispatch, custom glyphmetrics/control/row writes are source-bound; SDKfontGetGlyphMetrics8004AAC0 only writes caller outputs, ShiftJISoffset8004AAFC readonly.8003F848/8003FA3C/8003FAE8, keyed pool80041818..80042074, heap80038074..800385CC and queuedDMA80037CC8..80037EF4 close all cache paths. Original runtime8000B23C/8000B2C8 writes constantfield4 via80032C70; player port801119F4 only writes initialized primaryplayer port. Exact original SDK ranges authenticated against originalGhidra+suppliedROM, hashes below. No runtime evidence.",
+        "sdk_instruction_ranges": [
+          {
+            "function": "osSendMesg",
+            "address": "0x80053190",
+            "size": 332,
+            "rom_offset": "0x53d90",
+            "sha256": "0422bf5ad85265fb9bab17eef54b9725e0df648fbe9e9a1366f3cb150d7dd5ad"
+          },
+          {
+            "function": "osRecvMesg",
+            "address": "0x80051550",
+            "size": 312,
+            "rom_offset": "0x52150",
+            "sha256": "43051c9d88c1cbb9a1210fa1dc6ef0f3edb22f4bacb296158d8cbd65cfcc5abb"
+          },
+          {
+            "function": "osCreateMesgQueue",
+            "address": "0x800516e0",
+            "size": 44,
+            "rom_offset": "0x522e0",
+            "sha256": "722e99b14443e8fc39d3fda597c0309818e51d128cb0952b7bf3558650e7a791"
+          },
+          {
+            "function": "osStartThread",
+            "address": "0x80050bf0",
+            "size": 336,
+            "rom_offset": "0x517f0",
+            "sha256": "bf001131da5edb35e7f4bea2eff6d51619d31a95b2424198c242daee20955bcb"
+          },
+          {
+            "function": "__osEnqueueAndYield",
+            "address": "0x80057c44",
+            "size": 256,
+            "rom_offset": "0x58844",
+            "sha256": "d5ef2d3f73d0cdca7cd679cfb616e73bcdd5695b71c303561e12b9faa1e76caf"
+          },
+          {
+            "function": "__osEnqueueThread",
+            "address": "0x80057d44",
+            "size": 72,
+            "rom_offset": "0x58944",
+            "sha256": "8091a95dae39c6b1fc1a33a413913174da32d2a1c61971b45d5170e8b51c54f6"
+          },
+          {
+            "function": "__osPopThread",
+            "address": "0x80057d8c",
+            "size": 16,
+            "rom_offset": "0x5898c",
+            "sha256": "9cfacc440af965d2989166dd711ef58ae5a92e68c6ef3cf399a0403e1fd36afe"
+          },
+          {
+            "function": "__osDispatchThread",
+            "address": "0x80057da4",
+            "size": 380,
+            "rom_offset": "0x589a4",
+            "sha256": "da4b95aa2be6f0aabea67c4314bac423c573b965aed913be6e216b98c8ac28e4"
+          },
+          {
+            "function": "__osDisableInt",
+            "address": "0x80057ff0",
+            "size": 112,
+            "rom_offset": "0x58bf0",
+            "sha256": "182263f540080608a1c5a341601192b55c811ebb017644a55bc8061a0bb2a8d2"
+          },
+          {
+            "function": "__osRestoreInt",
+            "address": "0x80058060",
+            "size": 32,
+            "rom_offset": "0x58c60",
+            "sha256": "760fabe684a57096a1f98fb972d27fc9ae0f5b227768fa227ed73c15b4ad1e09"
+          },
+          {
+            "function": "bcopy",
+            "address": "0x80052610",
+            "size": 772,
+            "rom_offset": "0x53210",
+            "sha256": "f398a13824f7307d1d66f05ca80f49e0ed734886d23c0d2a3bcdd4f11601b6b0"
+          },
+          {
+            "function": "fontGetGlyphMetrics",
+            "address": "0x8004aac0",
+            "size": 60,
+            "rom_offset": "0x4b6c0",
+            "sha256": "ebfd64e5ae86ac4915e392f63324683e51dc590e2ebd810f27a39ddde1a9eca8"
+          },
+          {
+            "function": "fontGetShiftJisBitmapOffset",
+            "address": "0x8004aafc",
+            "size": 148,
+            "rom_offset": "0x4b6fc",
+            "sha256": "a49a671dbd06c7bf2aa120f457a2f41f535f129db1f069d36a574bc3f5fce5e6"
+          },
+          {
+            "function": "osPiStartDma",
+            "address": "0x800533f0",
+            "size": 188,
+            "rom_offset": "0x53ff0",
+            "sha256": "65eba413d3a4fa7f0ef59a67660410be5cb1135ffebceeb2eac64efbb2734b4d"
+          },
+          {
+            "function": "__osPiRawStartDma",
+            "address": "0x8005a030",
+            "size": 200,
+            "rom_offset": "0x5ac30",
+            "sha256": "4d1d9f11c11796e96435557c5a99780b5d61493f949f1d9fbb6040281f50c938"
+          },
+          {
+            "function": "osPiGetCmdQueue",
+            "address": "0x80059040",
+            "size": 40,
+            "rom_offset": "0x59c40",
+            "sha256": "51937481f12c61f96ccfecae74ea60196af51da8e5b7e33d8c6bb230ce1ee7a7"
+          },
+          {
+            "function": "_bzero",
+            "address": "0x80050e20",
+            "size": 156,
+            "rom_offset": "0x51a20",
+            "sha256": "ddb7b30f2e08070a5eaafe4e056d5fe4194f18200acb5d618385e973e698b391"
+          },
+          {
+            "function": "osVirtualToPhysical",
+            "address": "0x80050ec0",
+            "size": 124,
+            "rom_offset": "0x51ac0",
+            "sha256": "034c4a36d20f20a4719906c0d67570266f93ab3b28783869d366fa1f00b6c8ad"
+          },
+          {
+            "function": "osInvalDCache",
+            "address": "0x80053340",
+            "size": 172,
+            "rom_offset": "0x53f40",
+            "sha256": "f8a381ee23df95612ed0fb5ddcef245f947b01e12d78364fa5b45491f4eb7b55"
+          },
+          {
+            "function": "__osDevMgrMain",
+            "address": "0x8005a2e0",
+            "size": 1040,
+            "rom_offset": "0x5aee0",
+            "sha256": "470136977cb54b4ce706b199ed7ec9f7f91835e93a2e95ad8443c1f61002a104"
+          }
+        ],
+        "sdk_storage_effects": [
+          "romCacheRead8003F848: lookup hit unlinks/appends ordered entry(LRU) then sufficient hit setsCacheEnt.flags|1 and*out=data, result4 iff flags2 else3. Undersized hit removes index/free entry. Miss sets new CacheEnt.size/key, queues DMA before insertion, inserts value/key, flags|3 and*out=data; returns4.",
+          "Reclaim8003FA3C: sets shared index.cursor=head, attempts allocate only if free pool entry exists; allocation initializes CacheEnt.flags0,size,key0,data=entry+16. On failure frees unpinned prefix entries one at a time, updating poolhash/ordered/free links, active count and cursor; stops at first flags&3. No game-global mutation outside supplied cache heap/index.",
+          "Pool80041818..80042074: modifies owned KeyedPool head/tail/cursor/free/active and entrykey/value/chain/previous/next including relocated20-byte entries and neighboring links. nextId,capacity,entries base not changed by used operations. find helpers only write local predecessor output.",
+          "Heap80038074/800380F4/800382BC/80038394/80038548: alloc marks flag/tag and moves heap.last; split writes a new16-byte free header and reciprocal links/sizes. Free clears tag, merges neighboring free regions, clears removed header.magic and may move heap.last. No allocation payload zero/copy occurs here; diagnostic chain80038000->80037FE0->80037FBC writes only caller-stack argument home and no global diagnostic state.",
+          "QueuedDMA80037CC8..80037EF4: poll consumes all currently available messages decrementingpending; submit blocks/acknowledges one when full, invalidates destination, initializes persistent messages[cursor], submits, incrementspending/cursor with wrap. readQueued splits into<=0x4000 nonzero chunks, advances cursors; zero length submitsnone. Wait receives/acknowledges untilpending0. Queue cursor and requeststorage retained after completion.",
+          "Cache wait8003FAE8..8003FB68: first waits entire queue, then tail-to-head clears requestedmask only whileeachentry hasatleastone maskbit. It stops at first nonmatching entry. fontCacheWaitForReads8003F6B8 passesmask2; doesnot releaseusebit1, freeglyphs or createimage.",
+          "Nonfull send: store message pointer at msg[(first+validCount)%msgCount], increment validCount. Payload bytes are not copied or acknowledged.",
+          "Full send: running thread state halfword+0x10=8; enqueue in &queue.fullqueue. On receiver wake: pop queue.mtqueue, set receiver state2 and enqueue ready queue. Higher priority receiver can preempt sender via ready-queue yield.",
+          "Priority insertion writes thread.next, predecessor.next/queue-head and thread.queue(+8). Pop writes only queue-head, leaving popped next/queue fields until subsequent insertion.",
+          "Yield saves thread Status+0x118 with EXL set, callee-saved s0..s7 at+0x98..D0, gp+E8,sp+F0,s8+F8,ra+100,returnPC+11C, RCPmask+128. If fp flag+18 nonzero, also F20/F22/F24/F26/F28/F30 at+180..1A8 and FCSR+12C.",
+          "Dispatch pops ready queue at8009F898, writes running-thread global8009F8A0 and state4; restores GPR/HI/LO/CP0Status/EPC/FPU state, writes MI interrupt mask atA430000C using the authenticated table800A7D40 and global mask8009DC80, then ERET. External runnable-thread execution is not attributed to caller helpers.",
+          "Own send stack frame56 bytes plus writable caller argument homes; osStartThread adds40 bytes on wake/preemption path. Other resumed threads have separate live stacks and contexts. Ready/wait sentinel at8009F890 has next0 and priority below real threads.",
+          "Original __osDisableInt mask-race branch also reads8009F9B8; its literal access must be preserved rather than assuming it dereferences runningThread. Fast mask-stable path does not take that branch."
+        ]
+      }
+    },
+    {
+      "function": "actorScriptPushTargetApproachDistance",
+      "file": "src/ovl/actor_script_action_commands.c",
+      "sha256": "ee7652cc24b047c50e99df055d29403c57dacadc495dea7b45c092c76814bf2d",
+      "effect": "append_scalar",
+      "arguments": 0,
+      "stack_delta": 1,
+      "result_tag": "float",
+      "scheduling": "continue",
+      "result_semantics": "local position to stored target, minus allowance and clamped to zero",
+      "dependencies": [
+        "function:src/ovl/actor_script_queries.c:actorGetTargetDistance",
+        "function:src/game/trigonometry.c:vector3LengthApprox",
+        "function:src/game/trigonometry.c:mathHypotApprox"
+      ],
+      "preconditions": [
+        "Actor, actor state, VM and owned value storage are valid and nonoverlapping; one free result slot remains above protected locals/frame metadata.",
+        "Finite positions and allowances are required; local and world coordinates remain distinct. Approximate length helpers read only their C-stack vector; the primary player position is initialized when queried. The target-approach query uses stored coordinates without refreshing them or resolving tracking.",
+        "Only immediate handler writes are reviewed. These contracts do not establish hierarchy freshness, later object lifetime, concurrency, general numerical accuracy or retail reachability."
+      ]
+    },
+    {
+      "function": "actorScriptPushRandomUnitFloat",
+      "file": "src/ovl/actor_script_action_commands.c",
+      "sha256": "a5f3f670e52570eaa36f35a23ca90c4b572f684215ed97e49f924bc611521be5",
+      "effect": "append_scalar",
+      "arguments": 0,
+      "stack_delta": 1,
+      "result_tag": "float",
+      "scheduling": "continue",
+      "dependencies": [
+        "function:src/game/trigonometry.c:randomNext",
+        "file:src/game/trigonometry.c",
+        "file:include/random_scale.h"
+      ],
+      "preconditions": [
+        "Actor, VM, owned value storage and four-word RNG state remain valid and nonoverlapping with protected locals/frame metadata; no concurrent RNG mutation.",
+        "One free value slot is available. Exactly one generator advance appends a float in inclusive [0,1]. Rounding can produce 1.0; no exclusive endpoint or statistical distribution guarantee is claimed.",
+        "Only immediate pop/push and RNG state writes are reviewed; CPU-stack scratch remains separate. Authored seeds and endpoint observations do not establish retail reachability, statistical quality, arbitrary sequence behavior or physical-device fidelity."
+      ]
+    },
+    {
+      "function": "actorScriptRandomBelow",
+      "file": "src/ovl/actor_script_action_commands.c",
+      "sha256": "49a7b01053d7a9ad570f4175042842e3a171c0d1fbe6cdaf4e6daee7ab4b9870",
+      "effect": "replace_argument_with_scalar",
+      "arguments": 1,
+      "stack_delta": 0,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "dependencies": [
+        "function:src/game/trigonometry.c:randomNext",
+        "file:src/game/trigonometry.c",
+        "function:src/game/trigonometry.c:randomBelow",
+        "function:src/ovl/script_vm.c:scriptVmPopInteger",
+        "function:src/ovl/script_vm.c:scriptVmPopValue",
+        "function:src/ovl/script_vm.c:scriptValueGetInteger"
+      ],
+      "preconditions": [
+        "Actor, VM, owned value storage and four-word RNG state remain valid and nonoverlapping with protected locals/frame metadata; no concurrent RNG mutation.",
+        "One integer/code-reference operand or finite s32-representable float lies above protected locals/frame metadata. Float conversion truncates toward zero. Positive signed limits advance once and return unsigned output modulo limit; nonpositive limits return zero without advancing.",
+        "Only immediate pop/push and RNG state writes are reviewed; CPU-stack scratch remains separate. Authored seeds and endpoint observations do not establish retail reachability, statistical quality, arbitrary sequence behavior or physical-device fidelity."
+      ]
+    },
+    {
+      "function": "actorScriptSetTargetToFallbackObject",
+      "file": "src/ovl/actor_script_action_commands.c",
+      "sha256": "631ac51da56c57250060636c889b1ec03b83ed687b2291a3557eac4168314449",
+      "effect": "append_scalar",
+      "arguments": 0,
+      "stack_delta": 1,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "result_semantics": "Copy live fallback world position; select fixed mode and zero allowance, preserving tracked handle.",
+      "dependencies": [
+        "function:src/ovl/actor_script_queries.c:actorSetTargetToFallbackObject",
+        "function:src/game/object_hierarchy.c:objectFindLiveByHandle",
+        "function:src/game/keyed_pool.c:keyedPoolGetValue",
+        "function:src/game/keyed_pool.c:keyedPoolFindEntry",
+        "file:include/object_types.h",
+        "file:include/object_flags.h",
+        "file:include/item_types.h",
+        "file:include/keyed_pool_types.h",
+        "file:include/actor_kind.h",
+        "file:include/object_script_query.h"
+      ],
+      "preconditions": [
+        "Actor state, captured VM and owned value storage stay live and nonoverlapping with target writes. Appends require one free slot; the two-operand contract requires both handle and allowance above protected locals/frame metadata.",
+        "Handle and allowance operands use integer/code-reference or finite numeric float conversions; float-to-integer handle conversion must be s32-representable. Initialized positive-capacity handle pool and valid borrowed objects/item state are required on lookup paths. A live fallback object is mandatory for the unchecked fallback copy.",
+        "Primary and secondary-escape selection retain raw player handles without lookup or position refresh; their later tracking updates are outside this immediate review. Full tracking with an unavailable handle clears only mode, preserving stale handle, allowance and position. Category zero is not a selection-success predicate.",
+        "Captured VM is preserved through every reviewed helper; only established pop/push values/depth and the specified actor target fields change. No concurrent destruction, context replacement or mutation of borrowed state is covered. Retail reachability and future movement/lifetimes remain unproven."
+      ]
+    },
+    {
+      "function": "actorScriptStopActionScript",
+      "file": "src/ovl/actor_script_action_commands.c",
+      "sha256": "123b056138f09339aca960ea93280482bd4a13d0b46de18262f90cc97d26d29c",
+      "effect": "append_scalar",
+      "arguments": 0,
+      "stack_delta": 1,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "result_semantics": "Append integer zero after stopping action-script command execution and cancelling the pending action request. Request loop exit without immediately stopping active motion playback; command stream pointer becomes null and selected program ID becomes-1.",
+      "dependencies": [
+        "function:src/game/action_script.c:actionScriptStop",
+        "function:src/game/motion_playback.c:actionRequestLoopExit",
+        "function:src/game/motion_playback.c:actionCancelPendingRequest",
+        "file:include/action_script_stop.h",
+        "file:include/action_request.h",
+        "file:include/action_script_types.h",
+        "file:include/actor_script.h",
+        "file:include/object_types.h"
+      ],
+      "preconditions": [
+        "The actor, actor state, captured VM and owned value storage stay live. Their writable ranges are disjoint from the selected camera/audio globals and sequence-slot storage. No concurrent mutation, context replacement or lifecycle changes are covered.",
+        "Only established VM depth/value writes and specified helper writes are reviewed; scheduling returns continue and no deferred handler is installed. These entries establish source/Ghidra evidence only, not runtime or retail reachability.",
+        "Append requires one free value slot with protected locals/frame metadata below the active depth. Live initialized actor action state remains valid throughout the call.",
+        "Exact actor-state writes: halfword loopExitRequested+0x11E=1, halfword pendingAction+0x120=-1, word pendingRequestId+0x12C=0, halfword pendingActionKind+0x140=0, word actionScript.command+0x168=0, word actionScript.selectedProgramId+0x158=-1. Other action, borrowed command resources and VM context remain unchanged.",
+        "The helper returns a borrowed pointer to selectedProgramId which this wrapper discards; no command storage is freed, callback invoked, audio stopped, or immediate motion reset performed. Later action-loop handling lies outside this footprint."
+      ],
+      "evidence": "Read-only original Ghidra8011C5BC saves VM, calls800120AC and appends0.800120AC calls8000F4C4 (sh1 at actor state+0x11E) and8000F51C (sh-1 at+0x120, sw0 at+0x12C, sh0 at+0x140), then sw0 at+0x168 and sw-1 at+0x158. Source definitions and actor/action layouts agree. No runtime evidence claimed."
+    },
+    {
+      "function": "actorScriptClearMessages",
+      "file": "src/ovl/actor_script_action_commands.c",
+      "sha256": "68283f232de87d9f23b01ac304c16416db70fc7e5d47654ea122e9426bca1564",
+      "effect": "append_scalar",
+      "arguments": 0,
+      "stack_delta": 1,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "result_semantics": "Append integer0 after setting message duration/elapsed/transitionRemaining to0, queueReadIndex=queueWriteIndex and workImageIndex=(displayImageIndex+1) wrapped to0 at3.",
+      "dependencies": [
+        "file:include/object_types.h",
+        "file:include/actor_script.h",
+        "file:include/script_vm.h",
+        "function:src/ovl/script_vm.c:scriptVmPopInteger",
+        "function:src/ovl/script_vm.c:scriptVmPopFloat",
+        "function:src/ovl/script_vm.c:scriptVmPopValue",
+        "function:src/ovl/script_vm.c:scriptValueGetInteger",
+        "function:src/ovl/script_vm.c:scriptValueGetFloat",
+        "file:src/game/message_bar.c",
+        "file:include/text_image.h"
+      ],
+      "preconditions": [
+        "Actor, captured VM and owned values remain live and nonoverlapping with all helper-written borrowed globals/actor fields and native-stack temporaries. Numeric operands lie above protected locals/frame metadata; finite float-to-integer conversions must fit s32. Only immediate writes are covered, not concurrent context replacement, retail reachability or later display/color evolution.",
+        "One free value slot is required. MessageBarState displayImageIndex is0..2 and queue indices0..15. Does not free or replace text-image handles or queued text; it discards pending entries logically. No callbacks or allocation occur."
+      ]
+    },
+    {
+      "function": "actorScriptStartActionScript",
+      "file": "src/ovl/actor_script_action_commands.c",
+      "sha256": "e9e024ec02fe7ecd58f92a45677bdd5ed6610874cb0f864edd685b1ab4ed89b4",
+      "effect": "replace_argument_with_scalar",
+      "arguments": 1,
+      "stack_delta": 0,
+      "result_tag": "integer",
+      "scheduling": "yield",
+      "operand_order": "programId",
+      "result_semantics": "Select timed program without duration limit; replace its operand with integer zero and yield.",
+      "dependencies": [
+        "file:src/game/action_script.c",
+        "file:include/action_script_playback.h",
+        "file:include/action_script_ids.h",
+        "function:src/ovl/script_vm.c:scriptVmPopInteger",
+        "function:src/ovl/script_vm.c:scriptVmPopFloat",
+        "function:src/ovl/script_vm.c:scriptVmPopValue",
+        "function:src/ovl/script_vm.c:scriptValueGetInteger",
+        "function:src/ovl/script_vm.c:scriptValueGetFloat"
+      ],
+      "preconditions": [
+        "Consumed numeric operands lie above all protected locals/frame metadata. Actor, captured VM, owned value stack and actor action state remain valid and nonoverlapping; no concurrent mutation, context replacement or lifecycle change is covered.",
+        "Timed-program ID after integer conversion is0..291 or the authenticated target no-program sentinel-1. The292-pointer original-ROM table remains loaded and unchanged; selected command storage is borrowed. No bounds check occurs. The predecessor word for-1 is authenticated null, an original-target out-of-bounds C array exception that portable hosts must handle explicitly.",
+        "Original startup only selects the borrowed command pointer and resets sequencer elapsed/clock/duration/request/sound fields; it does not advance commands, run action callbacks, stop independent motion or allocate resources. Lost tracked sound handle does not mean audio was stopped. No deferred VM handler is installed; native returns yield and already supplies integer zero.",
+        "Integer/code-reference arguments retain s32 payload; floating arguments converted to integer must be finite and truncate within s32. Geometric/elapsed timing and subsequent playback behavior remain separate obligations."
+      ],
+      "evidence": "Original Ghidra8011C574/80012034 and authenticated292-pointer table at0x80071D00, predecessor null at0x80071CFC; table SHA2568131b8018f8574cdbc833e522ed4f0bd75158f3eb632df6affa2058790f83599. Source-bound immediate footprint only; selecting a program does not establish later execution or completion. Thirteen authored original-instruction interpreter cases across these three wrappers guard three lower values and all VM frame/handler metadata, exact sequencer reset bytes and independent motion fields. Cases cover programs0/291/-1, numeric tags, signed16 mode endpoints and truncation, finite positive/negative durations and negative-zero preservation. Program selection is not command advancement or completion. The sentinel plus292pointer window has separate SHA2565b8829a5696ddb45d1fb81a00b79355a1b825ca9df86e2ce232c757ddeebef6a; the292-pointer-only digest above excludes its predecessor."
+    },
+    {
+      "function": "actorScriptEnqueueMessage",
+      "file": "src/ovl/actor_script_action_commands.c",
+      "sha256": "94ebf568fd7432e5d5417fd8d804a4acbab8bbadd6f76516fe4db995d67804f0",
+      "effect": "inline_count_strings_then_append_scalar",
+      "arguments": "inline_count",
+      "stack_delta": "1-count",
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "inline_count": {
+        "encoding": "packed_script_value",
+        "bytes": 5,
+        "conversion": "scriptValueGetInteger",
+        "domain": "nonnegative_s32",
+        "instruction_offset_delta": 5
+      },
+      "sink": "message_bar",
+      "dependencies": [
+        "file:src/ovl/actor_script_action_commands.c",
+        "file:include/object_types.h",
+        "file:include/actor_script.h",
+        "file:include/script_vm.h",
+        "file:include/text_image.h",
+        "function:src/ovl/script_vm.c:scriptVmReadIntegerOperand",
+        "function:src/ovl/script_vm.c:scriptValueGetInteger",
+        "function:src/ovl/script_vm.c:scriptVmPopString",
+        "function:src/ovl/script_vm.c:scriptVmPopValue",
+        "file:src/game/message_bar.c",
+        "file:src/game/audio_worker_string_utils.c",
+        "file:src/ovl/script_vm.c",
+        "file:include/libc/xstdio.h",
+        "file:docs/LOCAL_SDK_FILES.json",
+        "file:config/pikachu.yaml",
+        "file:config/symbol_addrs.txt",
+        "file:tools/materialize_ultralib.py",
+        "function:src/ovl/script_vm.c:scriptValueGetFloat",
+        "function:src/ovl/script_vm.c:scriptVmPushInteger",
+        "function:src/ovl/script_vm.c:scriptValueSetInteger"
+      ],
+      "preconditions": [
+        "PC identifies readable5-byte numeric count; conversion is integer/code-reference or finite float representable as s32. Count is0..currentDepth-protectedFloor, and depth-count has room for one appended zero. Count0 still needs one free slot. Negative counts and signed subtraction overflow are excluded.",
+        "String operands are prepended in pop order into shared80-byte area with capacity80, leaving at most79 content bytes and a terminator. Original sourcebuffer spans contiguous declarations at80134220/24/28; no pointers to C-stack data escape.",
+        "Final composed text length<=59 on all paths. Queue indices0..15 and current text readable for comparison length. Emptytext doesnothing; idle-prefixmatch resetselapsed/duration; fullqueue doesnothing; normalqueue copies terminatedtext andduration/style thenadvanceswriteindex. Nativealwayspushes0, ignoring sinkstatus. No images areallocated or freed.",
+        "Captured VM/context is preserved; only PC+5, count pops, oneinteger0push and documentedglobals mutate. No runtime/retailreachability/later display proof.",
+        "Popped values are valid tag3 string-table indices, tag4 nonnull readable terminated borrowed pointers, tag0 integer or tag2 code-reference s32, or tag1 finitef32. String-table indices valid and nonnegative; Writable construction/sink/native-stack regions are disjoint from VM values/program/table and borrowed source strings. Read-only source inputs may alias each other. Borrowed inputs must not alias shared32-byte numeric scratch, which numeric conversion overwrites. No unknown tags covered.",
+        "Integer/code-reference values format with immutable%d and signed32 argument: atmost11contentbytes plusNUL. Float values format with immutable%f, defaultprecision6; require actual originalformatter outputlength<=31 beforeNUL. Allfinitef32 is NOT safe. Conservative bounded subset abs(value)<=1e9 fits; other values require output-length evidence. Formatting and loop counts must terminate and enough native stack is required.",
+        "Original-ROM SDK implementations/pinnedlocal SDK inputs and strictSDKobjectcomparison required. Framevalidator fingerprintsSDKheader/config/materializer butdoesnotitselfauthenticateSDKassembly. sprintf800538E0 uses onlyfixed callback80053938->memcpy; _Printf800592D0,_Putfld80059918,_Litob8005DB10,_Ldtob8005DDB0,_Ldunscale8005E240,_Genld8005E2F8 modify onlyowned native-stack formatterrecords andthe suppliednumericoutput. Fixed%d/%f exclude%n and arbitrarycallbacks. Readonlydigit/power tables andintegerdivision helpers are partoforiginalSDKassumption.",
+        "Each numeric conversionwrites onlyitscontentbytes andNUL into32-byte gScriptVmNumericTextBuffer801340B0, leavingtailbytesunchanged. Resultborrowed untilnextnumericconversion. Eachreturnedstring is copiedimmediately byprepend beforethenextpop, so consecutive numeric operands are safe underdisjointinputpreconditions. Noallocatedformatterresources orretainednative-stack pointers escape."
+      ],
+      "evidence": "Read-only original Ghidra sprintf/Printf/Putfld/Litob/Ldtob/Ldunscale/Genld and existing game-source helpers; fixedformat paths only, static review without runtime claim. Thirteen bounded original-instruction interpreter probes at ab945f7 with frozen ELF/core and authenticated helper bytes confirm numeric count tags including finite2.9->2, PC+5, borrowed/indexed strings, integer/code/float formatting, empty/full/prefix-refresh queue cases and safe2499-character window tail. All retain three protected lower values and frame metadata. Count0 clears builder byte0 only; every prepend also writes its byte79 terminator. Numeric scratch overwrites prefix+NUL only, with remaining tail unchanged. Unsafe overflow cases were not executed."
+    },
+    {
+      "function": "actorScriptAppendWindowText",
+      "file": "src/ovl/actor_script_action_commands.c",
+      "sha256": "ef1e51b318b2235aa48e8284ad66aba6848a98cf655686396940bac5f6d1c6ac",
+      "effect": "inline_count_strings_then_append_scalar",
+      "arguments": "inline_count",
+      "stack_delta": "1-count",
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "inline_count": {
+        "encoding": "packed_script_value",
+        "bytes": 5,
+        "conversion": "scriptValueGetInteger",
+        "domain": "nonnegative_s32",
+        "instruction_offset_delta": 5
+      },
+      "sink": "pending_window",
+      "dependencies": [
+        "file:src/ovl/actor_script_action_commands.c",
+        "file:include/object_types.h",
+        "file:include/actor_script.h",
+        "file:include/script_vm.h",
+        "file:include/text_image.h",
+        "function:src/ovl/script_vm.c:scriptVmReadIntegerOperand",
+        "function:src/ovl/script_vm.c:scriptValueGetInteger",
+        "function:src/ovl/script_vm.c:scriptVmPopString",
+        "function:src/ovl/script_vm.c:scriptVmPopValue",
+        "file:src/game/text_window.c",
+        "file:src/ovl/script_vm.c",
+        "file:include/libc/xstdio.h",
+        "file:docs/LOCAL_SDK_FILES.json",
+        "file:config/pikachu.yaml",
+        "file:config/symbol_addrs.txt",
+        "file:tools/materialize_ultralib.py",
+        "function:src/ovl/script_vm.c:scriptValueGetFloat",
+        "function:src/ovl/script_vm.c:scriptVmPushInteger",
+        "function:src/ovl/script_vm.c:scriptValueSetInteger"
+      ],
+      "preconditions": [
+        "PC identifies readable5-byte numeric count; conversion is integer/code-reference or finite float representable as s32. Count is0..currentDepth-protectedFloor, and depth-count has room for one appended zero. Count0 still needs one free slot. Negative counts and signed subtraction overflow are excluded.",
+        "String operands are prepended in pop order into shared80-byte area with capacity80, leaving at most79 content bytes and a terminator. Original sourcebuffer spans contiguous declarations at80134220/24/28; no pointers to C-stack data escape.",
+        "Pendingwindow storage is exactly0x9C4 bytes beforeSceneViewMode. Initialpendingtext terminated, and initialLength+composedLength<=2499 with zero already present after final writtencontent. Helperwritesonlycontentbytes anddoesnotappendNUL. Its original0x9C5limitmustnotbeinterpretedasvalidallocationextent. No windowpage, imageorhistory updateoccurs.",
+        "Captured VM/context is preserved; only PC+5, count pops, oneinteger0push and documentedglobals mutate. No runtime/retailreachability/later display proof.",
+        "Popped values are valid tag3 string-table indices, tag4 nonnull readable terminated borrowed pointers, tag0 integer or tag2 code-reference s32, or tag1 finitef32. String-table indices valid and nonnegative; Writable construction/sink/native-stack regions are disjoint from VM values/program/table and borrowed source strings. Read-only source inputs may alias each other. Borrowed inputs must not alias shared32-byte numeric scratch, which numeric conversion overwrites. No unknown tags covered.",
+        "Integer/code-reference values format with immutable%d and signed32 argument: atmost11contentbytes plusNUL. Float values format with immutable%f, defaultprecision6; require actual originalformatter outputlength<=31 beforeNUL. Allfinitef32 is NOT safe. Conservative bounded subset abs(value)<=1e9 fits; other values require output-length evidence. Formatting and loop counts must terminate and enough native stack is required.",
+        "Original-ROM SDK implementations/pinnedlocal SDK inputs and strictSDKobjectcomparison required. Framevalidator fingerprintsSDKheader/config/materializer butdoesnotitselfauthenticateSDKassembly. sprintf800538E0 uses onlyfixed callback80053938->memcpy; _Printf800592D0,_Putfld80059918,_Litob8005DB10,_Ldtob8005DDB0,_Ldunscale8005E240,_Genld8005E2F8 modify onlyowned native-stack formatterrecords andthe suppliednumericoutput. Fixed%d/%f exclude%n and arbitrarycallbacks. Readonlydigit/power tables andintegerdivision helpers are partoforiginalSDKassumption.",
+        "Each numeric conversionwrites onlyitscontentbytes andNUL into32-byte gScriptVmNumericTextBuffer801340B0, leavingtailbytesunchanged. Resultborrowed untilnextnumericconversion. Eachreturnedstring is copiedimmediately byprepend beforethenextpop, so consecutive numeric operands are safe underdisjointinputpreconditions. Noallocatedformatterresources orretainednative-stack pointers escape."
+      ],
+      "evidence": "Read-only original Ghidra sprintf/Printf/Putfld/Litob/Ldtob/Ldunscale/Genld and existing game-source helpers; fixedformat paths only, static review without runtime claim. Thirteen bounded original-instruction interpreter probes at ab945f7 with frozen ELF/core and authenticated helper bytes confirm numeric count tags including finite2.9->2, PC+5, borrowed/indexed strings, integer/code/float formatting, empty/full/prefix-refresh queue cases and safe2499-character window tail. All retain three protected lower values and frame metadata. Count0 clears builder byte0 only; every prepend also writes its byte79 terminator. Numeric scratch overwrites prefix+NUL only, with remaining tail unchanged. Unsafe overflow cases were not executed."
+    },
+    {
+      "function": "actorScriptEnterTextWindowMode",
+      "file": "src/ovl/actor_script_action_commands.c",
+      "sha256": "b216a24205e770d0bdb7b2c3769392476d74f32e8dbe5ff6c303ba3d9a218262",
+      "effect": "append_scalar",
+      "arguments": 0,
+      "stack_delta": 1,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "result_semantics": "Display borrowed pending page, replace selected owned line images, assign controllerPort-1, request runtime mode3 and account playtime; append integer0.",
+      "dependencies": [
+        "function:src/game/rom_cache.c:romCacheRead",
+        "function:src/game/rom_cache.c:romCacheAllocateEntry",
+        "function:src/game/rom_cache.c:romCacheRemoveEntry",
+        "function:src/game/rom_cache.c:romCacheReclaimAndAllocateEntry",
+        "function:src/game/rom_cache.c:romCacheSynchronizeAndClearState",
+        "function:src/game/rom_cache.c:romCacheWaitForReads",
+        "function:src/game/rom_dma.c:romDmaReadQueued",
+        "function:src/game/rom_dma.c:romDmaSubmitRead",
+        "function:src/game/rom_dma.c:romDmaPollQueue",
+        "function:src/game/rom_dma.c:romDmaAcknowledgeCompletion",
+        "function:src/game/rom_dma.c:romDmaWaitForQueue",
+        "function:src/game/keyed_pool.c:keyedPoolGetValueAndMoveToEnd",
+        "function:src/game/keyed_pool.c:keyedPoolFindEntry",
+        "function:src/game/keyed_pool.c:keyedPoolUnlinkOrderedEntry",
+        "function:src/game/keyed_pool.c:keyedPoolAppendOrderedEntry",
+        "function:src/game/keyed_pool.c:keyedPoolHasAvailableEntry",
+        "function:src/game/keyed_pool.c:keyedPoolIterateFirst",
+        "function:src/game/keyed_pool.c:keyedPoolIterateNext",
+        "function:src/game/keyed_pool.c:keyedPoolRemoveFirstForKey",
+        "function:src/game/keyed_pool.c:keyedPoolRemoveEntry",
+        "function:src/game/keyed_pool.c:keyedPoolReleaseEntry",
+        "function:src/game/keyed_pool.c:keyedPoolRelocateEntry",
+        "function:src/game/keyed_pool.c:keyedPoolInsert",
+        "function:src/game/keyed_pool.c:keyedPoolAcquireEntry",
+        "function:src/game/heap.c:heapAllocLocal",
+        "function:src/game/heap.c:heapSplitBlock",
+        "function:src/game/heap.c:heapValidateBlock",
+        "function:src/game/heap.c:heapDebugReportBlock",
+        "function:src/game/heap.c:heapDebugNoOp",
+        "function:src/game/heap.c:heapFreeLocal",
+        "function:src/game/heap.c:heapCombinePreviousFree",
+        "function:src/game/heap.c:heapCombineNextFree",
+        "function:src/game/graphics_text.c:fontImageReadGlyph",
+        "function:src/game/graphics_text.c:fontCacheReadGlyph",
+        "function:src/game/graphics_text.c:fontCacheWaitForReads",
+        "file:src/game/heap.c",
+        "file:src/game/graphics_text.c",
+        "file:src/game/rom_dma.c",
+        "file:include/game_heap.h",
+        "file:include/heap_types.h",
+        "file:include/rom_cache.h",
+        "file:include/rom_dma.h",
+        "file:include/keyed_pool.h",
+        "file:include/keyed_pool_types.h",
+        "file:include/font_image_types.h",
+        "file:include/heap_alloc.h",
+        "file:include/heap_free.h",
+        "file:include/PR/os_message.h",
+        "file:include/PR/os_pi.h",
+        "file:include/PR/os_thread.h",
+        "file:include/PR/os_exception.h",
+        "file:include/PR/os_cache.h",
+        "file:include/PR/os_reg.h",
+        "file:include/PR/os_internal.h",
+        "file:include/PR/ultratypes.h",
+        "file:docs/LOCAL_SDK_FILES.json",
+        "file:config/pikachu.yaml",
+        "file:config/symbol_addrs.txt",
+        "file:tools/materialize_ultralib.py",
+        "file:src/game/text_window.c",
+        "file:src/game/audio_worker_string_utils.c",
+        "file:src/game/runtime.c",
+        "file:src/game/save_progress.c",
+        "file:include/text_window.h",
+        "file:include/text_image.h",
+        "file:include/text_image_configurations.h",
+        "file:include/player_types.h",
+        "file:include/player_state.h",
+        "file:include/runtime_mode.h",
+        "file:include/progress_field_ids.h",
+        "file:include/progress_fields.h",
+        "file:include/progress_field_types.h",
+        "file:include/progress_value.h",
+        "file:include/string_bytes.h",
+        "file:include/script_vm.h",
+        "file:include/script_value.h",
+        "file:include/actor_script.h",
+        "file:include/object_types.h",
+        "file:include/actor_script_action.h",
+        "file:include/PR/mbi.h",
+        "function:src/ovl/script_vm.c:scriptVmPopInteger",
+        "function:src/ovl/script_vm.c:scriptVmPopValue",
+        "function:src/ovl/script_vm.c:scriptValueGetInteger",
+        "function:src/ovl/script_vm.c:scriptVmPushInteger",
+        "function:src/ovl/script_vm.c:scriptVmPushValue",
+        "function:src/ovl/script_vm.c:scriptValueSetInteger",
+        "function:src/ovl/player_companion.c:playerSetControllerPort",
+        "file:build/asm/game/font_glyph_metrics.s",
+        "file:build/asm/os/bzero.s",
+        "file:build/asm/os/recvmesg.s",
+        "file:build/asm/os/pidma.s",
+        "file:build/asm/libc/bcopy.s",
+        "file:build/asm/os/virtualtophysical.s",
+        "file:build/asm/os/sendmesg.s",
+        "file:build/asm/os/pigetcmdq.s",
+        "file:build/asm/os/invaldcache.s",
+        "file:build/asm/os/devmgr.s",
+        "file:build/asm/os/startthread.s",
+        "file:build/asm/os/createmesgqueue.s",
+        "file:build/asm/os/exceptasm.s",
+        "file:build/asm/os/pirawdma.s",
+        "file:include/PR/R4300.h",
+        "file:Makefile"
+      ],
+      "preconditions": [
+        "Initialized font RomCache800F2A60, owned16-aligned heap/storage, valid positive-capacity keyed pool and unique key-to-entry mapping. Cache metadata/index entries/heap/free lists/request records/completion backing are live and disjoint from VM/actor/value buffers, image output, source text/fonts and outstanding display-list references. No concurrent cache traversal/read/release/destruction or heap mutation.",
+        "Valid circular heap block chain entirely within owned region, aligned block headers with magicA5, truthful size/tag/free state and reciprocal links. Every allocation request and rounding size+15, allocationheader+16 and splitthreshold+0x30 fit u32 without overflow; selected blocks and new headers wholly inside region. Enough successful allocations for requested glyph and caller image/scratch. heapAllocLocal can returnNULL; cacheRead nevertheless dereferences NULL after failed reclaim, so exhaustion is excluded explicitly.",
+        "Cache miss reclamation must obtain a pool entry and sufficiently large heap allocation before reaching a pinned(flags&3) or absent traversal entry. Only removable ordered prefix may be reclaimed; arbitrary unpinned entries later in list do not ensure success. Any hit with smaller stored size is unconditionally freed regardless of flags: it must have no in-flight DMA, CPU borrower or graphics borrower. Existing sufficient hit owns at least requested data extent.",
+        "Keyed-pool capacity>0, active/free membership consistent, hash chains and ordered links valid/acyclic, any relocation target reserved from free storage, affected predecessor/neighbor pointers valid within entries allocation. Removal relocates collision entries, so clients retain values(CacheEnt), not stable KeyedPoolEntry addresses; no external live iterator promise survives cacheRead.",
+        "DmaQueue capacity>0; pending0..capacity; cursor0..capacity-1; capacity OSIoMesg records and capacity message backing live; all pending records distinct and destinations allocated until their matching completions. Only this serialized producer submits to its private queue and only its poll/wait consumes. Every request uses normal-priority FIFO PI submission and fixed original serial worker; requests from other queues must not invalidate same-queue completion ordering. A completed-oldest slot can be reused only after its completion is consumed; counter-only polling does not identify arbitrary out-of-order completions.",
+        "For each glyph miss, ROM source/glyph extent and each<=0x4000 chunk are valid original PI-read requests, with hardware-required alignment/size and no address wrap. Destination is cached KSEG0,16-aligned from heap, and each invalidated cache line lies in its owned allocation including trailing padding. FontImage bytes=width*height/2 fits positive signed32 and CacheEnt size+16 fits; system glyph size128. No destination overlaps allocator/index/request/queue metadata.",
+        "Original PI manager active, fixed rawDMA8005A030, valid live kernel/event/access queues/thread contexts and supplied original cart base. Each nonblocking normal osSendMesg command submission has capacity and succeeds; each DMA starts and finishes; matching event and private completion message are delivered without drop/spurious messages; progress permits worker execution. Game ignores submit status and increments pending even if failed, so errors/starvation are outside returning contract and can hang waits. No cache/queue/request storage is freed until outstanding DMA completes.",
+        "Original authenticated ROM SDK plus trackedSDKmanifest/config/materializer and exact local SDK headers are required; standalone source-frame fingerprints do not authenticate assembly. Synchronous footprint includes queue/backing/threadcontext/cache-state writes; worker adds PI MMIO/kernel/event/access writes and exact bounded destination DMA. Other-thread VM mutation/context replacement remains excluded. Alignedpartial final cacheline can writeback owned padding; requests>=8192 can index-writeback/invalidate whole D-cache, requiring coherent initialized original kernel/RAM and no conflicting DMA/CPU owners.",
+        "Borrowed glyph pointer is used only after status4 calls fontCacheWaitForReads; status3 requires no pending transfer for that entry. Use flag(mask1) remains until explicit releaseUses outside creation. Caller may not release/evict glyph while row copy/graphics references are live. WaitForReads completes all pending transfers, but only clears pending flag(mask2) on contiguous ordered tail suffix; older pendingflags may remain conservative, and no blanket all-flags-cleared invariant is assumed.",
+        "Owned text-window pending buffer2500bytes,11-slot page-history ring, two buffers of five page-image pointers, prompt pointer and state/style/view/indicator fields are initialized and disjoint from actor/VM/protected values. Stored descriptors/pixels are valid unique owned game-heap allocations; no pending graphics command/CPU borrower references an image being destroyed. Font descriptors/metrics/ROM data and page text remain borrowed; image creation does not extend those input lifetimes.",
+        "All decoded characters and controls are complete/supported and advance their cursor. Each49-byte prepared line boundary ends on a complete encoded character/control and each returned continuation is within retained input. Page parser consumes<=49bytes per line and atmost5lines into50-byte stack scratch; after five full lines it returns input+1, so an extra readable byte/valid continuation is required even when no page delimiter was consumed. No semantic claim that it preserves every input byte.",
+        "Custom font metrics are valid: W=measuredWidth+measuredWidth%4,H=fontheight,R=fontwidth/2, with positive W/H, even W and all intermediate products/offsets signed32-representable. Each glyph placement independently has crop=left/2>=0,ink=imageWidth/2>=0,crop+ink<=R and0<=x,x+ink<=W/2; glyph source has H*R readable bytes. Position controls set x=value/2(0..999); color controls yield0..15; later position resets do not justify earlier out-of-bounds placements. Per-row R-byte scratch allocations succeed and are freed after copy; final16-byte descriptor owns pixels.",
+        "For generic system-font dispatch only: NULL font emptytext returnsNULL; nonempty firstmin(strlen,128)bytes contain complete supported characters, no splitwide cutoff. Narrow metrics width0..8,copyBytes=(width+1)/2 and centering(7-width)/4 fit4-byte cell; baseline/height select valid active rows and readable glyph bytes. Wide glyph has128bytes. System-font table indices/ROM offsets are valid; sixteen-row allocation min(strlen,128)*64bytes and descriptor succeed. Window-specific valid style-table pointers select custom fonts, notNULL.",
+        "Enter-mode immediate call has room for one appended value. History write/oldest indices are0..10 BEFORE first indexed store; buffer toggle begins0or1; style selects actual initialized gTextImageConfigurations entry. Borrowed pending/history/continuation text remains live while retained for later page navigation. Selecting/displaying a page does not transfer or copy entire source-text ownership.",
+        "Enter-mode progress field4 is authenticated resident PROGRESS_ENCODING_S32 with signed32 limits; initialized field byteOffset names aligned inbounds writable save storage. ElapsedSeconds>=checkpointSeconds with difference<=INT_MAX and oldField4+amount signed32-representable. Original code uses low32 elapsed difference, then updates full64 checkpoint; noEEPROM request/save callback occurs. Requestmode3 also writes entryPending1,startMilliseconds low32,renderPrimed0 and primaryplayer controllerPort-1.",
+        "Deferred selector13 checks runtime mode3 before actor/VM access and returns WAIT_FOR_ACTION2 without consuming any operand. Otherwise bottom-to-top indicator,style,viewMode are numeric signed32-convertible operands above protectedlocals; pops viewMode thenstyle thenindicator, callsOpen, pushes integer0 and yields1 regardless Openreturn. It doesnot read actionInitializing. Style/view/indicator are stored raw after successful inactiveOpen; future draw safety requires valid style/indicator resources.",
+        "Open on state!=INACTIVE4 returns0 without image mutations; wrapper nevertheless consumes3 and pushes0. Inactive path zeroes2500pendingbytes, resets borrowed continuation and history indices, frees oldpromptimage/pixels then builds fixed defaultfont prompt, setsOPENING0/timestamp and storesindicator/view/style. No runtime mode change or line-page construction is part of this selector13 path.",
+        "Complete immediate returning footprint is reviewed under the resource/allocation/PI prerequisites, including cachemiss and eviction. No later rendering, text-window update/close, gameplay reachability or unconditional transport liveness is claimed. Actor/VM remain live through queue waits; arbitrary other-thread VM/context mutation is excluded. Static original-instruction evidence only; runtime untested."
+      ],
+      "evidence": "Independent source and original Ghidra reviews of window ownership, glyph/control bounds, runtime accounting and the complete font-cache/heap/queued-PI helper closure. Original8011C53C enters mode and appends0;80117014 mode3gate before actor access, then3pops/open/push0/yield1.8002C874/8002C1A0/8002C03C/8002BF48 close page ring/buffer/lineimage ownership;8002C348/8002C1E4/8002BFE8 close inactive opening/defaultprompt ownership.8003DDC0 generic textimage dispatch, custom glyphmetrics/control/row writes are source-bound; SDKfontGetGlyphMetrics8004AAC0 only writes caller outputs, ShiftJISoffset8004AAFC readonly.8003F848/8003FA3C/8003FAE8, keyed pool80041818..80042074, heap80038074..800385CC and queuedDMA80037CC8..80037EF4 close all cache paths. Original runtime8000B23C/8000B2C8 writes constantfield4 via80032C70; player port801119F4 only writes initialized primaryplayer port. Exact original SDK ranges authenticated against originalGhidra+suppliedROM, hashes below. No runtime evidence.",
+      "sdk_instruction_ranges": [
+        {
+          "function": "osSendMesg",
+          "address": "0x80053190",
+          "size": 332,
+          "rom_offset": "0x53d90",
+          "sha256": "0422bf5ad85265fb9bab17eef54b9725e0df648fbe9e9a1366f3cb150d7dd5ad"
+        },
+        {
+          "function": "osRecvMesg",
+          "address": "0x80051550",
+          "size": 312,
+          "rom_offset": "0x52150",
+          "sha256": "43051c9d88c1cbb9a1210fa1dc6ef0f3edb22f4bacb296158d8cbd65cfcc5abb"
+        },
+        {
+          "function": "osCreateMesgQueue",
+          "address": "0x800516e0",
+          "size": 44,
+          "rom_offset": "0x522e0",
+          "sha256": "722e99b14443e8fc39d3fda597c0309818e51d128cb0952b7bf3558650e7a791"
+        },
+        {
+          "function": "osStartThread",
+          "address": "0x80050bf0",
+          "size": 336,
+          "rom_offset": "0x517f0",
+          "sha256": "bf001131da5edb35e7f4bea2eff6d51619d31a95b2424198c242daee20955bcb"
+        },
+        {
+          "function": "__osEnqueueAndYield",
+          "address": "0x80057c44",
+          "size": 256,
+          "rom_offset": "0x58844",
+          "sha256": "d5ef2d3f73d0cdca7cd679cfb616e73bcdd5695b71c303561e12b9faa1e76caf"
+        },
+        {
+          "function": "__osEnqueueThread",
+          "address": "0x80057d44",
+          "size": 72,
+          "rom_offset": "0x58944",
+          "sha256": "8091a95dae39c6b1fc1a33a413913174da32d2a1c61971b45d5170e8b51c54f6"
+        },
+        {
+          "function": "__osPopThread",
+          "address": "0x80057d8c",
+          "size": 16,
+          "rom_offset": "0x5898c",
+          "sha256": "9cfacc440af965d2989166dd711ef58ae5a92e68c6ef3cf399a0403e1fd36afe"
+        },
+        {
+          "function": "__osDispatchThread",
+          "address": "0x80057da4",
+          "size": 380,
+          "rom_offset": "0x589a4",
+          "sha256": "da4b95aa2be6f0aabea67c4314bac423c573b965aed913be6e216b98c8ac28e4"
+        },
+        {
+          "function": "__osDisableInt",
+          "address": "0x80057ff0",
+          "size": 112,
+          "rom_offset": "0x58bf0",
+          "sha256": "182263f540080608a1c5a341601192b55c811ebb017644a55bc8061a0bb2a8d2"
+        },
+        {
+          "function": "__osRestoreInt",
+          "address": "0x80058060",
+          "size": 32,
+          "rom_offset": "0x58c60",
+          "sha256": "760fabe684a57096a1f98fb972d27fc9ae0f5b227768fa227ed73c15b4ad1e09"
+        },
+        {
+          "function": "bcopy",
+          "address": "0x80052610",
+          "size": 772,
+          "rom_offset": "0x53210",
+          "sha256": "f398a13824f7307d1d66f05ca80f49e0ed734886d23c0d2a3bcdd4f11601b6b0"
+        },
+        {
+          "function": "fontGetGlyphMetrics",
+          "address": "0x8004aac0",
+          "size": 60,
+          "rom_offset": "0x4b6c0",
+          "sha256": "ebfd64e5ae86ac4915e392f63324683e51dc590e2ebd810f27a39ddde1a9eca8"
+        },
+        {
+          "function": "fontGetShiftJisBitmapOffset",
+          "address": "0x8004aafc",
+          "size": 148,
+          "rom_offset": "0x4b6fc",
+          "sha256": "a49a671dbd06c7bf2aa120f457a2f41f535f129db1f069d36a574bc3f5fce5e6"
+        },
+        {
+          "function": "osPiStartDma",
+          "address": "0x800533f0",
+          "size": 188,
+          "rom_offset": "0x53ff0",
+          "sha256": "65eba413d3a4fa7f0ef59a67660410be5cb1135ffebceeb2eac64efbb2734b4d"
+        },
+        {
+          "function": "__osPiRawStartDma",
+          "address": "0x8005a030",
+          "size": 200,
+          "rom_offset": "0x5ac30",
+          "sha256": "4d1d9f11c11796e96435557c5a99780b5d61493f949f1d9fbb6040281f50c938"
+        },
+        {
+          "function": "osPiGetCmdQueue",
+          "address": "0x80059040",
+          "size": 40,
+          "rom_offset": "0x59c40",
+          "sha256": "51937481f12c61f96ccfecae74ea60196af51da8e5b7e33d8c6bb230ce1ee7a7"
+        },
+        {
+          "function": "_bzero",
+          "address": "0x80050e20",
+          "size": 156,
+          "rom_offset": "0x51a20",
+          "sha256": "ddb7b30f2e08070a5eaafe4e056d5fe4194f18200acb5d618385e973e698b391"
+        },
+        {
+          "function": "osVirtualToPhysical",
+          "address": "0x80050ec0",
+          "size": 124,
+          "rom_offset": "0x51ac0",
+          "sha256": "034c4a36d20f20a4719906c0d67570266f93ab3b28783869d366fa1f00b6c8ad"
+        },
+        {
+          "function": "osInvalDCache",
+          "address": "0x80053340",
+          "size": 172,
+          "rom_offset": "0x53f40",
+          "sha256": "f8a381ee23df95612ed0fb5ddcef245f947b01e12d78364fa5b45491f4eb7b55"
+        },
+        {
+          "function": "__osDevMgrMain",
+          "address": "0x8005a2e0",
+          "size": 1040,
+          "rom_offset": "0x5aee0",
+          "sha256": "470136977cb54b4ce706b199ed7ec9f7f91835e93a2e95ad8443c1f61002a104"
+        }
+      ],
+      "sdk_storage_effects": [
+        "romCacheRead8003F848: lookup hit unlinks/appends ordered entry(LRU) then sufficient hit setsCacheEnt.flags|1 and*out=data, result4 iff flags2 else3. Undersized hit removes index/free entry. Miss sets new CacheEnt.size/key, queues DMA before insertion, inserts value/key, flags|3 and*out=data; returns4.",
+        "Reclaim8003FA3C: sets shared index.cursor=head, attempts allocate only if free pool entry exists; allocation initializes CacheEnt.flags0,size,key0,data=entry+16. On failure frees unpinned prefix entries one at a time, updating poolhash/ordered/free links, active count and cursor; stops at first flags&3. No game-global mutation outside supplied cache heap/index.",
+        "Pool80041818..80042074: modifies owned KeyedPool head/tail/cursor/free/active and entrykey/value/chain/previous/next including relocated20-byte entries and neighboring links. nextId,capacity,entries base not changed by used operations. find helpers only write local predecessor output.",
+        "Heap80038074/800380F4/800382BC/80038394/80038548: alloc marks flag/tag and moves heap.last; split writes a new16-byte free header and reciprocal links/sizes. Free clears tag, merges neighboring free regions, clears removed header.magic and may move heap.last. No allocation payload zero/copy occurs here; diagnostic chain80038000->80037FE0->80037FBC writes only caller-stack argument home and no global diagnostic state.",
+        "QueuedDMA80037CC8..80037EF4: poll consumes all currently available messages decrementingpending; submit blocks/acknowledges one when full, invalidates destination, initializes persistent messages[cursor], submits, incrementspending/cursor with wrap. readQueued splits into<=0x4000 nonzero chunks, advances cursors; zero length submitsnone. Wait receives/acknowledges untilpending0. Queue cursor and requeststorage retained after completion.",
+        "Cache wait8003FAE8..8003FB68: first waits entire queue, then tail-to-head clears requestedmask only whileeachentry hasatleastone maskbit. It stops at first nonmatching entry. fontCacheWaitForReads8003F6B8 passesmask2; doesnot releaseusebit1, freeglyphs or createimage.",
+        "Nonfull send: store message pointer at msg[(first+validCount)%msgCount], increment validCount. Payload bytes are not copied or acknowledged.",
+        "Full send: running thread state halfword+0x10=8; enqueue in &queue.fullqueue. On receiver wake: pop queue.mtqueue, set receiver state2 and enqueue ready queue. Higher priority receiver can preempt sender via ready-queue yield.",
+        "Priority insertion writes thread.next, predecessor.next/queue-head and thread.queue(+8). Pop writes only queue-head, leaving popped next/queue fields until subsequent insertion.",
+        "Yield saves thread Status+0x118 with EXL set, callee-saved s0..s7 at+0x98..D0, gp+E8,sp+F0,s8+F8,ra+100,returnPC+11C, RCPmask+128. If fp flag+18 nonzero, also F20/F22/F24/F26/F28/F30 at+180..1A8 and FCSR+12C.",
+        "Dispatch pops ready queue at8009F898, writes running-thread global8009F8A0 and state4; restores GPR/HI/LO/CP0Status/EPC/FPU state, writes MI interrupt mask atA430000C using the authenticated table800A7D40 and global mask8009DC80, then ERET. External runnable-thread execution is not attributed to caller helpers.",
+        "Own send stack frame56 bytes plus writable caller argument homes; osStartThread adds40 bytes on wake/preemption path. Other resumed threads have separate live stacks and contexts. Ready/wait sentinel at8009F890 has next0 and priority below real threads.",
+        "Original __osDisableInt mask-race branch also reads8009F9B8; its literal access must be preserved rather than assuming it dereferences runningThread. Fast mask-stable path does not take that branch."
+      ]
+    },
+    {
+      "file": "src/ovl/actor_script_action_commands.c",
+      "function": "actorScriptSetMessageStyle",
+      "sha256": "07c2cbe1e7dad53177632c21851e610aca007cf1ea96edf5a244d7382b6d72d7",
+      "effect": "replace_argument_with_scalar",
+      "arguments": 1,
+      "stack_delta": 0,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "preconditions": [
+        "One numeric operand lies above protected locals and frame metadata; actor/state/VM/value storage is valid, stable and nonoverlapping.",
+        "Stores the converted signed word in messageStyle and replaces the argument with zero. This handler does not validate a font index; validity for later consumers is a separate obligation."
+      ],
+      "dependencies": [
+        "function:src/ovl/script_vm.c:scriptVmPopInteger",
+        "function:src/ovl/script_vm.c:scriptVmPopValue",
+        "function:src/ovl/script_vm.c:scriptValueGetInteger"
+      ]
+    },
+    {
+      "file": "src/ovl/actor_script_action_commands.c",
+      "function": "actorScriptResetTimer",
+      "sha256": "4fe97ae4660e8c28bafa7deef32f67867267195afd698974c4a5a95c7d1213c2",
+      "effect": "append_scalar",
+      "arguments": 0,
+      "stack_delta": 1,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "preconditions": [
+        "Actor, state, VM and values are valid, stable and nonoverlapping; consumed operands lie above protected locals and metadata; append requires one free slot.",
+        "Sets VM elapsed to positive floating zero and appends integer zero; totalElapsed and action elapsed are separate and unchanged."
+      ],
+      "dependencies": []
+    },
+    {
+      "file": "src/ovl/actor_script_action_commands.c",
+      "function": "actorScriptPassThroughInteger",
+      "sha256": "1956aff1a20a6a814665dd27963fe46e8bfb12888995d079636bc9dd6c264579",
+      "effect": "replace_argument_with_scalar",
+      "arguments": 1,
+      "stack_delta": 0,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "preconditions": [
+        "Actor, state, VM and values are valid, stable and nonoverlapping; consumed operands lie above protected locals and metadata; append requires one free slot.",
+        "Numeric operand satisfies scriptValueGetInteger conversion domain; float truncation produces an integer result, not preservation of the original tag or payload."
+      ],
+      "dependencies": [
+        "function:src/ovl/script_vm.c:scriptVmPopInteger",
+        "function:src/ovl/script_vm.c:scriptVmPopValue",
+        "function:src/ovl/script_vm.c:scriptValueGetInteger"
+      ]
+    },
+    {
+      "function": "actorScriptSetTargetPosition",
+      "file": "src/ovl/actor_script_action_commands.c",
+      "sha256": "2fd39ddcc23b98221f2955f300f48c53004d828f222588d7806bdc2d81f64172",
+      "effect": "replace_arguments_with_scalar",
+      "arguments": 3,
+      "stack_delta": -2,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "result_semantics": "integer_zero",
+      "dependencies": [
+        "function:src/ovl/script_vm.c:scriptVmPopValue",
+        "function:src/ovl/script_vm.c:scriptVmPopInteger",
+        "function:src/ovl/script_vm.c:scriptVmPopFloat",
+        "function:src/ovl/script_vm.c:scriptValueGetInteger",
+        "function:src/ovl/script_vm.c:scriptValueGetFloat",
+        "function:src/ovl/script_vm.c:scriptVmPushInteger",
+        "function:src/ovl/script_vm.c:scriptVmPushValue",
+        "function:src/ovl/script_vm.c:scriptValueSetInteger",
+        "function:src/ovl/actor_script_queries.c:actorSetTargetPosition",
+        "file:include/actor_script.h",
+        "file:include/actor_behavior.h",
+        "file:include/actor_target.h",
+        "file:include/object_types.h",
+        "file:include/script_vm.h",
+        "file:include/script_vm_commands.h"
+      ],
+      "preconditions": [
+        "Valid actor/state, retained VM and owned value storage remain live and nonoverlapping with C stack and any traversed object hierarchy. No concurrent state/context replacement occurs. Numeric operands lie above all protected locals/frame records; appending the result does not overwrite protected storage.",
+        "Integer operands accept integer/code-reference values or finite signed-32-representable floats with truncation. Boolean controls test the converted integer against zero, so negative nonzero values enable suppression. Result is integer zero and native scheduling continues.",
+        "Push order X,Y,Z; pops float Z,Y,X into local coordinates. Writes targetPosition at actor-state0x1EC..1F7, targetMode word0x19C=0 and targetDistanceAllowance float0x1A4=0. It disables tracking interpretation but does not clear stored target handles or start movement. Float operands are accepted numeric values under scriptVmPopFloat conversion; no coordinate-space conversion occurs."
+      ],
+      "evidence": "ROM-authenticated original function 8011C5F4..8011C674; original Ghidra instructions confirm pop order, stores and masks."
+    },
+    {
+      "function": "actorScriptBuildSharedTextAlternate",
+      "file": "src/ovl/actor_script_action_commands.c",
+      "sha256": "82a4cc0daff7c0caeb3ccc336ff7c547eecbbe9c2fb7ffe0937b1cdca36852fd",
+      "effect": "inline_count_strings_then_append_scalar",
+      "arguments": "inline_count",
+      "stack_delta": "1-count",
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "inline_count": {
+        "encoding": "packed_script_value",
+        "bytes": 5,
+        "conversion": "scriptValueGetInteger",
+        "domain": "nonnegative_s32",
+        "instruction_offset_delta": 5
+      },
+      "sink": "shared_text",
+      "dependencies": [
+        "file:src/ovl/actor_script_action_commands.c",
+        "file:include/object_types.h",
+        "file:include/actor_script.h",
+        "file:include/script_vm.h",
+        "file:include/text_image.h",
+        "function:src/ovl/script_vm.c:scriptVmReadIntegerOperand",
+        "function:src/ovl/script_vm.c:scriptValueGetInteger",
+        "function:src/ovl/script_vm.c:scriptVmPopString",
+        "function:src/ovl/script_vm.c:scriptVmPopValue",
+        "file:src/game/audio_worker_string_utils.c",
+        "file:src/ovl/script_vm.c",
+        "file:include/libc/xstdio.h",
+        "file:docs/LOCAL_SDK_FILES.json",
+        "file:config/pikachu.yaml",
+        "file:config/symbol_addrs.txt",
+        "file:tools/materialize_ultralib.py",
+        "function:src/ovl/script_vm.c:scriptValueGetFloat",
+        "function:src/ovl/script_vm.c:scriptVmPushInteger",
+        "function:src/ovl/script_vm.c:scriptValueSetInteger",
+        "function:src/ovl/actor_script_action_commands.c:stringPrependBounded",
+        "function:src/ovl/script_vm.c:scriptVmPushValue"
+      ],
+      "preconditions": [
+        "The PC identifies a readable five-byte numeric count: integer/code-reference or finite float convertible to s32. Count is nonnegative and no greater than currentDepth minus protectedFloor. After consuming it, capacity permits one result; count zero still needs a free slot. Signed subtraction overflow is excluded.",
+        "Valid actor, state, VM, program and value storage remain stable. The command advances PC by five bytes, consumes count values and appends integer zero. Shared text and numeric scratch are its only global write regions; no display, allocation or runtime reachability claim follows.",
+        "Operands have tag 3 with valid nonnegative string-table indices, tag 4 with nonnull readable borrowed strings, tag 0 integers, tag 2 code-reference s32 values, or tag 1 finite f32 values. Unknown tags are excluded. Construction, sink and native-stack storage are disjoint from VM values, program, tables and borrowed strings. Read-only strings may alias one another, but cannot alias the numeric scratch buffer.",
+        "Integer/code-reference formatting uses fixed %d: at most eleven content bytes plus NUL. Fixed %f with default precision six must produce at most 31 bytes before NUL; finite f32 alone is insufficient. abs(value) <= 1e9 is a conservative sufficient subset; other floats require output-length evidence. Formatting and count loops terminate with sufficient native stack.",
+        "Original-ROM SDK implementations, pinned local SDK inputs and strict object comparison remain required. Source fingerprints alone do not authenticate SDK assembly. sprintf at 800538E0 uses the fixed callback at 80053938 and memcpy. _Printf, _Putfld, _Litob, _Ldtob, _Ldunscale and _Genld write owned native-stack formatter records and supplied output only. Fixed %d/%f exclude %n and arbitrary callbacks; read-only digit/power tables and division helpers remain original SDK assumptions.",
+        "Numeric conversion writes content and NUL into the 32-byte gScriptVmNumericTextBuffer at 801340B0, retaining its tail. Its borrowed result lasts until the next conversion. Immediate prepend copies each result before the next pop, allowing consecutive numeric operands under these disjointness conditions. No allocated formatter resources or native-stack pointers escape.",
+        "The retained 80-byte shared buffer spans contiguous declarations at 80134220/24/28 through 8013426F. Count zero clears only byte zero. Each prepend writes byte 79 as NUL, shifts the bounded suffix backward and copies at most 79 prefix bytes. A source scan can read byte 79 before testing its bound: sources must be readable through NUL or the first 80 bytes. Destination scans remain within the 80-byte buffer.",
+        "Text is the leftmost 79 bytes of concatenation in bottom-to-top argument order, with truncation after each prepend. It remains borrowed shared storage until another shared-text builder or message command overwrites it. The result value is integer zero, with no ownership transfer or new string-pointer result. Message-bar, window, history and image state are unchanged. The message-bar 59-byte limit does not apply. No runtime probe for this alternate callback is claimed."
+      ],
+      "evidence": "Original Ghidra8011C0C8..8011C14C confirms the wrapper, count reader8011566C (PC+5), PopString80116104 and prepend8011BD9C with capacity80. Ghidra8011BD9C..8011BEAC confirms bounded scans, reverse shifts, copies and final termination; 80116104..80116220 confirms string-index/pointer and fixed numeric-format paths. The source-bound SDK formatter closure and its preconditions were separately reused from the EnqueueMessage review, without inheriting a runtime claim.",
+      "runtime_status": "untested"
+    },
+    {
+      "function": "actorScriptPassThroughFloat",
+      "file": "src/ovl/actor_script_action_commands.c",
+      "sha256": "aa2d7dd430233f3bf8fb0154f4fcddf60bdbeea19ee529d8e0f85d046fabcbe2",
+      "effect": "replace_argument_with_scalar",
+      "arguments": 1,
+      "stack_delta": 0,
+      "result_tag": "float",
+      "scheduling": "continue",
+      "result_semantics": "Replace one numeric operand with its binary32 conversion, tagged as a float; integer/code-reference arguments are not preserved as integer tags.",
+      "dependencies": [
+        "function:src/ovl/script_vm.c:scriptVmPopFloat",
+        "function:src/ovl/script_vm.c:scriptVmPopValue",
+        "function:src/ovl/script_vm.c:scriptValueGetFloat",
+        "function:src/ovl/script_vm.c:scriptVmPushFloat",
+        "function:src/ovl/script_vm.c:scriptVmPushValue",
+        "function:src/ovl/script_vm.c:scriptValueSetFloat",
+        "file:docs/LOCAL_SDK_FILES.json",
+        "file:config/pikachu.yaml",
+        "file:config/symbol_addrs.txt",
+        "file:tools/materialize_ultralib.py",
+        "file:include/ultra64.h",
+        "file:include/PR/os_libc.h"
+      ],
+      "preconditions": [
+        "The calling actor, live actor state, retained VM, owned value storage and helper C stack remain valid and nonoverlapping. One operand lies above every protected local and frame-metadata slot; its existing slot can receive the result. No concurrent writer, context replacement or destruction interleaves the call.",
+        "Accepted numeric inputs are tag-1 finite binary32 values, or tag-0 integer/tag-2 code-reference signed payloads converted to binary32 by the original target FPU. Integer conversion can round. Other tags, nonfinite float payloads and host-language reinterpretations are outside this reviewed domain.",
+        "The original target FPU environment remains valid, with relevant exceptions disabled and the intended rounding/flush behavior. Floating-point conversion, lookup arithmetic or square root may change FPU status flags; this storage contract does not promise unchanged processor/FCSR state.",
+        "Memory writes are limited to owned helper C-stack temporaries, the consumed five-byte value slot rewritten with float tag 1 and four payload bytes, and VM depth decrement/restoration. Final depth is unchanged; lower values, protected frame metadata and unrelated actor/global storage are preserved under the stated disjointness assumptions.",
+        "Original ROM SDK bcopy at 0x80052610 supplies the fixed four-byte copies inside numeric get/set helpers. Its authenticated small-copy path accesses only four source/destination bytes, performs no indirect callback or scheduler operation, and requires valid nonwrapping nonoverlapping ranges. Tracked SDK manifest/configuration/materializer provenance is bound; frame-source fingerprints alone do not authenticate generated SDK assembly. No SDK source is redistributed by this review."
+      ],
+      "evidence": "Source and original Ghidra 0x8011C2A8 show only capture of VM, float pop and float push, then continue. There is no additional mathematical helper. Read-only original Ghidra 0x8011549C/0x801160DC/0x8011550C/0x8011604C agrees with numeric pop, conversion and float push/set source. Local generated bcopy instruction words were checked against the authenticated normalized ROM; its small-copy control flow was inspected directly because the resident-function Ghidra artifact omits SDK instructions. No runtime observations are claimed.",
+      "sdk_instruction_ranges": [
+        {
+          "function": "bcopy",
+          "address": 2147821072,
+          "size": 772,
+          "sha256": "f398a13824f7307d1d66f05ca80f49e0ed734886d23c0d2a3bcdd4f11601b6b0"
+        }
+      ]
+    }
+  ]
+}

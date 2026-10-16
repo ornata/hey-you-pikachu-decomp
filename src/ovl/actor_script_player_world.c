@@ -341,52 +341,54 @@ s32 actorScriptGetAreaPathPointCoordinate(u8 *actor) {
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011E77C (0x8011E77C).
 s32 actorScriptFindActorNearPosition(u8 *actor) {
-    s32 vm;
+    s32 vmAddress;
     f32 x;
     f32 y;
     f32 z;
-    s32 a;
-    s32 b;
-    f32 speed;
-    f32 pos[3];
+    s32 minimumKind;
+    s32 maximumKind;
+    f32 maximumDistance;
+    f32 position[3];
 
-    vm = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    speed = scriptVmPopFloat((ScriptVm *)(vm));
-    b = scriptVmPopInteger((ScriptVm *)(vm));
-    a = scriptVmPopInteger((ScriptVm *)(vm));
-    z = scriptVmPopFloat((ScriptVm *)(vm));
-    y = scriptVmPopFloat((ScriptVm *)(vm));
-    x = scriptVmPopFloat((ScriptVm *)(vm));
-    pos[0] = x;
-    pos[1] = y;
-    pos[2] = z;
-    scriptVmPushInteger((ScriptVm *)(vm), actorFindNearestHandleFromPosition(actor, pos, a, b, speed));
+    vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    maximumDistance = scriptVmPopFloat((ScriptVm *)(vmAddress));
+    maximumKind = scriptVmPopInteger((ScriptVm *)(vmAddress));
+    minimumKind = scriptVmPopInteger((ScriptVm *)(vmAddress));
+    z = scriptVmPopFloat((ScriptVm *)(vmAddress));
+    y = scriptVmPopFloat((ScriptVm *)(vmAddress));
+    x = scriptVmPopFloat((ScriptVm *)(vmAddress));
+    position[0] = x;
+    position[1] = y;
+    position[2] = z;
+    scriptVmPushInteger((ScriptVm *)(vmAddress),
+                        actorFindNearestHandleFromPosition(actor, position, minimumKind, maximumKind, maximumDistance));
     return 0;
 }
 
 /// Find an item near a world position using kind, state, and priority filters.
-/// \param actor Actor whose script VM supplies X, Y, Z, inclusive minimum and maximum item kinds (165 selects the respective range endpoint), inclusive maximum approximate distance, required state (six accepts any), then a nonzero priority-weighting flag, and receives the selected handle or zero; weighted selection resets the selected item priority.
+/// \param actor Actor whose script VM supplies X, Y, Z, inclusive minimum and maximum item kinds (165 selects the respective range endpoint), inclusive maximum approximate distance, required ownership (six accepts any), then a nonzero priority-weighting flag, and receives the selected handle or zero; weighted selection resets the selected item priority.
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011E828 (0x8011E828).
 s32 actorScriptFindItemNearPosition(u8 *actor) {
-    s32 vm;
-    f32 pos[3];
-    s32 d;
-    s32 c;
-    f32 speed;
-    s32 b;
-    s32 a;
+    s32 vmAddress;
+    f32 position[3];
+    s32 minimumKind;
+    s32 maximumKind;
+    f32 maximumDistance;
+    s32 requiredOwnership;
+    s32 weighted;
 
-    vm = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    a = scriptVmPopInteger((ScriptVm *)(vm));
-    b = scriptVmPopInteger((ScriptVm *)(vm));
-    speed = scriptVmPopFloat((ScriptVm *)(vm));
-    c = scriptVmPopInteger((ScriptVm *)(vm));
-    d = scriptVmPopInteger((ScriptVm *)(vm));
-    pos[2] = scriptVmPopFloat((ScriptVm *)(vm));
-    pos[1] = scriptVmPopFloat((ScriptVm *)(vm));
-    pos[0] = scriptVmPopFloat((ScriptVm *)(vm));
-    scriptVmPushInteger((ScriptVm *)(vm), itemFindHandleNearPosition(pos, speed, d, c, b, a));
+    vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    weighted = scriptVmPopInteger((ScriptVm *)(vmAddress));
+    requiredOwnership = scriptVmPopInteger((ScriptVm *)(vmAddress));
+    maximumDistance = scriptVmPopFloat((ScriptVm *)(vmAddress));
+    maximumKind = scriptVmPopInteger((ScriptVm *)(vmAddress));
+    minimumKind = scriptVmPopInteger((ScriptVm *)(vmAddress));
+    position[2] = scriptVmPopFloat((ScriptVm *)(vmAddress));
+    position[1] = scriptVmPopFloat((ScriptVm *)(vmAddress));
+    position[0] = scriptVmPopFloat((ScriptVm *)(vmAddress));
+    scriptVmPushInteger((ScriptVm *)(vmAddress), itemFindHandleNearPosition(position, maximumDistance, minimumKind,
+                                                                            maximumKind, requiredOwnership, weighted));
     return 0;
 }
 

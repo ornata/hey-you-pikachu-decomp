@@ -366,6 +366,7 @@ s32 actorScriptTransitionEnvironmentColor(u8 *actor) {
 /// Create a target-following effect emitter with a selected visual style.
 /// \param actor Actor whose script VM supplies an emission style from zero through seven, fallback world X/Y/Z coordinates, target handle, lifetime in seconds, reference handle, and signed horizontal offset, in that order; unavailable targets use the fallback position, nonpositive lifetimes disable expiry, and the VM receives zero.
 /// \returns Zero, allowing script execution to continue.
+/// \note Following and emission begin on later effect updates; creation does not invoke emission callbacks.
 /// \note Original decompilation identifier: \c func_80120150 (0x80120150).
 s32 actorScriptCreateEffectEmitter(u8 *actor) {
     s32 style;
@@ -394,18 +395,18 @@ s32 actorScriptCreateEffectEmitter(u8 *actor) {
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_80120204 (0x80120204).
 s32 actorScriptCreateWispEffect(u8 *actor) {
-    s32 sp_pop;
+    s32 style;
     s32 vmAddress;
-    f32 sp2C;
-    f32 sp28;
-    f32 sp24;
+    f32 x;
+    f32 y;
+    f32 z;
 
     vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    sp24 = scriptVmPopFloat((ScriptVm *)(vmAddress));
-    sp28 = scriptVmPopFloat((ScriptVm *)(vmAddress));
-    sp2C = scriptVmPopFloat((ScriptVm *)(vmAddress));
-    sp_pop = scriptVmPopInteger((ScriptVm *)(vmAddress));
-    wispEffectCreate(sp_pop, sp2C, sp28, sp24);
+    z = scriptVmPopFloat((ScriptVm *)(vmAddress));
+    y = scriptVmPopFloat((ScriptVm *)(vmAddress));
+    x = scriptVmPopFloat((ScriptVm *)(vmAddress));
+    style = scriptVmPopInteger((ScriptVm *)(vmAddress));
+    wispEffectCreate(style, x, y, z);
     scriptVmPushInteger((ScriptVm *)(vmAddress), 0);
     return 0;
 }

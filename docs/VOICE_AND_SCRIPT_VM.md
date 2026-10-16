@@ -535,6 +535,15 @@ the nearest candidate, so rejection does not retry a farther item. Its 500-ms
 cooldown reads the retained interaction timestamp without updating it. Search can
 rearrange the search tree and overwrite shared query state, making it nonreentrant.
 
+Position-based actor and item searches return handles and use different boundaries:
+actors must be strictly closer than the limit, while items may lie exactly on it.
+Actor search excludes the caller. Item search uses an ownership filter, with six
+accepting any ownership, and does not check pickup eligibility. Weighted item
+search can prefer a farther item and resets only the selected item's priority.
+Both queries rearrange shared search state and tree links. Fifteen authored
+original-instruction probes check these distinctions, kind-range aliases and
+protected VM/query/tree storage; they do not prove later pickup or object lifetime.
+
 `actorScriptDestroyItem` removes collision and item-search registrations, requests
 destruction of the item and its following siblings/descendants, and decrements the
 live-item count. Held items may run the two release hooks above first. The native
@@ -607,6 +616,17 @@ terrain, then returns the next waypoint's raw coordinate, including its unadjust
 Y. It traverses path and terrain data even when the requested axis exceeds two.
 Valid path storage and a complete end-marker triple remain prerequisites.
 
+Emitter creation places the new object at an available target or fallback position
+and retains settings for later following and emission. A reference handle and
+horizontal offset do not immediately move that initial position. Creation does
+not invoke the retained emission callbacks, including the audible style's callback.
+Wisp creation allocates and registers its object, initializes graphic/opacity
+storage and evaluates animation at step zero. Its ten styles differ in retained
+templates, scale, color, count and animation; style three advances the RNG twice.
+These source-bound creation contracts require valid resources, registry capacity
+and successful separate allocations. Later callbacks and resource lifetimes
+remain independent obligations.
+
 Three retained attached-effect definitions at `0x80074EB8` select templates of
 runtime kind `0xAC`, with no child or sibling templates. Their scales are
 `0.1`, `1`, `1`; opacity-program selectors are `0`, `0`, `1`.
@@ -675,6 +695,12 @@ idempotence and revocation of every affected review after a shared-helper tamper
 Source or dependency changes revoke the affected evidence rather than creating a
 new review. The catalog reports stale reviews and excludes them from active contracts. Unreviewed
 callbacks remain explicit in `native_effect_frontier`.
+
+The root review index lists checksummed callback files grouped by source unit.
+Loading preserves the original callback order and every frozen dependency record.
+Missing, altered, duplicate or out-of-directory parts stop validation. Catalog
+fingerprints cover the complete logical review set, including every part. Storage
+checksums do not replace source fingerprints or approve a changed contract.
 
 Sixteen authored original-instruction cases check the fifteen direct
 callbacks, including both blend-status branches, while guarding saved locals,
@@ -946,6 +972,8 @@ Recovered field names now distinguish these saved roles:
 | 27–30 / 32–35 | Recorded acquisition of the cupcake, beach ball, flying acorn, fishing hook, watering can, watering jug, harmonica and megaphone, respectively. |
 | 36–58 | Per-area gameplay-scene initialization counts, saturating at fifteen. |
 | 59–68 | World-map destination unlock flags, still subject to chase-stage area availability. |
+| 72 | Caterpie babysitting introductory instructions recorded. |
+| 75 / 77 / 79 | Springleaf entrance / Oddish Meadow / Springleaf watering introductions recorded. |
 | 86 | Additional Ochre entrance resident stage, zero through three; not a count including the unconditional Bulbasaur. |
 | 93 | Completed disappearance episodes, used for first/repeat search narration. |
 | 160 | Bedroom passage to the front yard enabled instead of its initial descriptive proxy. |
@@ -978,6 +1006,10 @@ containing scene is the runtime current area. World-map unlock flags likewise do
 not prove prior visits: a destination must also have a valid area for the current
 chase stage. Springleaf and Olivine Lake destinations can select different areas
 as the stage changes.
+
+The introductory flags record their script paths, rather than completed visits
+or proof that every line was seen. The Caterpie repeat-introduction branch also
+writes field 72; it does not establish a name for field 73, which remains numeric.
 
 The bedroom script advances quiz stage zero to one after at least eight correct
 picture-quiz answers, and one to two after a perfect shadow round. Its selection

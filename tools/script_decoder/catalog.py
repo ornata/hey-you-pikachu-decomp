@@ -26,7 +26,7 @@ from .functions import action_producer_functions
 from .vocabulary import vocabulary_catalog
 from .dictionaries import dictionary_requests, source_dictionary_requests, attach_dictionary_usage
 from .name_catalog import pokemon_name_catalog
-from .native_frames import native_frame_reviews
+from .native_frames import native_frame_reviews, review_manifest_fingerprint
 from .control_schemes import control_scheme_catalog, control_scheme_requests
 from .windows import text_window_requests
 from .caller_frames import analyze_caller_frames
@@ -273,7 +273,7 @@ def main(argv=None):
         report['decoder_sha256'] = hashlib.sha256(Path(__file__).with_name('formats.py').read_bytes()).hexdigest()
         report['analysis_sha256'] = {name: hashlib.sha256(Path(__file__).with_name(name + '.py').read_bytes()).hexdigest()
                                      for name in ('catalog', 'stack', 'messages', 'actions', 'scenarios', 'actors', 'functions', 'table_returns', 'vocabulary', 'dictionaries', 'name_catalog', 'saved_dictionary', 'native_frames', 'control_schemes', 'windows', 'caller_frames', 'progress_fields', 'items')}
-        report['native_frame_review_sha256'] = hashlib.sha256(Path(__file__).with_name('native_frame_reviews.json').read_bytes()).hexdigest()
+        report['native_frame_review_sha256'] = review_manifest_fingerprint()
         files = {'catalog.json': report, **{name + '.json': row for name, row in decodes.items()}}
         # Validate every output before writing any content, including existing symlinks.
         for name in files:

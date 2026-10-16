@@ -112,6 +112,14 @@ enum {
         67, ///< Cobalt coast world-map destination available when the chase stage supplies an area.
     PROGRESS_FIELD_FRONT_YARD_MAP_DESTINATION_UNLOCKED =
         68, ///< Front yard world-map destination available when the chase stage supplies an area.
+    PROGRESS_FIELD_CATERPIE_BABYSITTING_INTRODUCTION_RECORDED =
+        72, ///< Initial Viridian-deep Caterpie babysitting instructions processed.
+    PROGRESS_FIELD_SPRINGLEAF_ENTRANCE_INTRODUCTION_RECORDED =
+        75, ///< Springleaf-entrance introduction processed; does not mark a completed visit.
+    PROGRESS_FIELD_ODDISH_MEADOW_INTRODUCTION_RECORDED =
+        77, ///< Oddish-meadow legend and Diglett introduction processed.
+    PROGRESS_FIELD_SPRINGLEAF_WATERING_INTRODUCTION_RECORDED =
+        79, ///< First Springleaf-field watering introduction and demonstration processed.
     PROGRESS_FIELD_OCHRE_ENTRANCE_RESIDENT_STAGE = 86, ///< Zero through three selects additional entrance residents.
     PROGRESS_FIELD_PIKACHU_DISAPPEARANCE_EPISODES_COMPLETED =
         93, ///< Completed disappearance visits selecting first or repeat search narration.
