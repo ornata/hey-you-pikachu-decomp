@@ -1075,6 +1075,20 @@ need not execute, return or complete its requested action. Response eighteen wit
 profile key 76 has a separate route before ordinary dispatch. Codes twenty-four
 and twenty-five remain unresolved.
 
+For 53 distinct literal-argument helper calls, the decoder also records a
+`conditional_native_argument_context` linking caller values to the first native
+that consumes unchanged formal arguments. It retains the original symbolic
+arguments and checks the intervening linear prefix against current source-bound
+preservation reviews. Branches, formal writes, ambiguous bindings and stale reviews
+prevent the link. These contexts assume valid, disjoint frames and stable bindings;
+they do not establish native success, later helper behavior or mode restoration.
+Only arguments identified as timed-program IDs extend the resource catalog, adding
+program 113; default-action kinds remain a separate domain.
+
+Four original-VM prefix probes confirm representative argument forwarding through
+these helpers, including the intervening native calls. They stop before the target
+native bodies, so they do not establish target acceptance or gameplay reachability.
+
 Eating requests reference timed programs 105, 106 and 107. Costed electric moves
 use the five retained [ActorCostedActionPolicy](../include/actor_script.h) selectors:
 

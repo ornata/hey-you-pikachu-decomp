@@ -5,6 +5,7 @@ Response categories, reaction codes, cost selectors and timed IDs stay distinct.
 """
 
 import hashlib
+import json
 import math
 import re
 import struct
@@ -13,9 +14,9 @@ from .actions import CONTRACTS, action_calls
 from .formats import integer_operand
 from .functions import function_summary
 from .stack import incoming_edges, recover_arguments
-from .local_flow import local_integer_domain
+from .local_flow import local_integer_domain, local_preservation_contracts
 from .context import ROOT
-from .native_frames import fingerprint
+from .native_frames import fingerprint, native_frame_reviews
 from tools.source_quality import code_only
 
 CONFIG = 0x8014FED4
@@ -333,6 +334,136 @@ def dispatch_branches(instructions, entry, *, frame=1, variable=0):
     return sorted(branches, key=lambda b: b['response_code'])
 
 
+def annotate_literal_native_contexts(instructions, graphs, *, root=ROOT, limit=256):
+    """Link concrete constant caller actuals to a callee's first formal consumer.
+
+    Only an exclusive linear prefix is admitted. Source-bound native preservation
+    checks apply before the consumer; subsequent execution is outside this proof.
+    Raw callee arguments remain unchanged, and no global formal substitution occurs.
+    """
+    if type(limit) is not int or limit <= 0:
+        raise ValueError('context prefix work budget must be a positive integer')
+    for graph in graphs:
+        for edge in graph['script_calls']:
+            edge.pop('conditional_native_argument_context', None)
+    reviews = native_frame_reviews(root)
+    preservation = local_preservation_contracts(reviews, root)
+    if preservation['stale_vm_functions']:
+        return
+    admitted = set(preservation['preserved_native_functions'])
+    by = {r['offset']: r for r in instructions}
+    indices = {r['offset']: i for i, r in enumerate(instructions)}
+    incoming = incoming_edges(instructions)
+    frames = {o:r for o,r in by.items() if r['name']=='SCRIPT_OP_ENTER_FRAME'}
+
+    def constant(value):
+        number = value.get('value')
+        if value.get('kind')=='integer':
+            return type(number) is int and -2147483648 <= number <= 2147483647
+        return value.get('kind')=='float' and type(number) in (int,float) and math.isfinite(number) and abs(number)<=3.4028234663852886e38
+
+    def arguments(row, count):
+        return recover_arguments(instructions, indices[row['offset']], count,
+            incoming=incoming, allow_float=True, allow_symbolic=True, frame_entries=frames)
+
+    def formal(expression, frame, argc):
+        return expression.get('kind')=='variable' and expression.get('frame')==frame and type(expression.get('slot')) is int and 0<=expression['slot']<argc
+
+    def contains_formal(expression, frame, argc):
+        if isinstance(expression,dict):
+            return formal(expression,frame,argc) or any(contains_formal(v,frame,argc)for v in expression.values())
+        if isinstance(expression,list):return any(contains_formal(v,frame,argc)for v in expression)
+        return False
+
+    def prove(edge):
+        call=by[edge['instruction_offset']]
+        entry=integer_operand(call['operands'][0])
+        if call['name']!='SCRIPT_OP_CALL' or entry!=edge['target_offset'] or entry not in frames:
+            raise ValueError('context does not identify one decoded script call')
+        header=frames[entry]
+        argc,count,frame=map(integer_operand,header['operands'])
+        if any(type(v)is not int for v in(argc,count,frame)) or not 0<argc<=count<=2147483645 or not 1<=frame<32:
+            raise ValueError('context has an unsupported callee frame contract')
+        actual=arguments(call,argc)
+        if len(actual)!=argc or not all(constant(v)for v in actual):
+            raise ValueError('context actuals are not bounded numeric constants')
+        prefix=[entry];native_pins={};previous=header
+        for _ in range(limit):
+            successors=previous.get('successors',[])
+            if len(successors)!=1 or successors[0]['kind']not in('fallthrough','resume_or_fallthrough'):
+                raise ValueError('context prefix branches, calls or lacks continuation')
+            off=successors[0]['offset'];row=by[off]
+            if previous['offset']+previous['size']!=off or incoming.get(off,set())!={previous['offset']}:
+                raise ValueError('context prefix is not adjacent and exclusively entered')
+            name=row['name'];prefix.append(off)
+            if name=='SCRIPT_OP_CALL_NATIVE':
+                functions=row.get('native',{}).get('functions',[])
+                if len(functions)!=1 or functions[0]not in reviews['active']:
+                    raise ValueError('context native has no unique current source review')
+                function=functions[0];review=reviews['active'][function];arity=review.get('arguments')
+                if type(arity)is not int or arity<0:
+                    raise ValueError('context native argument contract is not fixed')
+                raw=arguments(row,arity)
+                if any(contains_formal(v,frame,argc)for v in raw):
+                    if not all(formal(v,frame,argc)or constant(v)for v in raw):
+                        raise ValueError('first formal consumer has unsupported derived arguments')
+                    resolved=[actual[v['slot']]if formal(v,frame,argc)else v for v in raw]
+                    names=CONTRACTS.get(function,{}).get('arguments')
+                    if names is not None and len(names) != arity:
+                        raise ValueError('consumer argument names disagree with current source arity')
+                    return dict(status='conditional_literal_actual_context',caller_offset=call['offset'],callee_entry=entry,
+                        frame_index=frame,argument_count=argc,local_count=count,caller_actuals=actual,
+                        consumer_native_offset=off,consumer_function=function,
+                        raw_callee_arguments=dict(zip(names,raw))if names is not None else raw,
+                        contextual_arguments=dict(zip(names,resolved))if names is not None else resolved,
+                        prefix_instruction_offsets=prefix,intervening_native_review_sha256=native_pins,
+                        consumer_review_sha256=hashlib.sha256(json.dumps(review,sort_keys=True,separators=(',',':')).encode()).hexdigest(),
+                        vm_source_pins=preservation['vm_source_pins'],
+                        preconditions=['Caller arguments lie above protected operand/frame floors; matching ENTER_FRAME copies this concrete callsite actuals into valid callee formals.',
+                            'Active caller/root/callee values and frame metadata are physically disjoint; absolute frame bases, scaled offsets and complete values remain allocated and nonwrapping.',
+                            'Program/VM/owner/frame bindings remain stable, with no asynchronous mutation; every intervening native and original SDK prerequisite applies.',
+                            'The consumer review input-conversion, object/resource and operand prerequisites remain obligations; contextual values are boxed input expressions, not converted results or proof of validity.',
+                            'This potentially reachable syntactic call context only; no enclosing predicate feasibility, native outcome, later helper execution, restoration, callbacks or scheduler safety is established.'],
+                        scope='Only this constant-actual callsite to the first unchanged-formal native consumer. Raw shared formal expressions are retained; no global substitution or runtime value inference.')
+                if function not in admitted:
+                    raise ValueError('context prefix native lacks exact preservation pin')
+                native_pins[function]=preservation['native_review_sha256'][function]
+            elif name=='SCRIPT_OP_STORE_VARIABLE':
+                coords=tuple(integer_operand(v)for v in row['operands'])
+                if len(coords)!=2 or coords[0]!=frame or type(coords[1])is not int or not argc<=coords[1]<count:
+                    raise ValueError('context prefix overwrites formal or unbounded storage')
+            elif name=='SCRIPT_OP_LOAD_VARIABLE':
+                coords=tuple(integer_operand(v)for v in row['operands'])
+                if len(coords)!=2 or coords[0]!=frame or type(coords[1])is not int or not 0<=coords[1]<count:
+                    raise ValueError('context prefix reads outside callee storage')
+            elif name not in('SCRIPT_OP_PUSH_LITERAL','SCRIPT_OP_DISCARD'):
+                raise ValueError('context prefix has unsupported effects or rebinding')
+            previous=row
+        raise ValueError('context prefix work budget exhausted')
+
+    for graph in graphs:
+        for edge in graph['script_calls']:
+            try:
+                context=prove(edge)
+            except (ValueError,KeyError,IndexError,TypeError,OverflowError):
+                continue
+            edge['conditional_native_argument_context']=context
+
+
+def contextual_program_ids(graphs):
+    """Collect timed IDs only from proven contexts with a script_id argument."""
+    contextual_ids = set()
+    for graph in graphs:
+        for edge in graph['script_calls']:
+            context = edge.get('conditional_native_argument_context')
+            if context is None or 'script_id' not in CONTRACTS.get(context['consumer_function'], {}).get('arguments', []):
+                continue
+            expression = context['contextual_arguments']['script_id']
+            if expression['kind'] in ('integer', 'float') and -2147483648 <= expression['value'] < 2147483648:
+                contextual_ids.add(int(expression['value']))
+    return contextual_ids
+
+
 def item_response_dispatch(image, configurations, decodes, arities=None):
     """Bind this reviewed dispatcher to the exact local ROM-backed program."""
     candidates = [r for r in configurations if r['address'] == CONFIG and r['section'] == '.scene_bedroom']
@@ -361,6 +492,7 @@ def item_response_dispatch(image, configurations, decodes, arities=None):
     roots = {14168, 42203}
     roots.update(e['target_offset'] for b in branches for e in b['script_calls'] if e['target_offset'] is not None)
     closure = helper_closure(instructions, roots, arities=arities)
+    annotate_literal_native_contexts(instructions, [*branches, *closure['helpers']])
     for graph in closure['helpers']:
         for native in graph['native_calls']:
             if native['functions'] == ['actorScriptStartCostedAction']:
@@ -396,12 +528,13 @@ def item_response_dispatch(image, configurations, decodes, arities=None):
         raise ValueError('reviewed special response/profile guard changed')
     timed_ids = sorted({call['constant_script_id'] for graph in closure['helpers']
                         for call in graph['timed_action_requests'] if 'constant_script_id' in call})
+    contextual_ids = contextual_program_ids([*branches, *closure['helpers']])
     cost_ids = {value for graph in closure['helpers'] for native in graph['native_calls']
                 for value in native.get('cost_policy_link', {}).get('policy', {}).get('referenced_timed_program_ids', [])}
     return dict(configuration_address=CONFIG, program_address=PROGRAM, program_bytes=PROGRAM_SIZE,
                 program_sha256=PROGRAM_SHA256, configuration_prefix_sha256=hashlib.sha256(header).hexdigest(),
                 dispatcher_entry=15183, wrapper_entry=14168, branches=branches, **closure,
-                timed_program_resource_ids=sorted(set(timed_ids) | cost_ids),
+                timed_program_resource_ids=sorted(set(timed_ids) | cost_ids | contextual_ids),
                 cost_policies=dict(address=COST_POLICY_ADDRESS, byte_count=COST_POLICY_BYTES,
                                    sha256=COST_POLICY_SHA256, location=cost_location, records=policies,
                                    scope='Five neighbor-delimited records, not a complete allocation or runtime bounds check.'),

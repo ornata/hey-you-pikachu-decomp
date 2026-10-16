@@ -798,5 +798,96 @@ class IndexedHelperPreservationTests(unittest.TestCase):
         self.assertEqual(self.analyze(instructions,request)['status'],'unresolved_caller_relation')
 
 
+class LiteralNativeContextTests(unittest.TestCase):
+    def fixture(self):
+        caller=frame(0,1);caller['operands'][1]=operand(0)
+        callee=frame(100,101,2);callee['operands'][1]=operand(3)
+        rows=[caller,row(1,'PUSH_LITERAL',[operand(87)],[('fallthrough',2)]),
+            row(2,'PUSH_LITERAL',[operand(.5,1)],[('fallthrough',3)]),
+            row(3,'CALL',[operand(100,2)],[('return_continuation',4),('call',100)]),row(4,'RETURN'),callee,
+            row(101,'CALL_NATIVE',successors=[('resume_or_fallthrough',102)],native=dict(functions=['prefixGetter'])),
+            row(102,'STORE_VARIABLE',[operand(1),operand(2)],[('fallthrough',103)]),
+            row(103,'LOAD_VARIABLE',[operand(1),operand(0)],[('fallthrough',104)]),
+            row(104,'LOAD_VARIABLE',[operand(1),operand(1)],[('fallthrough',105)]),
+            row(105,'CALL_NATIVE',successors=[('resume_or_fallthrough',106)],native=dict(functions=['actorScriptStartTimedAction'])),
+            row(106,'STORE_ELEMENT',[operand(1),operand(0)])]
+        graph=dict(script_calls=[dict(instruction_offset=3,target_offset=100)])
+        return rows,graph
+
+    def analyze(self,rows,graph,*,stale=False,preserved=True,active=True,consumer_active=True):
+        from unittest.mock import patch
+        from tools.script_decoder.responses import annotate_literal_native_contexts
+        reviews=dict(active={'prefixGetter':dict(arguments=0),'actorScriptStartTimedAction':dict(arguments=2)})
+        if not active:reviews['active'].pop('prefixGetter')
+        if not consumer_active:reviews['active'].pop('actorScriptStartTimedAction')
+        preservation=dict(stale_vm_functions=['vm']if stale else[],preserved_native_functions=['prefixGetter']if preserved else[],native_review_sha256={'prefixGetter':'reviewed-pin'},vm_source_pins={'vm':'source-pin'})
+        with patch('tools.script_decoder.responses.native_frame_reviews',return_value=reviews),patch('tools.script_decoder.responses.local_preservation_contracts',return_value=preservation):
+            annotate_literal_native_contexts(rows,[graph])
+        return graph['script_calls'][0].get('conditional_native_argument_context')
+
+    def test_actual_order_raw_formals_and_prefix_only_scope(self):
+        rows,graph=self.fixture();context=self.analyze(rows,graph)
+        self.assertEqual(context['contextual_arguments']['script_id']['value'],87)
+        self.assertEqual(context['contextual_arguments']['duration_seconds']['value'],.5)
+        self.assertEqual(context['raw_callee_arguments']['script_id'],dict(kind='variable',frame=1,slot=0))
+        self.assertEqual(context['intervening_native_review_sha256'],{'prefixGetter':'reviewed-pin'})
+        self.assertNotIn(106,context['prefix_instruction_offsets'])
+        self.assertNotIn('integer_range',context['contextual_arguments']['script_id'])
+
+    def test_stale_vm_missing_changed_pin_and_source_review_fail_closed(self):
+        for kwargs in ({'stale':True},{'preserved':False},{'active':False}):
+            rows,graph=self.fixture();self.assertIsNone(self.analyze(rows,graph,**kwargs))
+
+    def test_formal_write_indirect_write_branch_recursive_call_and_rebinding_fail(self):
+        for name,operands in [('STORE_VARIABLE',[operand(1),operand(0)]),('STORE_ELEMENT',[operand(1),operand(2)]),('JUMP_IF_ZERO',[operand(104,2)]),('CALL',[operand(100,2)]),('ENTER_FRAME',[operand(0),operand(0),operand(1)])]:
+            rows,graph=self.fixture();r=next(r for r in rows if r['offset']==102)
+            r['name']='SCRIPT_OP_'+name;r['operands']=operands
+            self.assertIsNone(self.analyze(rows,graph))
+
+    def test_consumer_schema_arity_disagreement_and_reanalysis_revoke_context(self):
+        from unittest.mock import patch
+        rows,graph=self.fixture()
+        self.assertIsNotNone(self.analyze(rows,graph))
+        self.assertIsNone(self.analyze(rows,graph,stale=True))
+        self.assertIsNotNone(self.analyze(rows,graph))
+        self.assertIsNone(self.analyze(rows,graph,consumer_active=False))
+        self.assertIsNotNone(self.analyze(rows,graph))
+        self.assertIsNone(self.analyze(rows,graph,active=False))
+        self.assertIsNotNone(self.analyze(rows,graph))
+        next(r for r in rows if r['offset']==102)['operands']=[operand(1),operand(0)]
+        self.assertIsNone(self.analyze(rows,graph))
+        rows,graph=self.fixture()
+        with patch.dict('tools.script_decoder.responses.CONTRACTS',{'actorScriptStartTimedAction':dict(arguments=['script_id'])}):
+            self.assertIsNone(self.analyze(rows,graph))
+
+    def test_resource_domain_and_positive_finite_work_budget(self):
+        from tools.script_decoder.responses import contextual_program_ids,annotate_literal_native_contexts
+        rows,graph=self.fixture();self.analyze(rows,graph)
+        self.assertEqual(contextual_program_ids([graph]),{87})
+        context=graph['script_calls'][0]['conditional_native_argument_context']
+        context['consumer_function']='actorScriptSetDefaultActionMode'
+        context['contextual_arguments']={'default_kind':dict(kind='integer',value=113)}
+        self.assertEqual(contextual_program_ids([graph]),set())
+        for invalid in (0,-1,True,1.5,float('inf')):
+            with self.assertRaises(ValueError):annotate_literal_native_contexts([],[],limit=invalid)
+
+    def test_ambiguous_native_binding_and_nonfinite_actual_fail_closed(self):
+        for change in ('binding','nan','infinity'):
+            rows,graph=self.fixture()
+            if change=='binding':next(r for r in rows if r['offset']==101)['native']['functions'].append('alias')
+            else:next(r for r in rows if r['offset']==2)['operands']=[operand(float('nan')if change=='nan'else float('inf'),1)]
+            self.assertIsNone(self.analyze(rows,graph))
+
+    def test_competing_entry_arity_nonconstant_and_out_of_range_actual_fail(self):
+        for kind in ('incoming','arity','variable','overflow'):
+            rows,graph=self.fixture()
+            if kind=='incoming':rows.append(row(999,'JUMP',[operand(104,2)],[('branch',104)]))
+            elif kind=='arity':next(r for r in rows if r['offset']==100)['operands'][0]=operand(3)
+            elif kind=='variable':
+                r=next(r for r in rows if r['offset']==1);r['name']='SCRIPT_OP_LOAD_VARIABLE';r['operands']=[operand(1),operand(0)]
+            else:next(r for r in rows if r['offset']==1)['operands']=[operand(2147483648)]
+            self.assertIsNone(self.analyze(rows,graph))
+
+
 if __name__ == '__main__':
     unittest.main()
