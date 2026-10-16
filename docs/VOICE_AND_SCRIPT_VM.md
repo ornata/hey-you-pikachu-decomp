@@ -1121,6 +1121,22 @@ writes and demonstrate that a write aimed at the paired mode destroys the
 relationship. This supports the bounded write rule without proving that every
 retail caller reaches those helpers with valid storage.
 
+The retained decoded programs now have conditional relations for all 43 direct
+call contexts: 36 producer/mode pairs and seven formal-forwarding wrappers. This
+closes the direct-call inventory under the stated frame, native and scheduling
+conditions. The shared formal argument itself stays symbolic. Eighteen upstream
+contexts have paired relations; a further literal no-program sentinel is handled
+only by its guard-based exclusion, without inventing a cost selector.
+
+The intervening-effect review includes retained action elapsed-time reads, object
+escape tracking, cue playback and nearby-actor queries. Escape tracking can change
+actor target fields and RNG; a failed or unsupported result does not imply that
+nothing changed. Cue transport requires its reviewed queues and completion domain.
+Nearby-actor lookup changes shared query state, visitor state and splay-tree links.
+These effects preserve protected VM locals only with the full per-native
+allocation, operand-floor, nonaliasing and nonreentrancy prerequisites. The caller
+relations do not establish gameplay reachability or successful action playback.
+
 A wrapper can forward an unchanged formal argument to that shared helper. The
 decoder keeps a separate `formal_forwarding` tree for its recovered upstream
 callers, carrying the same borrowed mode coordinate through each step. A wrapper
