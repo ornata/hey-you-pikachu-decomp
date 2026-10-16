@@ -97,6 +97,12 @@ def recover_arguments(instructions, index, count, *, incoming=None, allow_float=
                     'actorScriptGetProgressMaximum'):
                 return dict(kind='native_result', function=functions[0], arguments=[argument()], result_tag='integer',
                             scope='Runtime progress read; selector conversion, initialized storage and current-area validity remain preconditions. No saved value is inferred.')
+            if allow_symbolic and functions == ['actorScriptGetItemKind']:
+                return dict(kind='native_result', function=functions[0], arguments=[argument()], result_tag='integer',
+                            scope='Runtime item-kind lookup from an integer-converted handle; zero for unavailable or non-item objects. No live handle or constant kind is inferred.')
+            if allow_symbolic and functions == ['actorScriptPushTargetDistanceAllowance']:
+                return dict(kind='native_result', function=functions[0], arguments=[], result_tag='float',
+                            scope='Runtime actor target-distance allowance; no numeric range or target identity is inferred.')
             if allow_symbolic and functions == ['actorScriptRandomBelow']:
                 bound = argument()
                 result = dict(kind='native_result', function=functions[0], arguments=[bound])

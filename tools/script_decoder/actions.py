@@ -17,6 +17,8 @@ from tools.source_quality import code_only
 # Argument order is push order. Deferred commands leave the operands on the
 # stack until their selected action handler initializes on a later actor update.
 CONTRACTS = {
+    'actorScriptStartHeldItemThrow': dict(arguments=['script_id'], consumption='deferred', scheduling='wait_for_action', result='minus_one_if_zero_held_handle_else_zero_when_sequencer_stops', startup='nonzero_held_handle_does_not_establish_live_item_or_successful_throw'),
+    'actorScriptStartItemAcquisition': dict(arguments=['script_id', 'kind_filter', 'search_range'], consumption='deferred', scheduling='wait_for_action', result='held_item_kind_or_zero_if_absent', startup='search_settings_retained_before_existing_handle_early_completion; otherwise_wait_for_sequencer_stop_and_last_action_ended_or_superseded'),
     'actorScriptStartEatingHeldItem': dict(arguments=['script_id'], consumption='deferred', scheduling='wait_for_action', result='minus_one_if_missing_or_rejected_else_preconsumption_player_pickup_history_zero_or_one; possible_followup_wait_after_result'),
     'actorScriptStartActionAndWait': dict(arguments=['script_id'], consumption='deferred', scheduling='wait_for_action', result='zero_when_sequencer_stops'),
     'actorScriptStartInterruptibleAction': dict(arguments=['script_id'], consumption='deferred', scheduling='wait_for_action', result='pending_message_or_zero_when_sequencer_stops'),

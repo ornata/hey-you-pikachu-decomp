@@ -8,6 +8,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 from tools.script_decoder import items
+from tools.script_decoder.actions import action_calls, CONTRACTS
 from tools.script_decoder.formats import decode_vm
 from tools.script_decoder.progress_fields import progress_field_requests
 from tools.script_decoder.stack import recover_arguments
@@ -19,6 +20,10 @@ NAMES = {
     25: 'SCRIPT_OP_LOAD_VARIABLE', 27: 'SCRIPT_OP_CALL_NATIVE', 35: 'SCRIPT_OP_FINISH',
 }
 NATIVES = {
+    893: dict(address=0x8011DD38, functions=['actorScriptGetItemKind'], inline_operands=[]),
+    894: dict(address=0x8011DBCC, functions=['actorScriptPushTargetDistanceAllowance'], inline_operands=[]),
+    891: dict(address=0x8011BF6C, functions=['actorScriptStartHeldItemThrow'], inline_operands=[]),
+    892: dict(address=0x8011BF90, functions=['actorScriptStartItemAcquisition'], inline_operands=[]),
     7: dict(address=0x8011C270, functions=['actorScriptPassThroughInteger'], inline_operands=[]),
     236: dict(address=0x801202F8, functions=['actorScriptSetProgressValue'], inline_operands=[]),
     237: dict(address=0x80120348, functions=['actorScriptGetProgressValue'], inline_operands=[]),
@@ -183,6 +188,52 @@ def arguments(rows, **options):
 
 
 class ScriptArgumentRecoveryTests(unittest.TestCase):
+    def test_item_acquisition_runtime_kind_and_range_stay_symbolic(self):
+        acquire, = action_calls(listing(variable(1, 0), variable(1, 3), native(893),
+                                       native(894), literal(5), bytes([5]), native(892)))
+        self.assertEqual(acquire['status'], 'recovered_arguments')
+        self.assertNotIn('constant_script_id', acquire)
+        kind = acquire['arguments']['kind_filter']
+        self.assertEqual(kind['kind'], 'native_result')
+        self.assertEqual(kind['result_tag'], 'integer')
+        self.assertEqual(kind['arguments'], [dict(kind='variable', frame=1, slot=3)])
+        distance = acquire['arguments']['search_range']
+        self.assertEqual(distance['kind'], 'vm_operator')
+        self.assertEqual(distance['operands'][0]['function'], 'actorScriptPushTargetDistanceAllowance')
+        self.assertEqual(distance['operands'][0]['result_tag'], 'float')
+        self.assertEqual(distance['operands'][0]['arguments'], [])
+        self.assertEqual(distance['operands'][1]['value'], 5)
+        self.assertNotIn('value', kind)
+        self.assertNotIn('value', distance)
+        with self.assertRaises(ValueError):
+            recover_arguments(listing(variable(1, 3), native(893), native(999)), 2, 1)
+
+    def test_item_actions_separate_program_kind_and_range_in_push_order(self):
+        calls = action_calls(listing(literal(150), native(891),
+                                    literal(79), literal(7), literal(12.5, 1), native(892)))
+        throw, acquire = calls
+        self.assertEqual(throw['constant_script_id'], 150)
+        self.assertEqual(acquire['constant_script_id'], 79)
+        self.assertEqual(acquire['arguments']['kind_filter']['value'], 7)
+        self.assertEqual(acquire['arguments']['search_range']['value'], 12.5)
+        self.assertEqual(acquire['arguments']['search_range']['kind'], 'float')
+        for call in calls:
+            self.assertEqual(call['contract']['consumption'], 'deferred')
+            self.assertEqual(call['contract']['scheduling'], 'wait_for_action')
+        self.assertIn('not_establish_live_item', throw['contract']['startup'])
+        self.assertIn('early_completion', acquire['contract']['startup'])
+        self.assertEqual(CONTRACTS['actorScriptStartItemAcquisition']['result'], 'held_item_kind_or_zero_if_absent')
+
+    def test_item_action_dynamic_program_does_not_use_kind_as_resource(self):
+        acquire, = action_calls(listing(variable(1, 0), literal(150), literal(30), native(892)))
+        self.assertEqual(acquire['status'], 'recovered_arguments')
+        self.assertNotIn('constant_script_id', acquire)
+        self.assertEqual(acquire['arguments']['kind_filter']['value'], 150)
+        self.assertEqual(acquire['arguments']['script_id']['kind'], 'variable')
+        missing, = action_calls(listing(literal(150), native(892)))
+        self.assertEqual(missing['status'], 'unresolved')
+        self.assertNotIn('constant_script_id', missing)
+
     def test_product_links_selector_without_clamping_the_requested_value(self):
         rows = listing(literal(134), literal(5), literal(60), bytes([7]), native(236))
         catalog = dict(fields=[dict(field_id=134, enum_name='BEST_SECONDS')], area_selectors=[])

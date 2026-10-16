@@ -1019,6 +1019,22 @@ check. Selectors zero and one can choose programs 212/213 and 214/215 respective
 Dynamic selectors remain unresolved. Timed program identifiers, motion identifiers
 and cost selectors belong to different domains.
 
+Throw and acquisition requests also expose their timed-program operands in
+`native_action_calls`. Throw consumes one program operand when its deferred
+handler initializes. A zero held handle produces minus one; a nonzero handle
+permits startup without proving that the item is live. Later zero reports stopped
+sequencing, not a successful throw.
+
+Acquisition operands are pushed as program, kind filter and search range. The
+handler retains both search settings before checking for an existing held handle;
+that early completion can skip playback. Otherwise completion requires stopped
+sequencing and an ended or superseded last action. The result is the live held
+item's kind, or zero when absent. A kind filter or range never becomes a timed
+resource identifier. Dynamic or unrecovered program expressions stay explicit.
+Item-kind lookups and target-distance allowance reads are retained as symbolic
+native results, including the shared acquisition helper's allowance-plus-five
+expression. They do not establish a constant kind, distance or live target.
+
 `search_priority_maximum` and `search_priority_replenishment_per_second` describe
 selection priority, independently of model scale or physical growth. Creation
 starts priority at its maximum; weighted searches clear the selected item's
@@ -1220,7 +1236,12 @@ as the stage changes.
 
 The introductory flags record their script paths, rather than completed visits
 or proof that every line was seen. The Caterpie repeat-introduction branch also
-writes field 72; it does not establish a name for field 73, which remains numeric.
+writes field 72. Field 73 gates repeat babysitting setup and introduction, but
+its producer/reset event remains unresolved, so it remains numeric. Retained
+Viridian creation loops supply Caterpie arguments zero through four and Metapod
+arguments zero through nine; Springleaf growth creators supply zero through four.
+These bounded producer domains do not establish additional meanings for the
+remaining numeric progress fields.
 
 The bedroom script advances quiz stage zero to one after at least eight correct
 picture-quiz answers, and one to two after a perfect shadow round. Its selection
