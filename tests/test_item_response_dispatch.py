@@ -166,5 +166,140 @@ class ResponseDispatchTests(unittest.TestCase):
         self.assertEqual(image.allowed, {'.ovl'})
 
 
+
+
+class LocalSelectorFlowTests(unittest.TestCase):
+    def graph(self):
+        # Both local definitions join, then an explicit !=5 edge filters the sentinel.
+        return [frame(10, 11),
+            row(11, 'JUMP_IF_ZERO', [operand(15, 2)], [('fallthrough', 12), ('branch', 15)]),
+            row(12, 'PUSH_LITERAL', [operand(0)], [('fallthrough', 13)]),
+            row(13, 'STORE_VARIABLE', [operand(1), operand(0)], [('fallthrough', 14)]),
+            row(14, 'JUMP', [operand(18, 2)], [('branch', 18)]),
+            row(15, 'PUSH_LITERAL', [operand(5)], [('fallthrough', 16)]),
+            row(16, 'STORE_VARIABLE', [operand(1), operand(0)], [('fallthrough', 17)]),
+            row(17, 'JUMP', [operand(18, 2)], [('branch', 18)]),
+            row(18, 'LOAD_VARIABLE', [operand(1), operand(0)], [('fallthrough', 19)]),
+            row(19, 'PUSH_LITERAL', [operand(5)], [('fallthrough', 20)]),
+            row(20, 'NOT_EQUAL', successors=[('fallthrough', 21)]),
+            row(21, 'JUMP_IF_ZERO', [operand(30, 2)], [('fallthrough', 22), ('branch', 30)]),
+            row(22, 'LOAD_VARIABLE', [operand(1), operand(0)], [('fallthrough', 23)]),
+            row(23, 'PUSH_LITERAL', [operand(1)], [('fallthrough', 24)]),
+            row(24, 'CALL_NATIVE', successors=[('resume_or_fallthrough', 25)], native=dict(functions=['actorScriptStartCostedAction'])),
+            row(25, 'FINISH'), row(30, 'FINISH')]
+
+    def analyze(self, instructions, **kwargs):
+        from tools.script_decoder.local_flow import local_integer_domain
+        # One valid nonargument caller local.
+        instructions[0]['operands'][1] = operand(1)
+        return local_integer_domain(instructions, 24, 1, 0, **kwargs)
+
+    def test_reaching_stores_and_same_value_guard(self):
+        result = self.analyze(self.graph())
+        self.assertEqual(result['status'], 'bounded_local_integer_domain')
+        self.assertEqual(result['values'], [0])
+        self.assertEqual([r['value'] for r in result['definitions']], [0, 5])
+        self.assertEqual(result['guards'][0]['excluded_value'], 5)
+        self.assertTrue(result['conditional_on_frame_lifetimes'])
+
+    def test_guard_bypass_does_not_filter(self):
+        instructions = self.graph()
+        instructions[7]['successors'] = [dict(kind='branch', offset=22)]
+        self.assertEqual(self.analyze(instructions)['values'], [0, 5])
+
+    def test_noninteger_and_competing_predicate_inputs_do_not_filter(self):
+        instructions = self.graph()
+        instructions[9]['operands'] = [dict(tag=1, kind='float', value=5.2)]
+        self.assertEqual(self.analyze(instructions)['values'], [0, 5])
+        instructions = self.graph()
+        instructions[7]['successors'] = [dict(kind='branch', offset=20)]
+        self.assertEqual(self.analyze(instructions)['values'], [0, 5])
+
+    def test_uninitialized_and_unknown_definitions_fail(self):
+        instructions = self.graph()
+        instructions[1]['successors'][1]['offset'] = 18
+        self.assertEqual(self.analyze(instructions)['status'], 'unresolved_local_integer_domain')
+        instructions = self.graph()
+        instructions[5]['name'] = 'SCRIPT_OP_LOAD_VARIABLE'
+        instructions[5]['operands'] = [operand(1), operand(0)]
+        self.assertEqual(self.analyze(instructions)['status'], 'unresolved_local_integer_domain')
+
+    def test_unreviewed_and_missing_native_binding_clobber(self):
+        for binding in ({}, dict(native=dict(functions=['unknownCommand']))):
+            instructions = self.graph()
+            instructions[12] = row(22, 'CALL_NATIVE', successors=[('resume_or_fallthrough', 23)], **binding)
+            result = self.analyze(instructions)
+            self.assertEqual(result['status'], 'unresolved_local_integer_domain')
+            self.assertIn('native', result['diagnostics'][0])
+
+    def test_indirect_unknown_opcode_and_out_of_frame_writes_fail(self):
+        for name, operands in [('STORE_ELEMENT', [operand(1), operand(0)]),
+                               ('STORE_VARIABLE', [operand(1), operand(100000)]),
+                               ('STORE_VARIABLE', [operand(0), operand(100000)]),
+                               ('UNREVIEWED', [])]:
+            instructions = self.graph()
+            instructions[12] = row(22, name, operands, [('fallthrough', 23)])
+            self.assertEqual(self.analyze(instructions)['status'], 'unresolved_local_integer_domain')
+
+    def test_loop_budget_and_competing_frame_entries_fail(self):
+        self.assertEqual(self.analyze(self.graph(), limit=1)['status'], 'unresolved_local_integer_domain')
+        instructions = self.graph()
+        instructions.append(frame(40, 22))
+        self.assertEqual(self.analyze(instructions)['status'], 'unresolved_local_integer_domain')
+        instructions = self.graph()
+        instructions[12]['successors'] = [dict(kind='fallthrough', offset=22)]
+        self.assertEqual(self.analyze(instructions, limit=1)['status'], 'unresolved_local_integer_domain')
+
+    def test_script_call_preservation_checks_nested_and_borrowed_extents(self):
+        from tools.script_decoder.local_flow import local_integer_domain
+        for coordinate, expected in (([1, 0], 'bounded_local_integer_domain'),
+                                     ([1, 100000], 'unresolved_local_integer_domain'),
+                                     ([0, 258], 'bounded_local_integer_domain'),
+                                     ([0, 100000], 'unresolved_local_integer_domain')):
+            instructions = self.graph()
+            instructions[0]['operands'][1] = operand(1)
+            instructions[12] = row(22, 'CALL', [operand(50, 2)], [('return_continuation', 23), ('call', 50)])
+            instructions.extend([frame(50, 51), row(51, 'PUSH_LITERAL', [operand(9)], [('fallthrough', 52)]),
+                row(52, 'STORE_VARIABLE', [operand(v) for v in coordinate], [('fallthrough', 53)]),
+                row(53, 'PUSH_LITERAL', [operand(0)], [('fallthrough', 54)]), row(54, 'RETURN')])
+            instructions[-5]['operands'][1] = operand(1)
+            root = frame(0, 1)
+            root['operands'][1:] = [operand(261), operand(0)]
+            instructions = [root, row(1, 'FINISH')] + instructions
+            result = local_integer_domain(instructions, 24, 1, 0)
+            self.assertEqual(result['status'], expected, (coordinate, result))
+            if coordinate == [0, 258]:
+                self.assertEqual(result['root_frame_extent'], 261)
+                self.assertEqual(result['borrowed_frame_writes'], [dict(frame=0, slot=258)])
+                self.assertTrue(result['conditional_on_frame_lifetimes'])
+
+    def test_recursive_script_preservation_fails_closed(self):
+        instructions = self.graph()
+        instructions[12] = row(22, 'CALL', [operand(50, 2)], [('return_continuation', 23), ('call', 50)])
+        instructions.extend([frame(50, 51),
+            row(51, 'CALL', [operand(50, 2)], [('return_continuation', 52), ('call', 50)]),
+            row(52, 'PUSH_LITERAL', [operand(0)], [('fallthrough', 53)]), row(53, 'RETURN')])
+        result = self.analyze(instructions)
+        self.assertEqual(result['status'], 'unresolved_local_integer_domain')
+        self.assertIn('recursive', result['diagnostics'][0])
+
+    def test_changed_native_review_cannot_enable_preservation(self):
+        import tempfile
+        from pathlib import Path
+        from tools.script_decoder.local_flow import local_preservation_contracts
+        native = dict(function='safe', effect='append_scalar')
+        digest = hashlib.sha256(__import__('json').dumps(native, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            (root / 'src/ovl').mkdir(parents=True)
+            (root / 'src/ovl/script_vm.c').write_text('/* synthetic source */')
+            with patch('tools.script_decoder.local_flow.VM_PRESERVATION_PINS', {}), patch(
+                    'tools.script_decoder.local_flow.NATIVE_PRESERVATION_PINS', {'safe': digest}):
+                reviews = dict(active={'safe': native}, active_deferred={})
+                self.assertEqual(local_preservation_contracts(reviews, root)['preserved_native_functions'], ['safe'])
+                reviews['active']['safe'] = dict(native, effect='unreviewed_write')
+                self.assertEqual(local_preservation_contracts(reviews, root)['preserved_native_functions'], [])
+
+
 if __name__ == '__main__':
     unittest.main()

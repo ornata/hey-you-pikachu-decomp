@@ -1033,6 +1033,24 @@ start (three), and a different live replacement item produced by an action cue
 without a live replacement does not set it. These results do not establish that
 every effect completed or that the interaction succeeded overall.
 
+For a dynamic cost selector, `local_selector_analysis` can retain a finite set of
+alternatives from all reaching constant assignments. `conditional_local_policy_alternatives`
+keeps these separate from the original selector expression and its unresolved
+constant-policy link. The shared bedroom program has two reviewed sites with
+alternatives zero/one, and one with zero/one/two after a guard excludes sentinel
+five. This does not choose a branch, prove execution or establish affordability.
+
+These alternatives require valid active frame intervals, balanced returns,
+protected operand floors, stable program/VM identity and caller frame bindings,
+the listed native contracts, and no asynchronous VM mutation across waits. Same-index nested frames can preserve caller locals by
+restoring their previous binding; different frame indices can still alias physical
+storage. The soundness conditions therefore concern physical slots. The reviewed
+helper's frame-zero slot 258 write is bounded by the sole root frame's 261 locals
+and requires that root interval to remain below the caller's protected storage.
+Unknown or indirect writers, unreviewed calls and incomplete assignment paths
+retain an unresolved local-domain result. This is not a whole-program frame or
+scheduler preservation proof.
+
 Throw and acquisition requests also expose their timed-program operands in
 `native_action_calls`. Throw consumes one program operand when its deferred
 handler initializes. A zero held handle produces minus one; a nonzero handle

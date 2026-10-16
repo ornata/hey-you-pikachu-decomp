@@ -35,6 +35,7 @@ from .items import item_kind_catalog, item_creation_requests, item_response_requ
 from .effects import effect_program_catalog, attached_effect_requests
 from .transitions import pose_transition_catalog
 from .responses import item_response_dispatch, cost_policy_catalog, costed_action_requests
+from .local_flow import local_preservation_contracts
 
 
 def companion_sites(image):
@@ -153,6 +154,7 @@ def catalog(image, max_instructions=100000):
     vocabulary = vocabulary_catalog(image)
     name_catalog = pokemon_name_catalog(image, vocabulary)
     frame_reviews = native_frame_reviews()
+    local_preservation = local_preservation_contracts(frame_reviews)
     controls = control_scheme_catalog(image)
     actor_by_name = {row['enum_name']: row for row in actors}
 
@@ -214,7 +216,8 @@ def catalog(image, max_instructions=100000):
                              frame_operands=frames, native_calls=dict(native_calls),
                              script_message_posts=message_posts(decoded['instructions']),
                              native_action_calls=actions,
-                             costed_action_requests=costed_action_requests(decoded['instructions'], cost_policies['records']),
+                             costed_action_requests=costed_action_requests(decoded['instructions'], cost_policies['records'],
+                                 preserved_natives=local_preservation['preserved_native_functions']),
                              action_producer_functions=action_producer_functions(decoded['instructions'], actions),
                              player_control_scheme_requests=control_scheme_requests(decoded['instructions'], controls['schemes']),
                              text_window_requests=text_window_requests(decoded['instructions']),
@@ -244,6 +247,9 @@ def catalog(image, max_instructions=100000):
     resource_ids.update(response_dispatch['timed_program_resource_ids'])
     resource_ids.update(value for row in rows for request in row['costed_action_requests']
                         for value in request['cost_policy_link'].get('policy', {}).get('referenced_timed_program_ids', []))
+    resource_ids.update(value for row in rows for request in row['costed_action_requests']
+                        for alternative in request.get('conditional_local_policy_alternatives', [])
+                        for value in alternative.get('policy', {}).get('referenced_timed_program_ids', []))
     source_requests = source_dictionary_requests(source, vocabulary.get('dictionaries', []))
     attach_dictionary_usage(vocabulary, rows, source_requests)
     return dict(schema_version=2, rom_sha1=image.sha1,
@@ -265,6 +271,7 @@ def catalog(image, max_instructions=100000):
                 item_kinds=item_kinds,
                 item_response_dispatch=response_dispatch,
                 costed_action_policies=cost_policies,
+                cost_selector_local_preservation=local_preservation,
                 voice_vocabulary=vocabulary,
                 bedroom_name_catalog=name_catalog,
                 native_frame_effect_reviews=frame_reviews,
@@ -291,7 +298,7 @@ def main(argv=None):
         report['elf_sha256'] = hashlib.sha256(args.elf.read_bytes()).hexdigest()
         report['decoder_sha256'] = hashlib.sha256(Path(__file__).with_name('formats.py').read_bytes()).hexdigest()
         report['analysis_sha256'] = {name: hashlib.sha256(Path(__file__).with_name(name + '.py').read_bytes()).hexdigest()
-                                     for name in ('catalog', 'stack', 'messages', 'actions', 'scenarios', 'actors', 'functions', 'table_returns', 'vocabulary', 'dictionaries', 'name_catalog', 'saved_dictionary', 'native_frames', 'control_schemes', 'windows', 'caller_frames', 'progress_fields', 'items', 'effects', 'transitions', 'responses')}
+                                     for name in ('catalog', 'stack', 'messages', 'actions', 'scenarios', 'actors', 'functions', 'table_returns', 'vocabulary', 'dictionaries', 'name_catalog', 'saved_dictionary', 'native_frames', 'control_schemes', 'windows', 'caller_frames', 'progress_fields', 'items', 'effects', 'transitions', 'responses', 'local_flow')}
         report['native_frame_review_sha256'] = review_manifest_fingerprint()
         files = {'catalog.json': report, **{name + '.json': row for name, row in decodes.items()}}
         # Validate every output before writing any content, including existing symlinks.

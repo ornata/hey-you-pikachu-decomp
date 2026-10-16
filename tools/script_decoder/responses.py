@@ -12,6 +12,7 @@ from .actions import CONTRACTS, action_calls
 from .formats import integer_operand
 from .functions import function_summary
 from .stack import incoming_edges, recover_arguments
+from .local_flow import local_integer_domain
 
 CONFIG = 0x8014FED4
 PROGRAM = 0x8013C8B8
@@ -84,7 +85,7 @@ def cost_policy_catalog(image):
                 scope='Five neighbor-delimited records, not a complete allocation or runtime bounds check.')
 
 
-def costed_action_requests(instructions, policies):
+def costed_action_requests(instructions, policies, *, preserved_natives=()):
     """Inventory resource-dependent action requests separately from timed IDs."""
     incoming = incoming_edges(instructions)
     frames = {r['offset']: r for r in instructions if r['name'] == 'SCRIPT_OP_ENTER_FRAME'}
@@ -106,6 +107,16 @@ def costed_action_requests(instructions, policies):
         except ValueError as error:
             request.update(status='unresolved_arguments', reason=str(error))
         request['cost_policy_link'] = link_costed_request(request, policies)
+        selector = request.get('arguments', {}).get('cost_selector', {})
+        if selector.get('kind') == 'variable':
+            analysis = local_integer_domain(instructions, call['offset'], selector['frame'], selector['slot'],
+                                            preserved_natives=preserved_natives)
+            request['local_selector_analysis'] = analysis
+            if analysis['status'] == 'bounded_local_integer_domain':
+                request['conditional_local_policy_alternatives'] = [link_costed_request(
+                    dict(arguments=dict(cost_selector=dict(kind='integer', value=value),
+                                        repetitions=request['arguments']['repetitions'])), policies)
+                    for value in analysis['values']]
         requests.append(request)
     return requests
 
