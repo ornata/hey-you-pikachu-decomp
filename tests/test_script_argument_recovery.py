@@ -257,5 +257,61 @@ class MotionDefinitionMetadataTests(unittest.TestCase):
             motion_definition_metadata(raw, attributes | {24: 'INVALID_COMPOSITE'}, {})
 
 
+class PoseTransitionMapTests(unittest.TestCase):
+    def test_explicit_precedence_and_first_automatic_pair_win(self):
+        from tools.script_decoder.transitions import reconstruct_pose_map
+        definitions = [dict(id=10, attributes=0x40000, initial_pose=1, final_pose=2),
+                       dict(id=11, attributes=0x40000, initial_pose=1, final_pose=2),
+                       dict(id=12, attributes=0x40000, initial_pose=2, final_pose=3),
+                       dict(id=13, attributes=0x40000, initial_pose=2, final_pose=3),
+                       dict(id=14, attributes=0x40000, initial_pose=4, final_pose=4),
+                       dict(id=15, attributes=0, initial_pose=4, final_pose=5)]
+        result = reconstruct_pose_map([dict(source_pose=1, destination_pose=2, action_id=-3)], definitions)
+        self.assertEqual({r['key']: r['action_id'] for r in result['entries']}, {258: -3, 515: 12})
+        self.assertEqual([r['status'] for r in result['candidates']],
+                         ['inserted', 'duplicate', 'duplicate', 'inserted', 'duplicate'])
+        self.assertEqual(result['candidates'][0]['transition_kind'], 'direct_apply')
+        self.assertFalse(result['unresolved'])
+
+    def test_capacity_probe_cycles_and_zero_values_remain_explicit(self):
+        from tools.script_decoder.transitions import reconstruct_pose_map
+        rows = [dict(source_pose=0, destination_pose=0, action_id=1),
+                dict(source_pose=0, destination_pose=8, action_id=2)]
+        result = reconstruct_pose_map(rows, [], capacity=2)
+        self.assertEqual([r['status'] for r in result['candidates']], ['inserted', 'unreachable_free_slot'])
+        self.assertTrue(result['unresolved'])
+        result = reconstruct_pose_map([dict(source_pose=1, destination_pose=2, action_id=-256)], [])
+        self.assertEqual(result['candidates'][0]['status'], 'unresolved_zero_value')
+        with self.assertRaises(ValueError):
+            reconstruct_pose_map([], [], capacity=0)
+
+    def test_sentinel_only_table_does_not_read_neighboring_records(self):
+        from tools.script_decoder.transitions import pose_transition_catalog
+        class Image:
+            allowed = set()
+            def symbol(self, name):
+                return name, 0x1000 if name == 'gActionExplicitPoseTransitions' else 0x2000
+            def read_address(self, address, size):
+                if address == 0x1000 and size == 4:
+                    return struct.pack('>BBh', 48, 48, -3), dict(address=address)
+                if 0x2000 <= address < 0x2000 + 330 * 44 and size == 44:
+                    raw = bytearray(44)
+                    struct.pack_into('>i', raw, 0, (address - 0x2000) // 44)
+                    return bytes(raw), dict(address=address)
+                raise AssertionError('neighboring explicit data must not be read')
+        result = pose_transition_catalog(Image())
+        self.assertEqual(result['explicit_records'], [])
+        self.assertEqual(result['sentinel']['source_pose'], 48)
+        self.assertEqual(result['entries'], [])
+
+        class UnterminatedImage(Image):
+            def read_address(self, address, size):
+                if address in (0x1000, 0x1004):
+                    return bytes(4), dict(address=address)
+                return super().read_address(address, size)
+        with self.assertRaises(ValueError):
+            pose_transition_catalog(UnterminatedImage(), limit=2)
+
+
 if __name__ == '__main__':
     unittest.main()

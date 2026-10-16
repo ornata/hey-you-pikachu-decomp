@@ -233,7 +233,8 @@
         "function:src/game/motion_playback.c:actionCancelPendingRequest",
         "file:include/motion_playback_types.h",
         "file:include/actor_parts.h",
-        "file:include/action_continuation.h"
+        "file:include/action_continuation.h",
+        "file:include/motion_transitions.h"
       ],
       "preconditions": [
         "The caller has initialized live RuntimeObjectPrefix and ActorScriptState storage with a live saved VM and writable value buffer. The declared operands and result lie above protected locals and frame metadata. Item/owner/action/audio/camera/global data and C-stack storage used by each helper are disjoint from VM contexts, values, protected frames and program storage. Concurrent destruction, mutation and context replacement are excluded; only declared pops/pushes change VM depth.",

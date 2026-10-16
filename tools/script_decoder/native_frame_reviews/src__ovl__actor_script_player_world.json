@@ -3295,7 +3295,8 @@
         "function:src/game/motion_playback.c:actionGetAttributes",
         "file:include/action_query.h",
         "file:include/motion_playback_types.h",
-        "file:include/action_attributes.h"
+        "file:include/action_attributes.h",
+        "file:include/motion_transitions.h"
       ],
       "preconditions": [
         "The caller has initialized live RuntimeObjectPrefix and ActorScriptState storage with a live saved VM and initialized value buffer. Every declared operand and result slot lies above protected locals and frame metadata. Changed actor fields, sampled data, object/pool storage and C stack are disjoint from VM contexts, values, protected frames and program storage. Concurrent destruction, source mutation and context replacement are excluded. Only declared pops/pushes alter VM depth and value slots.",

@@ -779,6 +779,11 @@
       "file": "include/motion_playback_types.h",
       "sha256": "a9f29997bc0cf851f840880bfd78d8ad974d902ad1bb88603d55e342ecf0e010"
     },
+    "file:include/motion_transitions.h": {
+      "kind": "file",
+      "file": "include/motion_transitions.h",
+      "sha256": "96cfb406b2006ef03fe6eaa8a03ee2198d7562aa928202c16141bc007b49f8c9"
+    },
     "file:include/n_synthInternals.h": {
       "kind": "file",
       "file": "include/n_synthInternals.h",
@@ -1427,7 +1432,7 @@
     "file:src/game/motion_playback.c": {
       "kind": "file",
       "file": "src/game/motion_playback.c",
-      "sha256": "46c16b57af7c375013470961c22127514d4dfb97a89d45e06efb0565ffda63c6"
+      "sha256": "739841587dad79444dc772fde04d29609db6d15a760ef00954a7b35ceb9941bc"
     },
     "file:src/game/node_pool.c": {
       "kind": "file",
@@ -4289,7 +4294,7 @@
   "callback_files": [
     {
       "file": "native_frame_reviews/src__ovl__actor_script_action_commands.json",
-      "sha256": "6b7f2b33b049d9e80d9d964198ecf80fcfe63aa754d77137f54e24053f9d07f3"
+      "sha256": "9a469f480ffa59c9e19ba113ad261bb4671f7c6bc97335c16a2f8c68a104e160"
     },
     {
       "file": "native_frame_reviews/src__ovl__actor_script_collection_profile.json",
@@ -4301,11 +4306,11 @@
     },
     {
       "file": "native_frame_reviews/src__ovl__actor_script_player_world.json",
-      "sha256": "0aef81d76b2e338ed216f129d92d4cff97b761af84e6a9077e8b1b97a78c4d30"
+      "sha256": "b071cc6019a69569bf3c2813fb3f4cf50ce14b33741270f962220a3e8e8d2f2e"
     },
     {
       "file": "native_frame_reviews/src__ovl__script_demo_item_commands.json",
-      "sha256": "653ecd0cccf7fecb12ad6bb2904285c9ffcf5b2bc315286f277a8ffe1147c3b4"
+      "sha256": "ac3f80df85ea3dcc940ca5690a052f04fe2d4c26b4e51695564ecc676a71c10d"
     }
   ]
 }

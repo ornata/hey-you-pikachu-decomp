@@ -1,3 +1,4 @@
+#include "motion_transitions.h"
 #include "math_angles.h"
 #include "actor_behavior.h"
 #include "matrix_orientation.h"
@@ -546,14 +547,18 @@ void actionPrepareSelectedContext(ActorScriptState *state, ActorActionCueCommand
     }
 }
 
-typedef struct GlyphPair {
-    u8 hi;
-    u8 lo;
-    s16 id;
-} GlyphPair;
+/// One explicit link from the actor's current pose to a requested initial pose.
+/// The action ID is stored signed so special decoded transition IDs remain representable.
+typedef struct ActionPoseTransition {
+    u8 sourcePose;      ///< Pose before the requested transition.
+    u8 destinationPose; ///< Initial pose required by the requested action.
+    s16 actionId;       ///< Bridge action ID or decoded special transition ID.
+} ActionPoseTransition;
+
+typedef char ActionPoseTransitionSizeCheck[(sizeof(ActionPoseTransition) == 4) ? 1 : -1];
 /// Explicit source/destination pose pairs and the actions joining them.
 /// \note Original identifier: \c D_8006EE48 (0x8006EE48).
-extern GlyphPair gActionExplicitPoseTransitions[];
+extern ActionPoseTransition gActionExplicitPoseTransitions[];
 /// Owned lookup map from source/destination pose pairs to compatible transitions.
 /// \note Original identifier: \c D_800B6830 (0x800B6830).
 extern WordMap gActionPoseTransitionMap;
@@ -626,11 +631,11 @@ void actionResolveNextTransition(u8 *object) {
                 sequence = NULL;
             find_transition:
                 transition = wordMapLookup(&gActionPoseTransitionMap, next->initialPoseId + (state[0xFF] << 8));
-                animation = transition - 0x100;
-                if (transition == 0xFE) {
+                animation = transition - POSE_TRANSITION_ACTION_BIAS;
+                if (transition == POSE_TRANSITION_BLEND_VALUE) {
                     actionConfigurePoseTransition((ActorScriptState *)state, nextIndex, blendTime);
                     actionPrepareSelectedContext((ActorScriptState *)state, sequence);
-                } else if (animation == -3) {
+                } else if (animation == POSE_TRANSITION_DIRECT_ACTION) {
                     *(ActionDefinition *)&((ActorScriptState *)state)->actionId = *next;
                     actionPrepareSelectedContext((ActorScriptState *)state, sequence);
                 } else if (actionLoadRecordByIndex((ActorScriptState *)state, animation, nextIndex)) {
@@ -650,7 +655,6 @@ void actionResolveNextTransition(u8 *object) {
     }
 }
 
-#include "motion_transitions.h"
 /// Initialize the pose-transition lookup map from explicit transitions and action definitions.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8000F00C (0x8000F00C).
@@ -658,16 +662,18 @@ void actionInitializeTransitionMap(void) {
     s32 i;
     s32 key;
     ActionDefinition *e;
-    GlyphPair *p;
+    ActionPoseTransition *p;
 
-    wordMapInitialize(&gActionPoseTransitionMap, 0x125);
+    wordMapInitialize(&gActionPoseTransitionMap, POSE_TRANSITION_MAP_CAPACITY);
     TRACE("apply action_joint_pose from actJointPose\n");
-    for (p = gActionExplicitPoseTransitions; p->hi != '0'; p++) {
-        key = (p->hi << 8) + p->lo;
-        TRACE("firstPose:%d lastPose:%d act:%s\n", p->hi, p->lo, gActionDefinitions[p->id].name);
+    for (p = gActionExplicitPoseTransitions; p->sourcePose != POSE_TRANSITION_TABLE_END; p++) {
+        key = (p->sourcePose << 8) + p->destinationPose;
+        TRACE("firstPose:%d lastPose:%d act:%s\n", p->sourcePose, p->destinationPose,
+              gActionDefinitions[p->actionId].name);
         if (wordMapLookup(&gActionPoseTransitionMap, key) == 0) {
-            TRACE("firstPose:%d lastPose:%d act:%s apply:%d\n", p->hi, p->lo, gActionDefinitions[p->id].name, p->id);
-            wordMapInsert(&gActionPoseTransitionMap, p->id + 0x100, key);
+            TRACE("firstPose:%d lastPose:%d act:%s apply:%d\n", p->sourcePose, p->destinationPose,
+                  gActionDefinitions[p->actionId].name, p->actionId);
+            wordMapInsert(&gActionPoseTransitionMap, p->actionId + POSE_TRANSITION_ACTION_BIAS, key);
         }
     }
     TRACE("apply action_joint_pose from action\n");
@@ -677,7 +683,7 @@ void actionInitializeTransitionMap(void) {
             key = (e->initialPoseId << 8) + key;
             if (e->initialPoseId != e->finalPoseId && wordMapLookup(&gActionPoseTransitionMap, key) == 0) {
                 TRACE("firstPose:%d lastPose:%d act:%s apply:%d\n", e->initialPoseId, e->finalPoseId, e->name, i);
-                wordMapInsert(&gActionPoseTransitionMap, i + 0x100, key);
+                wordMapInsert(&gActionPoseTransitionMap, i + POSE_TRANSITION_ACTION_BIAS, key);
             }
         }
     }

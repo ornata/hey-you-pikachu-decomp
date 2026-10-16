@@ -645,6 +645,30 @@ applies to the existing continuation when a pending request competes with it.
 These are separate choices in the action state machine, not interchangeable
 forms of looping.
 
+The decoder's `pose_transitions` reconstructs the initialized pose map from
+sentinel-bounded explicit records and the 330 action definitions. Keys pair the
+current source pose with the requested initial pose. Explicit entries take
+precedence; eligible action definitions follow in table order, and the first
+entry for each pair wins. The retail explicit table is empty: its first source
+pose is the terminator 48. Of 58 eligible-flag records, two have equal endpoint
+poses and one repeats an earlier pair, leaving 55 installed mappings. Action 27
+wins that duplicate against action 28. The map has capacity 293, not 293 poses.
+
+Map values normally store a bridge action ID plus 256. The resolver also supports
+value 254 for a generated blend and decoded action ID -3 (map value 253) for
+direct acceptance; neither special value is installed by the retail initializer.
+An absent pair returns zero. The resulting invalid bridge ID falls back to a
+blend only when there is no previous continuation; otherwise the previous record
+is retained. The decoder preserves insertion failures and unsupported zero values
+instead of silently turning them into valid transitions.
+
+Original-instruction probes executed the heap and pose-map initializers and
+checked all 293 captured slots against an independent model. Synthetic explicit
+records checked priority, direct/blend words and collisions; these records do not
+establish retail producers. Seventeen original lookups ran in the emulator. A
+separate exhaustive check of all 65,536 pose pairs used captured contents on the
+host, rather than claiming that every pair ran through the original lookup.
+
 Three retained attached-effect definitions at `0x80074EB8` select templates of
 runtime kind `0xAC`, with no child or sibling templates. Their scales are
 `0.1`, `1`, `1`; opacity-program selectors are `0`, `0`, `1`.

@@ -118,7 +118,8 @@
           "function:src/ovl/actor_script_actions.c:actorScriptWaitForSequencerStop",
           "function:src/game/motion_playback.c:actionRequestLoopExit",
           "function:src/game/action_script.c:actionScriptIsStopped",
-          "function:src/ovl/script_vm.c:actorUpdateScriptVm"
+          "function:src/ovl/script_vm.c:actorUpdateScriptVm",
+          "file:include/motion_transitions.h"
         ],
         "preconditions": [
           "While waiting, the selected handler remains three; the actor and its VM stay intact with nonoverlapping actor state and owned value storage. Protected locals and frame metadata lie below active depth and one free result slot remains.",
@@ -159,7 +160,8 @@
           "function:src/ovl/actor_script_actions.c:actorScriptWaitForSequencerStop",
           "function:src/game/motion_playback.c:actionRequestLoopExit",
           "function:src/game/action_script.c:actionScriptIsStopped",
-          "function:src/ovl/script_vm.c:actorUpdateScriptVm"
+          "function:src/ovl/script_vm.c:actorUpdateScriptVm",
+          "file:include/motion_transitions.h"
         ],
         "preconditions": [
           "While waiting, the selected handler remains three; the actor and its VM stay intact with nonoverlapping actor state and owned value storage. Protected locals and frame metadata lie below active depth and one free result slot remains.",
@@ -232,7 +234,8 @@
           "file:include/actor_action_callbacks.h",
           "file:include/actor_action_cue.h",
           "function:src/ovl/script_vm.c:actorUpdateScriptVm",
-          "file:include/action_attributes.h"
+          "file:include/action_attributes.h",
+          "file:include/motion_transitions.h"
         ],
         "preconditions": [
           "Actor, actor state, VM and owned value storage remain live, separate and nonoverlapping with helper-written motion/sequencer/pool state and C stack. The same VM is selected throughout any helper chain; concurrent replacement/destruction and arbitrary world-update lifetime effects are excluded.",
@@ -339,7 +342,8 @@
           "file:include/actor_action_callbacks.h",
           "file:include/actor_action_cue.h",
           "function:src/ovl/script_vm.c:actorUpdateScriptVm",
-          "file:include/action_attributes.h"
+          "file:include/action_attributes.h",
+          "file:include/motion_transitions.h"
         ],
         "preconditions": [
           "Actor, actor state, VM and owned value storage remain live, separate and nonoverlapping with helper-written motion/sequencer/pool state and C stack. The same VM is selected throughout any helper chain; concurrent replacement/destruction and arbitrary world-update lifetime effects are excluded.",
@@ -446,7 +450,8 @@
           "file:include/actor_action_callbacks.h",
           "file:include/actor_action_cue.h",
           "function:src/ovl/script_vm.c:actorUpdateScriptVm",
-          "file:include/action_attributes.h"
+          "file:include/action_attributes.h",
+          "file:include/motion_transitions.h"
         ],
         "preconditions": [
           "Actor, actor state, VM and owned value storage remain live, separate and nonoverlapping with helper-written motion/sequencer/pool state and C stack. The same VM is selected throughout any helper chain; concurrent replacement/destruction and arbitrary world-update lifetime effects are excluded.",
@@ -1454,7 +1459,8 @@
         "file:include/action_request.h",
         "file:include/action_script_types.h",
         "file:include/actor_script.h",
-        "file:include/object_types.h"
+        "file:include/object_types.h",
+        "file:include/motion_transitions.h"
       ],
       "preconditions": [
         "The actor, actor state, captured VM and owned value storage stay live. Their writable ranges are disjoint from the selected camera/audio globals and sequence-slot storage. No concurrent mutation, context replacement or lifecycle changes are covered.",
@@ -2290,7 +2296,8 @@
         "function:src/game/motion_playback.c:actionGetStoredRequestId",
         "file:include/action_script_query.h",
         "file:include/action_request.h",
-        "file:include/action_attributes.h"
+        "file:include/action_attributes.h",
+        "file:include/motion_transitions.h"
       ],
       "preconditions": [
         "The actor, RuntimeObjectPrefix, ActorScriptState, captured VM and initialized value buffer remain live, stable and disjoint from program storage, globals, native stack and the result region. No concurrent actor/VM/value mutation, context replacement or reentry into this actor native occurs. Consumed operands lie strictly above protected locals and frame metadata; after pops there is capacity for one integer result. No allocation or pointer retention is performed by the scalar VM stack helpers. The original-ROM SDK bcopy and matching SDK inputs remain prerequisites; the four-byte payload copy and five-byte VM value copy do not retain C-stack addresses.",
@@ -2554,7 +2561,8 @@
         "file:build/asm/os/pirawdma.s",
         "file:include/PR/R4300.h",
         "file:Makefile",
-        "file:include/action_attributes.h"
+        "file:include/action_attributes.h",
+        "file:include/motion_transitions.h"
       ],
       "preconditions": [
         "The actor, RuntimeObjectPrefix, ActorScriptState, captured VM and initialized value buffer remain live, stable and disjoint from program storage, globals, native stack and the result region. No concurrent actor/VM/value mutation, context replacement or reentry into this actor native occurs. Consumed operands lie strictly above protected locals and frame metadata; after pops there is capacity for one integer result. No allocation or pointer retention is performed by the scalar VM stack helpers themselves; the motion cache/PI path has the separately documented allocations and asynchronous lifetime obligations. The original-ROM SDK bcopy and matching SDK inputs remain prerequisites; the four-byte payload copy and five-byte VM value copy do not retain C-stack addresses.",
