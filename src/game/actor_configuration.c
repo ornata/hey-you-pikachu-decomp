@@ -1,3 +1,4 @@
+#include "progress_field_ids.h"
 #include "actor_kind.h"
 #include "contact_effect.h"
 #include "object_response.h"
@@ -829,8 +830,8 @@ void togepiCreate(f32 x, f32 y, f32 z, f32 pitch, f32 yaw, u8 *script, s32 scrip
     f32 scale;
     {
         s32 sp30;
-        sp30 = progressGetValue(0x18);
-        scale = (((f32)sp30 / (f32)progressGetMaximum(0x18)) + 1.0F) * 0.5F;
+        sp30 = progressGetValue(PROGRESS_FIELD_TOGEPI_HATCH_SIZE);
+        scale = (((f32)sp30 / (f32)progressGetMaximum(PROGRESS_FIELD_TOGEPI_HATCH_SIZE)) + 1.0F) * 0.5F;
     }
     actorCreateForKind(ACTOR_KIND_TOGEPI, x, y, z, pitch, yaw, scale * gCurrentAreaConfiguration->objectScale, script,
                        scriptArgument);

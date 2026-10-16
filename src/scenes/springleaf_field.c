@@ -1,3 +1,4 @@
+#include "progress_field_ids.h"
 #include "actor_kind.h"
 /// Geometry of the springleaf field spatial lookup grid.
 enum { SPRINGLEAF_FIELD_GRID_LAYERS = 32, SPRINGLEAF_FIELD_GRID_SIDE = 32 };
@@ -51,7 +52,7 @@ void springleafFieldSpawnGrowthResident(f32 *position, s32 residentIndex) {
     u32 random;
 
     state = progressGetValue(residentIndex + 0x70);
-    if (progressGetValue(0x12) == 0) {
+    if (progressGetValue(PROGRESS_FIELD_SHOPPING_ERRAND_ACTIVE) == 0) {
         record = &D_8014DFD8_scene_springleaf_field;
     } else {
         record = &D_80156C2C_scene_springleaf_field;
@@ -148,7 +149,7 @@ void springleafFieldInitializeObjects(void) {
     f32 position[3];
     s32 kind;
     occupied = D_80157F70_scene_springleaf_field;
-    if (progressGetValue(0x12) != 0) {
+    if (progressGetValue(PROGRESS_FIELD_SHOPPING_ERRAND_ACTIVE) != 0) {
         actorCreateForKind(ACTOR_KIND_SQUIRTLE, 203.45F, 0.5F, 35.97F, 0.0F, 0.0F,
                            gCurrentAreaConfiguration->objectScale, gResidentAttentionScript_scene_springleaf_field, 0);
     }
@@ -204,7 +205,7 @@ void springleafFieldInitializeObjects(void) {
         }
     } while (i < 7);
     mazeScatterItems(D_80157CF4_scene_springleaf_field, 0x35, &D_80157CEC_scene_springleaf_field, 0.7F);
-    if (progressGetValue(0x12) == 0) {
+    if (progressGetValue(PROGRESS_FIELD_SHOPPING_ERRAND_ACTIVE) == 0) {
         landmarkCreate(D_801594F4_scene_springleaf_field, 10.5F, 35.97F, 0x90);
         landmarkCreate(D_801594F8_scene_springleaf_field, D_801594FC_scene_springleaf_field, 91.0F, 0x8E);
         springleafFieldInitializeDoor();

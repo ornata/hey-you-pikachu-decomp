@@ -10477,6 +10477,278 @@
           }
         ]
       }
+    },
+    {
+      "function": "actorScriptSetPlayerYaw",
+      "file": "src/ovl/actor_script_messages_items.c",
+      "sha256": "5986e2186bc76cfb03dfebada5b30ff150d631ff68d3c9382e133caf95a6c67a",
+      "effect": "replace_argument_with_scalar",
+      "arguments": 1,
+      "stack_delta": 0,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "result_semantics": "Replace requested f32 yaw in degrees with integer zero; permitted primary-player view angles are normalized and stored.",
+      "dependencies": [
+        "file:include/object_types.h",
+        "file:include/actor_script.h",
+        "file:include/script_vm.h",
+        "function:src/ovl/script_vm.c:scriptVmPopInteger",
+        "function:src/ovl/script_vm.c:scriptVmPopFloat",
+        "function:src/ovl/script_vm.c:scriptVmPopValue",
+        "function:src/ovl/script_vm.c:scriptValueGetInteger",
+        "function:src/ovl/script_vm.c:scriptValueGetFloat",
+        "function:src/ovl/script_vm.c:scriptVmPushInteger",
+        "function:src/ovl/script_vm.c:scriptValueSetInteger",
+        "function:src/ovl/script_vm.c:scriptVmPushValue",
+        "file:include/player_types.h",
+        "file:include/player_state.h",
+        "function:src/ovl/player_companion.c:playerSetViewYaw",
+        "function:src/ovl/player_companion.c:playerSetViewAngles"
+      ],
+      "preconditions": [
+        "Consumed numeric operands lie above all protected locals/frame metadata; integer/code-reference values or finite f32 operands whose integer truncation fits s32. Caller actor/state, captured VM and value allocation remain live, with no concurrent replacement; helper-written player/Pikachu/item storage must not overlap VM/values/native frame storage.",
+        "Only immediate conditional source-bound footprint and normal return are reviewed. Wrapper returns zero to continue; no retail reachability, later physics/render behavior or lifetime guarantee follows.",
+        "Primary gPlayerState is recipient, not caller actor orientation. Permissionbit0x2 clear means no player writes and no wrapping loops. Withbitset, both requested yaw AND retained primary-player pitch must be finite and their repeated f32 +/-360 adjustments must make progress and terminate (e.g. absolute values <=1474560 conservative domain). Finite alone is insufficient for huge f32 values.",
+        "Enabled helper wraps yaw to [0,360), wraps existing pitch to [0,360), maps pitch>=180 down360, then clamps to [-60,60]. Writes yaw+0xC and pitch+0x14; existing out-of-range pitch may change despite yaw-only API. Preserve original repeated f32 operations and negative zero; no fmod algebraic replacement claim.",
+        "No camera refresh, hierarchy traversal, callback, queue, allocation or actor facing/action update. All other primary-player fields remain unchanged."
+      ],
+      "evidence": "Read-only original Ghidra wrapper/helper closure: 8011CEE4,801124C8,8010EF00. Thirteen authored original-instruction N64 interpreter probes collectively cover these three setters, with authenticated native/helper bytes and matching guarded storage. Yaw probes cover negative integer, multiple-turn float and denied permission; impact probes cover full signed counts and missing, wrong-kind and toolbox targets; appearance probes cover both persistence branches with a distinct active Pikachu. All continue with the reviewed integer result, preserve three lower values and frame metadata, and match full VM/player/Pikachu/item/pool guards. These observations do not cover nonterminating wrapping, later rendering or concurrent lifetimes.",
+      "runtime_status": "bounded_original_instruction_probes_passed"
+    },
+    {
+      "function": "actorScriptSetItemImpactCount",
+      "file": "src/ovl/actor_script_player_world.c",
+      "sha256": "3c3c613253fd17432123fda113e7eb3728364217db1077b09596c223aad12eb5",
+      "effect": "replace_arguments_with_scalar",
+      "arguments": 2,
+      "stack_delta": -1,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "result_semantics": "Replace handle followed by count with integer1 on available item update or integer0 otherwise.",
+      "dependencies": [
+        "file:include/object_types.h",
+        "file:include/actor_script.h",
+        "file:include/script_vm.h",
+        "function:src/ovl/script_vm.c:scriptVmPopInteger",
+        "function:src/ovl/script_vm.c:scriptVmPopFloat",
+        "function:src/ovl/script_vm.c:scriptVmPopValue",
+        "function:src/ovl/script_vm.c:scriptValueGetInteger",
+        "function:src/ovl/script_vm.c:scriptValueGetFloat",
+        "function:src/ovl/script_vm.c:scriptVmPushInteger",
+        "function:src/ovl/script_vm.c:scriptValueSetInteger",
+        "function:src/ovl/script_vm.c:scriptVmPushValue",
+        "function:src/ovl/actor_script_queries.c:objectResolveAvailableHandle",
+        "function:src/game/object_hierarchy.c:objectFindLiveByHandle",
+        "function:src/game/keyed_pool.c:keyedPoolGetValue",
+        "function:src/game/keyed_pool.c:keyedPoolFindEntry",
+        "file:include/keyed_pool_types.h",
+        "file:include/object_flags.h",
+        "file:include/item_types.h",
+        "file:include/actor_kind.h",
+        "function:src/ovl/actor_target_interaction.c:itemSetImpactCount"
+      ],
+      "preconditions": [
+        "Consumed numeric operands lie above all protected locals/frame metadata; integer/code-reference values or finite f32 operands whose integer truncation fits s32. Caller actor/state, captured VM and value allocation remain live, with no concurrent replacement; helper-written player/Pikachu/item storage must not overlap VM/values/native frame storage.",
+        "Only immediate conditional source-bound footprint and normal return are reviewed. Wrapper returns zero to continue; no retail reachability, later physics/render behavior or lifetime guarantee follows.",
+        "Pushorder handle,count; popcount thenhandle. Initialized positive-capacity handle pool and finite valid lookup chains required; live item state must cover ownership availability and impactcount fields. Availability rejects zero/missing/destructionpending handles and toolbox-owned items, then signed objectkind must equal0x86.",
+        "Accepted path writes only full signed32 itemstate.bounceCount+0x34 with convertedcount. Negative counts and every s32 value are stored unchanged: no halfword truncation, clamp, decrement, mode update or impact event. Unavailable/nonitem returns0 without state writes. No callbacks, resources or queues."
+      ],
+      "evidence": "Read-only original Ghidra wrapper/helper closure: 8011F920,801190DC,80118ACC. Thirteen authored original-instruction N64 interpreter probes collectively cover these three setters, with authenticated native/helper bytes and matching guarded storage. Yaw probes cover negative integer, multiple-turn float and denied permission; impact probes cover full signed counts and missing, wrong-kind and toolbox targets; appearance probes cover both persistence branches with a distinct active Pikachu. All continue with the reviewed integer result, preserve three lower values and frame metadata, and match full VM/player/Pikachu/item/pool guards. These observations do not cover nonterminating wrapping, later rendering or concurrent lifetimes.",
+      "runtime_status": "bounded_original_instruction_probes_passed"
+    },
+    {
+      "function": "actorScriptSetPikachuAppearanceVariants",
+      "file": "src/ovl/actor_script_collection_profile.c",
+      "sha256": "673bc690f1d92a089c89aa9d159f278919c34a6acc4f8ea74cb930724dba8d22",
+      "effect": "replace_arguments_with_scalar",
+      "arguments": 3,
+      "stack_delta": -2,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "result_semantics": "Replace slot0 variant,slot1 variant,preserve operands with integerzero after storing global Pikachu appearance selections.",
+      "dependencies": [
+        "file:include/object_types.h",
+        "file:include/actor_script.h",
+        "file:include/script_vm.h",
+        "function:src/ovl/script_vm.c:scriptVmPopInteger",
+        "function:src/ovl/script_vm.c:scriptVmPopFloat",
+        "function:src/ovl/script_vm.c:scriptVmPopValue",
+        "function:src/ovl/script_vm.c:scriptValueGetInteger",
+        "function:src/ovl/script_vm.c:scriptValueGetFloat",
+        "function:src/ovl/script_vm.c:scriptVmPushInteger",
+        "function:src/ovl/script_vm.c:scriptValueSetInteger",
+        "function:src/ovl/script_vm.c:scriptVmPushValue",
+        "file:include/pikachu_actor.h",
+        "file:include/actor_appearance.h",
+        "function:src/ovl/actor_target_interaction.c:actorSetAppearanceVariants",
+        "function:src/game/actor_model_parts.c:actorAppearanceSetVariant"
+      ],
+      "preconditions": [
+        "Consumed numeric operands lie above all protected locals/frame metadata; integer/code-reference values or finite f32 operands whose integer truncation fits s32. Caller actor/state, captured VM and value allocation remain live, with no concurrent replacement; helper-written player/Pikachu/item storage must not overlap VM/values/native frame storage.",
+        "Only immediate conditional source-bound footprint and normal return are reviewed. Wrapper returns zero to continue; no retail reachability, later physics/render behavior or lifetime guarantee follows.",
+        "Global gPikachuActor and state allocation must be valid writable; no null/kind/handle check. Recipient is global Pikachu, distinct from caller unless safely identical. Pushorder slot0variant,slot1variant,preserve; top preserve popped first.",
+        "Store converted full s32 variants directly at state+0x2F0/+0x2F4. Fixed slots0/1 are safe; values themselves are NOT validated or narrowed, so arbitrary signed values have defined immediate storage effects. Legal later renderer/table variant domain is separate; this is not approval to render invalid variants.",
+        "Preserve rawzero clears u16 behaviorFlags+0x1E8 bit0x40; any nonzero, including negative, sets it while preserving other15bits. No scale/model pointer/displaylist/hierarchy field changes immediately. actorAppearanceSetVariant is only indexed state store: it does not call actorFindPart, traverse children, allocate model data, run callbacks or synchronize renderer."
+      ],
+      "evidence": "Read-only original Ghidra wrapper/helper closure: 80120050,80119210,800147E4. Thirteen authored original-instruction N64 interpreter probes collectively cover these three setters, with authenticated native/helper bytes and matching guarded storage. Yaw probes cover negative integer, multiple-turn float and denied permission; impact probes cover full signed counts and missing, wrong-kind and toolbox targets; appearance probes cover both persistence branches with a distinct active Pikachu. All continue with the reviewed integer result, preserve three lower values and frame metadata, and match full VM/player/Pikachu/item/pool guards. These observations do not cover nonterminating wrapping, later rendering or concurrent lifetimes.",
+      "runtime_status": "bounded_original_instruction_probes_passed"
+    },
+    {
+      "function": "actorScriptTryHoldItem",
+      "file": "src/ovl/actor_script_player_world.c",
+      "sha256": "1069c0d279ac78bd896c236a823989d280dc081b76b575cc134f9fda702fb63f",
+      "effect": "replace_argument_with_scalar",
+      "arguments": 1,
+      "stack_delta": 0,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "result_semantics": "Replace the requested item handle with the final held item kind, or zero when unavailable. A rejected pickup may return the previous held kind. An accepted pickup may release the candidate and previous item, invoking only the two fixed retail release hooks.",
+      "dependencies": [
+        "function:src/ovl/actor_target_interaction.c:actorTryHoldItem",
+        "function:src/ovl/actor_script_queries.c:objectResolveAvailableHandle",
+        "function:src/ovl/actor_script_queries.c:actorGetHeldItemKind",
+        "function:src/ovl/item_registry.c:itemCanBePickedUp",
+        "function:src/ovl/item_registry.c:itemTryRelease",
+        "function:src/ovl/item_registry.c:itemSetMode",
+        "function:src/ovl/item_registry.c:itemSetScale",
+        "function:src/ovl/item_registry.c:itemStartMaterialAnimation",
+        "function:src/ovl/item_special_behaviors.c:baseballCapResetReleasedScale",
+        "function:src/ovl/item_special_behaviors.c:lightBulbResetReleasedGlow",
+        "function:src/game/object_hierarchy.c:objectFindLiveByHandle",
+        "function:src/game/object_hierarchy.c:objectClearHierarchyFlags",
+        "function:src/game/object_hierarchy.c:objectScaleHierarchyBounds",
+        "function:src/game/keyed_pool.c:keyedPoolGetValue",
+        "function:src/game/keyed_pool.c:keyedPoolFindEntry",
+        "function:src/game/animation_tracks.c:animationIntegerTrackInitialize",
+        "function:src/game/animation_tracks.c:animationIntegerTrackEvaluate",
+        "function:src/ovl/script_vm.c:scriptVmPopInteger",
+        "function:src/ovl/script_vm.c:scriptVmPopValue",
+        "function:src/ovl/script_vm.c:scriptValueGetInteger",
+        "function:src/ovl/script_vm.c:scriptVmPushInteger",
+        "function:src/ovl/script_vm.c:scriptVmPushValue",
+        "function:src/ovl/script_vm.c:scriptValueSetInteger",
+        "file:src/ovl/item_registry.c",
+        "file:src/game/object_hierarchy.c",
+        "file:include/item_kind.h",
+        "file:include/item_state.h",
+        "file:include/item_types.h",
+        "file:include/item_mode.h",
+        "file:include/item_special_behaviors.h",
+        "file:include/item_size.h",
+        "file:include/texture_animation_programs.h",
+        "file:include/integer_animation_types.h",
+        "file:include/integer_animation.h",
+        "file:include/actor_script.h",
+        "file:include/pikachu_actor.h",
+        "file:include/player_types.h",
+        "file:include/player_state.h",
+        "file:include/object_types.h",
+        "file:include/object_flags.h",
+        "file:include/keyed_pool_types.h",
+        "file:include/scene_types.h",
+        "file:include/scene_configuration.h",
+        "file:include/script_vm.h",
+        "file:include/script_value.h",
+        "file:docs/LOCAL_SDK_FILES.json",
+        "file:config/pikachu.yaml",
+        "file:tools/materialize_ultralib.py",
+        "file:config/symbol_addrs.txt"
+      ],
+      "preconditions": [
+        "One numeric handle operand lies above protected locals and frame metadata. Integer and code-reference values are signed 32-bit values; finite floats must be representable as signed 32-bit integers and are truncated. The saved caller ActorScriptState, VM and value buffer remain live throughout release callbacks and the final held-kind query. All affected item state, owner actor state, player held-item global, hierarchy flags and bounds, material tracks and C stack are disjoint from VM contexts, values, protected frames and program storage. Concurrent ownership changes, destruction and context replacement are excluded.",
+        "A resolved nonzero candidate must be an initialized runtime item (kind 0x86), with catalog kind 0 through 165 and stable ItemStatePrefix storage. Arbitrary non-item objects and the caller actor itself are unsupported: the wrapper and resolver do not check runtime kind before itemCanBePickedUp. An existing live caller-held handle must likewise identify valid item state. Item roots and states do not partially overlap actor state or VM storage; owner references may legitimately point back to the caller, Pikachu or another live actor.",
+        "The object handle pool has positive capacity, initialized entries and valid acyclic hash chains. Borrowed lookup reads registry entries and writes only its local predecessor output; it does not mutate LRU state, splay trees or globals. Zero, missing or destruction-marked (flags 0x30) candidates are unavailable. The resolver also excludes runtime items with toolbox ownership (4). A retained old held-item handle may be missing; the final kind query then returns zero without clearing that stale handle.",
+        "Candidate eligibility with byPlayer zero rejects toolbox ownership (4), suspended ownership (5), flag 0x80, or player ownership (1) without transfer permission 0x40000000. Force-release value one is applied only after eligibility, so it does not bypass the player-held permission check. Candidate rejection preserves the caller\u2019s previous held item; the result is its current kind, not a success boolean.",
+        "itemTryRelease with force one rejects ownership states 4 and 5; valid states 0 through 3 proceed. Player ownership (1) clears gPlayerHeldItemHandle at 0x800EF724. Actor ownership (2 or 3) resolves the owner handle and clears the live owner ActorScriptState.heldItemHandle at offset 0x190, including when the owner is the caller. A missing owner does not prevent release. Every live owner has a valid, stable actor-layout held-item field. Owner lookup does not establish runtime kind, so that layout is an explicit prerequisite.",
+        "Use the original 166-entry ItemKind.release column at offset 0x48. Only kind 49 selects lightBulbResetReleasedGlow at 0x80123140, and kind 80 selects baseballCapResetReleasedScale at 0x80123060; all other release hooks are null. Arbitrary callback substitution is excluded. These hooks inspect ownership before release resets it: only Pikachu ownership (2) triggers the bulb material-animation reset to 0xF3 or the cap scale reset to one. Hold, launch, collision and update hooks are not invoked by this native.",
+        "The cap callback calls itemSetScale, which restores the root radius from state.baseRadius, sets uniform scale to area.objectScale multiplied by the catalog scale, then recursively scales and halves root and child bounds. Area and catalog scales and bounds must be initialized and finite, and the hierarchy must be acyclic. This describes the helper\u2019s writes; it does not promise that every child bound returns to its original value. The bulb callback initializes the material track from borrowed animation program 0xF3 and sets its active halfword to one. That program must be valid, its jumps must terminate, interpolation must be representable, and interpolation duration must be nonzero. Evaluation with step zero is deterministic and performs no RNG update, allocation or callback.",
+        "A release callback receives the item and former holder address by value. Both retail hooks ignore the holder argument and retain no C-stack pointer. After the hook, release writes world ownership (0), owner zero, modeTime zero and ground-and-air mode (0), then clears the transfer-permission bit. Mode zero recursively clears hierarchy flags 0x700 only when the root has at least one of those bits; otherwise child-only bits remain unchanged. Release performs no collision registration, unregister operation, search-tree mutation, item-count change or resource free.",
+        "After the candidate is released successfully, the caller\u2019s held-item handle is read again; release may already have cleared it when the caller owned the candidate. Any remaining live previous item is passed to itemTryRelease with force one, and its return value is ignored. A suspended or toolbox-stored previous item can therefore remain owned while the caller\u2019s held handle is replaced; unconditional previous-item release is not promised. The candidate and previous item may be the same object, causing a second release in world state when a stale held reference persists. Distinct items must not share ItemState storage. The previous owner actor may legitimately be the caller.",
+        "Accepted pickup sets candidate ownership to 2 when the caller pointer equals gPikachuActor, otherwise to 3; sets owner to the caller handle; applies item mode 4; stores the candidate handle in the caller\u2019s heldItemHandle; and masks candidate flags with 0xE3FFFFFF, clearing 0x1C000000. Mode 4 clears hierarchy flags 0x700 under the root gate and does not set stationary flag 0x400. The final actorGetHeldItemKind call resolves the caller\u2019s current held handle and returns its signed 16-bit kind, or zero when unavailable. The VM receives that integer regardless of candidate acceptance.",
+        "No item allocation, deletion, physical attachment-matrix update, hold callback, game-mode change, message, audio operation, OS queue operation or DMA occurs synchronously. Items remain live borrowed objects whose ownership fields have changed; returning does not extend their lifetimes. Future held-item, update and rendering callbacks and their borrowed animation or model resources are outside this immediate footprint and require independent lifetime checks. Original SDK memory-primitive semantics and strict matching authentication remain required. No runtime claim is made."
+      ],
+      "evidence": "Independent original Ghidra disassembly at 0x8011F5A0\u20130x8011F5F0 confirms the saved VM, handle pop, actorTryHoldItem call at 0x80118FAC with force one, actorGetHeldItemKind call at 0x801188D4, integer push and continuation result zero. Disassembly at 0x80118FAC\u20130x80119088 traces eligibility, the first release, the caller-held-handle reread, the ignored second release result, and ownership, mode, handle and flag writes. The release dispatch and callback-before-reset order at 0x80114044\u20130x80114188, eligibility at 0x801144EC\u20130x80114598, available-object resolver at 0x80118ACC and held-kind query at 0x801188D4 were inspected. The original Ghidra-authenticated 166-kind catalog has SHA256 9d0236268ce71a9aa43dd18458974d00f57995483ac75075270fed209557da14; its release column contains only kind 49 \u2192 0x80123140 and kind 80 \u2192 0x80123060. Original Ghidra confirms that both callbacks test prior ownership 2 before requesting material animation 0xF3 or scale one. Material initialization at 0x801145D0 is source-bound. Mode, scale, track and lookup helpers reuse independently reviewed, unchanged StationaryItem and CreateItem contracts. No runtime claim is made.",
+      "runtime_status": "untested",
+      "retail_release_callbacks": {
+        "49": "0x80123140",
+        "80": "0x80123060",
+        "other_valid_kinds": "NULL"
+      }
+    },
+    {
+      "function": "actorScriptPushMessengerContactMode",
+      "file": "src/ovl/actor_script_player_world.c",
+      "sha256": "118a4c158ca111f209bfb92acbc0c64d8f1c5606a5ed53a315fa2da46fe9754e",
+      "effect": "append_scalar",
+      "arguments": 0,
+      "stack_delta": 1,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "result_semantics": "Append the full signed 32-bit messengerContactMode word from the calling actor state. No enum conversion, clamping or boolean normalization occurs.",
+      "dependencies": [
+        "file:include/actor_script.h"
+      ],
+      "preconditions": [
+        "The calling actor, its live actor state, retained VM, owned value storage and helper C stack are valid and remain nonoverlapping. The active evaluation depth lies above all protected locals and frame metadata, and one free value slot is available. No concurrent writer, context replacement or destruction interleaves the immediate call.",
+        "The calling actor state remains readable through messengerContactMode at offset 0x214 and vmAddress at offset 0x1B8. This accessor does not validate the stored mode or invoke contact behavior. Only the result value bytes and VM stack depth are written; lower values and frame metadata remain unchanged."
+      ],
+      "evidence": "Source and read-only original Ghidra 0x8011E1E8 agree: actor state at actor+0x54, VM at state+0x1B8, signed-word mode at state+0x214, integer append and continue. This is an immediate conditional storage review; no runtime observations are claimed."
+    },
+    {
+      "function": "actorScriptPushPlayerMovementClass",
+      "file": "src/ovl/actor_script_messages_items.c",
+      "sha256": "b3a0d69ec6edd7bc758b0c7a80b90932eacceb63a87bdc4869312849c1b931dd",
+      "effect": "append_scalar",
+      "arguments": 0,
+      "stack_delta": 1,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "result_semantics": "Append the raw signed 32-bit movementClass word of the primary player at 0x800EF718, independently of the calling actor. The accessor does not clamp the word to the producer-established classes zero through three.",
+      "dependencies": [
+        "file:include/player_types.h",
+        "file:include/player_state.h",
+        "file:linker/query_state_aliases.ld",
+        "file:config/symbol_addrs.txt"
+      ],
+      "preconditions": [
+        "The calling actor, its live actor state, retained VM, owned value storage and helper C stack are valid and remain nonoverlapping. The active evaluation depth lies above all protected locals and frame metadata, and one free value slot is available. No concurrent writer, context replacement or destruction interleaves the immediate call.",
+        "The primary player record is live and readable. The linker interior view gPlayerCompanionTarget denotes gPlayerState+0x50, so subtracting 0x50 recovers the primary PlayerControlPrefix and movementClass is read at offset 0x78. The primary record is disjoint from result storage; no player initialization, class validity or later movement behavior is inferred.",
+        "Only the result value bytes and VM stack depth are written. Protected lower values, frame metadata, actor state and primary-player state are unchanged by this accessor."
+      ],
+      "evidence": "Source and read-only original Ghidra 0x8011E138 agree: captured actor VM and raw word at 0x800EF718 passed to the integer push helper, then continue. PlayerControlPrefix, the linker interior alias and symbol map bind the source address calculation. This review claims no runtime observations."
+    },
+    {
+      "function": "actorScriptGetActorDisplayName",
+      "file": "src/ovl/actor_script_collection_profile.c",
+      "sha256": "273cce60bb1b4226d457d2107705d6a2edeec9b0c92a00f0eb29aad9e0f84523",
+      "effect": "replace_arguments_with_borrowed_string_pointer",
+      "arguments": 2,
+      "stack_delta": -1,
+      "result_tag": "string_pointer",
+      "scheduling": "continue",
+      "result_ownership": "borrowed",
+      "result_nullable": true,
+      "result_lifetime": "The selected text is borrowed from persistent actor-kind configuration storage. Its backing storage must remain loaded and valid while a later consumer dereferences the address. The VM owns only the copied pointer payload and never owns or releases the text.",
+      "result_semantics": "Consume actor kind followed by a default-name selector. Any nonzero selector chooses the default name. Zero chooses the alternate name when nonnull, otherwise the default. Replace both numeric operands with a tag-4 value containing the selected 32-bit address, possibly null.",
+      "dependencies": [
+        "function:src/ovl/script_vm.c:scriptVmPopInteger",
+        "function:src/ovl/script_vm.c:scriptVmPopValue",
+        "function:src/ovl/script_vm.c:scriptValueGetInteger",
+        "function:src/ovl/script_vm.c:scriptVmPushStringPointer",
+        "function:src/ovl/script_vm.c:scriptValueSetStringPointer",
+        "function:src/game/actor_configuration.c:actorConfigGetDisplayName",
+        "file:src/game/actor_configuration.c",
+        "file:include/actor_text.h",
+        "file:include/actor_kind.h",
+        "file:config/symbol_addrs.txt"
+      ],
+      "preconditions": [
+        "The calling actor, live actor state, retained VM, owned value storage and helper C stack remain valid and nonoverlapping with actor-kind configuration and borrowed text storage. Both consumed operands lie above every protected local and frame-metadata slot; the remaining result slot is valid. No concurrent writer, context replacement or configuration unload interleaves the call.",
+        "Push order is actor kind, then default-name selector. Both operands are integer or code-reference payloads, or finite floats in the supported signed 32-bit conversion domain, truncated toward zero. The converted actor kind is one through 37. Every numeric selector is accepted: zero prefers alternate text; any nonzero value, including negative values, requests default text. There is no invalid-selector null branch.",
+        "The kind-indexed alternate/default pointer entries are readable at the retained 0x54-byte stride and remain stable. A missing alternate falls back to default; a missing default can produce null. No text pointer validity, nonnull result, string length or termination is established by the accessor.",
+        "The established target address-copy contract applies: only tag 4 and the four pointer bytes are copied into a five-byte ScriptValue. No pointed-to text bytes are read, copied or allocated. Consumers must handle null and satisfy borrowed-string lifetime and readability obligations. Protected lower values and frame metadata remain unchanged."
+      ],
+      "evidence": "Source and read-only original Ghidra 0x8011FE20 and 0x8001E680 agree: capture VM, pop selector then kind, select alternate/default pointer at stride 0x54, append tag-4 borrowed address and continue. Whole actor_configuration.c binds the private ActorKindConfig stride; actor_text.h and the symbol map bind the alternate/default interior table views. VM string push/set and numeric pop helpers retain the existing reviewed dependencies. No runtime observations are claimed."
     }
   ],
   "dependency_catalog": {
@@ -10670,6 +10942,11 @@
       "file": "include/actor_action_cue.h",
       "sha256": "146bb59d9ddd562e60abbbec79678091fb82e362bd441c19ce07d0787d81babe"
     },
+    "file:include/actor_appearance.h": {
+      "kind": "file",
+      "file": "include/actor_appearance.h",
+      "sha256": "660e0cac64402a82977271bf50693ee2aa751774a4ed70a5dba2c0d5bf431781"
+    },
     "file:include/actor_assets.h": {
       "kind": "file",
       "file": "include/actor_assets.h",
@@ -10724,6 +11001,11 @@
       "kind": "file",
       "file": "include/actor_target.h",
       "sha256": "fd3d5467b5edc16cd76afef9d5edbc7acd093aa5f5b9541ee30387ba32a78c87"
+    },
+    "file:include/actor_text.h": {
+      "kind": "file",
+      "file": "include/actor_text.h",
+      "sha256": "84951f94516e68043c5bdfddf9ae86b9bb5769727a818e67f1175c6a123ec18f"
     },
     "file:include/animation_tracks.h": {
       "kind": "file",
@@ -10920,6 +11202,16 @@
       "file": "include/item_response.h",
       "sha256": "4c0ddcd8be97daf2bb1786a00c1ce3931183217db6b472f3347642e4e053bcfb"
     },
+    "file:include/item_size.h": {
+      "kind": "file",
+      "file": "include/item_size.h",
+      "sha256": "4f9b443a3bd3f4b7569d63b73139ee0a7714933652a54227faca81c51992dcbd"
+    },
+    "file:include/item_special_behaviors.h": {
+      "kind": "file",
+      "file": "include/item_special_behaviors.h",
+      "sha256": "43d736dd9b38e0bf5901b7af69af89afb337ee959d8eb1ce88921f55bdf026f2"
+    },
     "file:include/item_state.h": {
       "kind": "file",
       "file": "include/item_state.h",
@@ -11113,7 +11405,7 @@
     "file:include/progress_field_ids.h": {
       "kind": "file",
       "file": "include/progress_field_ids.h",
-      "sha256": "03fea9b809ddd25467ef183e003cd7178dbc849074f526237446d4caab3e60ad"
+      "sha256": "481d836bbca6c631cd58394d63ae58b4fa25608c6a934be563144aa8c3bab652"
     },
     "file:include/progress_field_types.h": {
       "kind": "file",
@@ -11325,6 +11617,11 @@
       "file": "include/voice_reactive_spinner_types.h",
       "sha256": "94402e95686aacf2416e0efc614c068aa0f00d99280ea91f52416c2693a812ad"
     },
+    "file:linker/query_state_aliases.ld": {
+      "kind": "file",
+      "file": "linker/query_state_aliases.ld",
+      "sha256": "8620c6d2a64ca751f5c66a485e27caad063754f4794cb99e5c3991ac1b948c23"
+    },
     "file:src/game/action_script.c": {
       "kind": "file",
       "file": "src/game/action_script.c",
@@ -11338,7 +11635,7 @@
     "file:src/game/actor_configuration.c": {
       "kind": "file",
       "file": "src/game/actor_configuration.c",
-      "sha256": "04eaca2342d4e12a9526957560b795c1c8f20ed554c9c46e0f9e9b669781f87d"
+      "sha256": "2b3c501c3356377dc6a518d6af20183fffffc18dba7c007fcd5e21d9128a55cf"
     },
     "file:src/game/actor_model_motion.c": {
       "kind": "file",
@@ -11388,7 +11685,7 @@
     "file:src/game/collection_presentation.c": {
       "kind": "file",
       "file": "src/game/collection_presentation.c",
-      "sha256": "3e287c428744562da142ecda06230f4401a86ed144d6159502cb79da5f14144e"
+      "sha256": "f74c587a38def0e5d3988476953328cea7b2fef2109cb74854b7245d97e9f369"
     },
     "file:src/game/collision_grid.c": {
       "kind": "file",
@@ -11573,7 +11870,7 @@
     "file:src/ovl/player_companion.c": {
       "kind": "file",
       "file": "src/ovl/player_companion.c",
-      "sha256": "ea8f5dba6f8ac9ec08d84e5b9cdc9e2d2605c5bf07db700b08e34d5000e58c75"
+      "sha256": "de915fd2ec83204bc052f18db232adcae93f65c4a89546ad5ee8ec19b1543594"
     },
     "file:src/ovl/script_vm.c": {
       "kind": "file",
@@ -11663,6 +11960,12 @@
       "function": "actorAssetWaitForQueuedReads",
       "sha256": "61a94d9c8206806df06ad01bee71df59eed36077f3d97e8ab9ddd67aa878e3a9"
     },
+    "function:src/game/actor_configuration.c:actorConfigGetDisplayName": {
+      "kind": "function",
+      "file": "src/game/actor_configuration.c",
+      "function": "actorConfigGetDisplayName",
+      "sha256": "68ee1ff6b90036115dcc85c693e52853ac36d72cfecd159aaf7ea6af47f3dec1"
+    },
     "function:src/game/actor_configuration.c:actorCreateForKind": {
       "kind": "function",
       "file": "src/game/actor_configuration.c",
@@ -11698,6 +12001,12 @@
       "file": "src/game/actor_model_parts.c",
       "function": "actorAdjustSecondaryMeter",
       "sha256": "0b9e24966d9afd6bafcf7f47d6b07d36d6c0a8cdce8d30aa95d80f5b40f841e6"
+    },
+    "function:src/game/actor_model_parts.c:actorAppearanceSetVariant": {
+      "kind": "function",
+      "file": "src/game/actor_model_parts.c",
+      "sha256": "018d246d67db767db6346b215902346b0ba111e73f68e1137cba7d357eb7ecb3",
+      "function": "actorAppearanceSetVariant"
     },
     "function:src/game/animation_tracks.c:animationIntegerTrackEvaluate": {
       "kind": "function",
@@ -11793,7 +12102,7 @@
       "kind": "function",
       "file": "src/game/collection_presentation.c",
       "function": "progressUpdateChapterAfterVisit",
-      "sha256": "907f0e8179f5d464a9c83e4a98db242f954926d9d54bb20e9d98f53bbf5c5ac9"
+      "sha256": "f39759b17631616b1f9b111095ddcdd642690c9833d65b6af13b1a3e422141b3"
     },
     "function:src/game/doors_object_responses.c:doorSetAccessState": {
       "kind": "function",
@@ -12662,8 +12971,8 @@
     "function:src/ovl/actor_script_queries.c:actorGetHeldItemKind": {
       "kind": "function",
       "file": "src/ovl/actor_script_queries.c",
-      "sha256": "b415508ec1d70376ed821b6ed6870432d928cde361e14d058742e6aa68506978",
-      "function": "actorGetHeldItemKind"
+      "function": "actorGetHeldItemKind",
+      "sha256": "b415508ec1d70376ed821b6ed6870432d928cde361e14d058742e6aa68506978"
     },
     "function:src/ovl/actor_script_queries.c:actorGetKindByHandle": {
       "kind": "function",
@@ -12881,11 +13190,29 @@
       "function": "actorResolveStoredTarget",
       "sha256": "99ecc7f0d9de1dc8445081165517c88a0b3b352942de6ec7d4e10b2f50905d1d"
     },
+    "function:src/ovl/actor_target_interaction.c:actorSetAppearanceVariants": {
+      "kind": "function",
+      "file": "src/ovl/actor_target_interaction.c",
+      "sha256": "40c213e6c0df59ef2c6707689afdf9adf0c9902cd4db474141497fe1f65a0f54",
+      "function": "actorSetAppearanceVariants"
+    },
     "function:src/ovl/actor_target_interaction.c:actorSetMessengerContactMode": {
       "kind": "function",
       "file": "src/ovl/actor_target_interaction.c",
       "sha256": "ea10ffdb6855051004c745841bfe1f20c9986ef269bd95af59dfec5572ef86ab",
       "function": "actorSetMessengerContactMode"
+    },
+    "function:src/ovl/actor_target_interaction.c:actorTryHoldItem": {
+      "kind": "function",
+      "file": "src/ovl/actor_target_interaction.c",
+      "function": "actorTryHoldItem",
+      "sha256": "7c285ab5e764e9de365aee97c81ee7fac7789bc51618d1ebbbc69ec3c868cc40"
+    },
+    "function:src/ovl/actor_target_interaction.c:itemSetImpactCount": {
+      "kind": "function",
+      "file": "src/ovl/actor_target_interaction.c",
+      "sha256": "dbead4d12e5a47261833aacdfe671d58ccbcf30613e60043cfc43802092d5d3e",
+      "function": "itemSetImpactCount"
     },
     "function:src/ovl/area_terrain_maze.c:areaFindPositionNode": {
       "kind": "function",
@@ -12959,6 +13286,12 @@
       "function": "itemBuildLightingDisplayList",
       "sha256": "f7981f19e873b7a62399ae542774f947f84cf5a4559704922989f90c6315d9ef"
     },
+    "function:src/ovl/item_registry.c:itemCanBePickedUp": {
+      "kind": "function",
+      "file": "src/ovl/item_registry.c",
+      "function": "itemCanBePickedUp",
+      "sha256": "8136064176036457317289cf7cf97b92a3d78cf5e9afcbc942c6f887752f8608"
+    },
     "function:src/ovl/item_registry.c:itemCompareSearchOrder": {
       "kind": "function",
       "file": "src/ovl/item_registry.c",
@@ -13019,6 +13352,18 @@
       "function": "itemSetScale",
       "sha256": "0423e86b79cd2da83694a7d21cbb1649e5be94e2c0b4b7ab16b4651798709f83"
     },
+    "function:src/ovl/item_registry.c:itemStartMaterialAnimation": {
+      "kind": "function",
+      "file": "src/ovl/item_registry.c",
+      "function": "itemStartMaterialAnimation",
+      "sha256": "489ccc0a1ee1542fcee3894ab4f7513ae7035fbcc681192095312d806fc71e7d"
+    },
+    "function:src/ovl/item_registry.c:itemTryRelease": {
+      "kind": "function",
+      "file": "src/ovl/item_registry.c",
+      "function": "itemTryRelease",
+      "sha256": "fdbeb34ea1a69dfcdff7ffb35648cfcef536bd21541cd6250a8c4712c568bdd0"
+    },
     "function:src/ovl/item_registry.c:profileAddCounter": {
       "kind": "function",
       "file": "src/ovl/item_registry.c",
@@ -13030,6 +13375,18 @@
       "file": "src/ovl/item_registry.c",
       "function": "profileGetCounter",
       "sha256": "38575b0191bf02cb24d6755c04c56d7348fbf2cc95e7200c7823a7f2d03ec916"
+    },
+    "function:src/ovl/item_special_behaviors.c:baseballCapResetReleasedScale": {
+      "kind": "function",
+      "file": "src/ovl/item_special_behaviors.c",
+      "function": "baseballCapResetReleasedScale",
+      "sha256": "d18abbc5cc234e39c5627133fb7a248347d850da49556d1cc9b15e8b64541b9e"
+    },
+    "function:src/ovl/item_special_behaviors.c:lightBulbResetReleasedGlow": {
+      "kind": "function",
+      "file": "src/ovl/item_special_behaviors.c",
+      "function": "lightBulbResetReleasedGlow",
+      "sha256": "f81792e3761c9f3bfb1be28b120090fb2d6c1d40960d9b6459f3b38fc50a880f"
     },
     "function:src/ovl/player_companion.c:audioSetMusicDuckingInhibitFlags": {
       "kind": "function",
@@ -13079,6 +13436,18 @@
       "function": "playerSetControllerPort",
       "sha256": "48aeb88e7645711aba7bc693e3a968aa2aa78234bbeb8187593095daf9b21802"
     },
+    "function:src/ovl/player_companion.c:playerSetViewAngles": {
+      "kind": "function",
+      "file": "src/ovl/player_companion.c",
+      "sha256": "358b022ab390e0e1ee0ef284813614b1487763f31c11cc4a42e6a9a16104ec51",
+      "function": "playerSetViewAngles"
+    },
+    "function:src/ovl/player_companion.c:playerSetViewYaw": {
+      "kind": "function",
+      "file": "src/ovl/player_companion.c",
+      "sha256": "fce1c43b8a32a07e2a0a250eb829f19513f77236c6f76107e0b9ec11a0875252",
+      "function": "playerSetViewYaw"
+    },
     "function:src/ovl/player_companion.c:playerSetWorldPosition": {
       "kind": "function",
       "file": "src/ovl/player_companion.c",
@@ -13100,8 +13469,8 @@
     "function:src/ovl/script_vm.c:scriptValueGetFloat": {
       "kind": "function",
       "file": "src/ovl/script_vm.c",
-      "function": "scriptValueGetFloat",
-      "sha256": "94e6ff080eea82e2661ec2adbc45a33a6a2141b10ff8d1263f580c2c5433c6b1"
+      "sha256": "94e6ff080eea82e2661ec2adbc45a33a6a2141b10ff8d1263f580c2c5433c6b1",
+      "function": "scriptValueGetFloat"
     },
     "function:src/ovl/script_vm.c:scriptValueGetInteger": {
       "kind": "function",
@@ -13136,8 +13505,8 @@
     "function:src/ovl/script_vm.c:scriptVmPopFloat": {
       "kind": "function",
       "file": "src/ovl/script_vm.c",
-      "function": "scriptVmPopFloat",
-      "sha256": "6ab64e75a64605c75c85f685e506c90c9970819578d94a601eb7b1bae774744b"
+      "sha256": "6ab64e75a64605c75c85f685e506c90c9970819578d94a601eb7b1bae774744b",
+      "function": "scriptVmPopFloat"
     },
     "function:src/ovl/script_vm.c:scriptVmPopInteger": {
       "kind": "function",

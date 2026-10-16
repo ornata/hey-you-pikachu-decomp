@@ -1191,32 +1191,35 @@ s32 presentationSelectBedroomScenario(s32 *actorAction, s32 *audioCue) {
     s32 sp18;
 
     sp1C = progressGetCurrentChapter();
-    TRACE("iedeTimer:%d otukaiTimer:%d\n", progressGetValue(0x13), progressGetValue(0x14));
+    TRACE("iedeTimer:%d otukaiTimer:%d\n", progressGetValue(PROGRESS_FIELD_DISAPPEARANCE_TRIGGER_COUNTER),
+          progressGetValue(PROGRESS_FIELD_ERRAND_TRIGGER_COUNTER));
     TRACE("gameClear:%d timer:%d r:%d\n", gCompletedVisitCardPending, progressGetValue(0x1A), sp1C);
     if (gCompletedVisitCardPending != 0) {
         if ((gCollectionResultsBypassed != 0) && (progressGetCurrentChapter() >= 5)) {
             gEyeCatchSelectedGroup = eyeCatchChooseGroup();
         }
         progressAddValue(PROGRESS_FIELD_DAYS_WITH_PIKACHU, 1);
-        progressSetValue(0x12, 0);
+        progressSetValue(PROGRESS_FIELD_SHOPPING_ERRAND_ACTIVE, 0);
         gCurrentAreaConfiguration->backdrop = 3;
         scriptVmResetGlobals();
         playerSetChaseStage(progressGetValue(PROGRESS_FIELD_CHASE_STAGE));
         if (progressGetValue(0xC2) != 0) {
-            progressAddValue(0x13, 1);
+            progressAddValue(PROGRESS_FIELD_DISAPPEARANCE_TRIGGER_COUNTER, 1);
         } else {
-            progressAddValue(0x13, 2);
+            progressAddValue(PROGRESS_FIELD_DISAPPEARANCE_TRIGGER_COUNTER, 2);
         }
-        progressAddValue(0x14, 1);
+        progressAddValue(PROGRESS_FIELD_ERRAND_TRIGGER_COUNTER, 1);
         if (sp1C == 8) {
-            progressSetValue(0x12, 1);
-        } else if ((sp1C == 7) && (progressGetValue(0x11) == 0) && (progressGetValue(0x12) == 0)) {
-            if ((progressGetValue(0x1A) >= 0xE) || ((s32)randomBelow(progressGetValue(0x13)) >= 8)) {
-                progressSetValue(0x11, 1);
+            progressSetValue(PROGRESS_FIELD_SHOPPING_ERRAND_ACTIVE, 1);
+        } else if ((sp1C == 7) && (progressGetValue(PROGRESS_FIELD_PIKACHU_DISAPPEARANCE_ACTIVE) == 0) &&
+                   (progressGetValue(PROGRESS_FIELD_SHOPPING_ERRAND_ACTIVE) == 0)) {
+            if ((progressGetValue(0x1A) >= 0xE) ||
+                ((s32)randomBelow(progressGetValue(PROGRESS_FIELD_DISAPPEARANCE_TRIGGER_COUNTER)) >= 8)) {
+                progressSetValue(PROGRESS_FIELD_PIKACHU_DISAPPEARANCE_ACTIVE, 1);
             } else {
-                sp18 = randomBelow(progressGetValue(0x14));
+                sp18 = randomBelow(progressGetValue(PROGRESS_FIELD_ERRAND_TRIGGER_COUNTER));
                 if ((progressGetValue(PROGRESS_FIELD_GAME_CLEARED) != 0) && (sp18 >= 0xE)) {
-                    progressSetValue(0x12, 1);
+                    progressSetValue(PROGRESS_FIELD_SHOPPING_ERRAND_ACTIVE, 1);
                 }
             }
         }
@@ -1225,14 +1228,14 @@ s32 presentationSelectBedroomScenario(s32 *actorAction, s32 *audioCue) {
         return 9;
     }
     gCurrentAreaConfiguration->backdrop = 1;
-    if (progressGetValue(0x11) != 0) {
+    if (progressGetValue(PROGRESS_FIELD_PIKACHU_DISAPPEARANCE_ACTIVE) != 0) {
         progressSetValue(0x1A, 0);
-        progressSetValue(0x13, 0);
+        progressSetValue(PROGRESS_FIELD_DISAPPEARANCE_TRIGGER_COUNTER, 0);
         *audioCue = 0x15;
         return 6;
     }
-    if (progressGetValue(0x12) != 0) {
-        progressSetValue(0x14, 0);
+    if (progressGetValue(PROGRESS_FIELD_SHOPPING_ERRAND_ACTIVE) != 0) {
+        progressSetValue(PROGRESS_FIELD_ERRAND_TRIGGER_COUNTER, 0);
         *audioCue = 0x15;
         return 7;
     }
@@ -1259,7 +1262,7 @@ s32 presentationSelectBedroomScenario(s32 *actorAction, s32 *audioCue) {
         *audioCue = 0x15;
         return 4;
     case 8:
-        progressSetValue(0x14, 0);
+        progressSetValue(PROGRESS_FIELD_ERRAND_TRIGGER_COUNTER, 0);
         *audioCue = 0x15;
         return 7;
     case 9:
@@ -1303,7 +1306,7 @@ s32 presentationSelectFrontYardScenario(s32 *actorAction, s32 *audioCue) {
         *audioCue = 0x15;
         return 5;
     case 7:
-        if (progressGetValue(0x12) != 0) {
+        if (progressGetValue(PROGRESS_FIELD_SHOPPING_ERRAND_ACTIVE) != 0) {
             gCurrentAreaConfiguration->backdrop = 2;
             *audioCue = 0x15;
             return 6;
@@ -1393,7 +1396,7 @@ s32 presentationSelectViridianDeepScenario(s32 *actorAction, s32 *audioCue) {
 /// \note Original decompilation identifier: \c func_8002A68C (0x8002A68C).
 s32 presentationSelectSpringleafScenario(s32 *actorAction, s32 *audioCue) {
     progressGetCurrentChapter();
-    if (progressGetValue(0x12) != 0) {
+    if (progressGetValue(PROGRESS_FIELD_SHOPPING_ERRAND_ACTIVE) != 0) {
         *actorAction = 0x3B;
         *audioCue = 0x15;
         return 0;
@@ -1458,7 +1461,7 @@ s32 presentationSelectCobaltCoastScenario(s32 *actorAction, s32 *audioCue) {
 /// \note Original decompilation identifier: \c func_8002A7F8 (0x8002A7F8).
 s32 presentationSelectAbraShopScenario(s32 *actorAction, s32 *audioCue) {
     progressGetCurrentChapter();
-    if (progressGetValue(0x12) != 0) {
+    if (progressGetValue(PROGRESS_FIELD_SHOPPING_ERRAND_ACTIVE) != 0) {
         *actorAction = 0xF4;
         *audioCue = 0x15;
         return 0;
@@ -1722,7 +1725,7 @@ s32 progressUpdateChapterAfterVisit(void) {
     var_s0 = currentChapter;
     switch (currentChapter) {
     case 3:
-        if (progressAddValue(0xD, 1) >= 4) {
+        if (progressAddValue(PROGRESS_FIELD_EARLY_VISIT_COUNT, 1) >= 4) {
             var_s0 += 1;
             playerSetChaseStage(1);
         }
@@ -1733,8 +1736,8 @@ s32 progressUpdateChapterAfterVisit(void) {
             var_s0 += 1;
             playerSetChaseStage(2);
             progressSetValue(0x1A, 0);
-            progressSetValue(0x13, 0);
-            progressSetValue(0x14, 0);
+            progressSetValue(PROGRESS_FIELD_DISAPPEARANCE_TRIGGER_COUNTER, 0);
+            progressSetValue(PROGRESS_FIELD_ERRAND_TRIGGER_COUNTER, 0);
         }
         break;
     case 7:

@@ -51,7 +51,7 @@ void oddishMeadowSpawnGrowthResident(f32 *position, s32 residentIndex) {
     u32 random;
 
     state = progressGetValue(residentIndex + 0x6A);
-    if (progressGetValue(0x12) == 0) {
+    if (progressGetValue(PROGRESS_FIELD_SHOPPING_ERRAND_ACTIVE) == 0) {
         record = &D_8014E254_scene_oddish_meadow;
     } else {
         record = &D_80157C20_scene_oddish_meadow;
@@ -168,7 +168,7 @@ void oddishMeadowInitializeRegularObjects(void) {
     }
     actorCreateForKind(ACTOR_KIND_DIGLETT, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
                        &D_8014E5D0_scene_oddish_meadow, 0);
-    if (progressGetValue(0x12) == 0) {
+    if (progressGetValue(PROGRESS_FIELD_SHOPPING_ERRAND_ACTIVE) == 0) {
         var_s0 = &D_8014EEA0_scene_oddish_meadow;
     } else {
         var_s0 = &D_80157C20_scene_oddish_meadow;
@@ -220,7 +220,7 @@ void oddishMeadowInitializeRegularObjects(void) {
     } else {
         mazeScatterItems(D_80157DBC_scene_oddish_meadow, 0x1C, &D_80157DB4_scene_oddish_meadow, 0.3F);
     }
-    if (progressGetValue(0x12) == 0) {
+    if (progressGetValue(PROGRESS_FIELD_SHOPPING_ERRAND_ACTIVE) == 0) {
         landmarkCreate(D_80159488_scene_oddish_meadow, 8.0F, 137.47F, 0x90);
         landmarkCreate(D_8015948C_scene_oddish_meadow, D_80159490_scene_oddish_meadow, 249.0F, 0x8E);
     }

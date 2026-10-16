@@ -1056,8 +1056,10 @@ void systemMenuAppendProgressDetails(void) {
             progressGetValue(0x89) ? "Pn" : "Xx", progressGetValue(0xAD) ? "Sp" : "Xx",
             progressGetValue(0xAF) ? "Dg" : "Xx", progressGetValue(0xBD) ? "Cy" : "Xx",
             progressGetValue(0xAE) ? "Hr" : "Xx", progressGetValue(PROGRESS_FIELD_GAME_CLEARED) ? "Gc" : "Xx",
-            progressGetValue(0xF) ? "Cs" : "Xx", progressGetValue(0x10) ? "Cb" : "Xx", progressGetValue(0x13),
-            progressGetValue(0x1A), progressGetValue(0x14));
+            progressGetValue(0xF) ? "Cs" : "Xx",
+            progressGetValue(PROGRESS_FIELD_ERRAND_BOX_INSTRUCTIONS_RECORDED) ? "Cb" : "Xx",
+            progressGetValue(PROGRESS_FIELD_DISAPPEARANCE_TRIGGER_COUNTER), progressGetValue(0x1A),
+            progressGetValue(PROGRESS_FIELD_ERRAND_TRIGGER_COUNTER));
     systemMenuAppendDetailText((u8 *)buffer);
 }
 
@@ -1316,13 +1318,14 @@ void systemMenuSetChaseProgress(s32 value) {
     playerSetChaseStage(value);
 }
 
-/// Save the legacy debug difficulty selection.
-/// \param arg0 Requested difficulty setting.
+/// Select whether the Pikachu disappearance episode is active through the debug menu.
+/// \param arg0 Requested disappearance-active flag.
 /// \returns Nothing.
+/// \note The retained debug menu calls this selection difficulty.
 /// \note Original decompilation identifier: \c func_8011B3FC (0x8011B3FC).
 void systemMenuSetDifficulty(s32 arg0) {
     TRACE("selDifficulty %d\n", arg0);
-    progressSetValue(0x11, arg0);
+    progressSetValue(PROGRESS_FIELD_PIKACHU_DISAPPEARANCE_ACTIVE, arg0);
 }
 
 /// Apply a selected value to all disappearance progress flags.
@@ -1348,7 +1351,7 @@ void systemMenuSetDisappearanceFlags(s32 arg0) {
 /// \note Original decompilation identifier: \c func_8011B4B0 (0x8011B4B0).
 void systemMenuSetEarlyVisitCount(s32 arg0) {
     TRACE("selEasyCountFlag %d\n", arg0);
-    progressSetValue(0xD, arg0);
+    progressSetValue(PROGRESS_FIELD_EARLY_VISIT_COUNT, arg0);
 }
 
 /// Set the saved game-clear progress.
@@ -1812,7 +1815,8 @@ void systemMenuInitialize(void) {
     state->interactiveModel = model;
     model->rotation[2] = model->rotation[1] = model->rotation[0] = 0.0F;
     scene = progressGetCurrentChapter();
-    if (scene != 4 && scene != 6 && scene != 8 && gRuntimeCurrentArea >= 3 && progressGetValue(0x12) == 0) {
+    if (scene != 4 && scene != 6 && scene != 8 && gRuntimeCurrentArea >= 3 &&
+        progressGetValue(PROGRESS_FIELD_SHOPPING_ERRAND_ACTIVE) == 0) {
         systemMenuAppendItem(&gSystemMenuRootList, &gSystemMenuGoHomeEntry);
     }
     if (progressGetValue(PROGRESS_FIELD_GAME_CLEARED)) {

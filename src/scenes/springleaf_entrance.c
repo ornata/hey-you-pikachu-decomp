@@ -1,3 +1,4 @@
+#include "progress_field_ids.h"
 #include "actor_kind.h"
 /// Geometry of the springleaf entrance spatial lookup grid.
 enum { SPRINGLEAF_ENTRANCE_GRID_LAYERS = 32, SPRINGLEAF_ENTRANCE_GRID_SIDE = 32 };
@@ -57,7 +58,7 @@ void springleafEntranceSpawnGrowthResident(f32 *position, s32 residentIndex) {
     u32 random;
 
     state = progressGetValue(residentIndex + 0x65);
-    if (progressGetValue(0x12) == 0) {
+    if (progressGetValue(PROGRESS_FIELD_SHOPPING_ERRAND_ACTIVE) == 0) {
         record = &D_8014DF74_scene_springleaf_entrance;
     } else {
         record = &gGrowthResidentReactionScript_scene_springleaf_entrance;
@@ -115,7 +116,7 @@ void springleafEntranceSpawnItem(f32 *position, s32 itemKind) {
 /// Spawn the entrance resident at the location selected by saved scene state.
 /// \returns Nothing.
 void springleafEntranceSpawnFixedResident(void) {
-    if (progressGetValue(0x12) == 0) {
+    if (progressGetValue(PROGRESS_FIELD_SHOPPING_ERRAND_ACTIVE) == 0) {
         actorCreateForKind(ACTOR_KIND_CHARMANDER, 165.5F, 38.0F, 225.0F, 0.0F, 0.0F,
                            gCurrentAreaConfiguration->objectScale, &D_8014E2B0_scene_springleaf_entrance, 0);
         return;
@@ -212,7 +213,7 @@ void springleafEntranceInitializeObjects(void) {
         }
     } while (i < 5);
     mazeScatterItems(D_80157668_scene_springleaf_entrance, 0x3C, &D_80157660_scene_springleaf_entrance, 0.7F);
-    if (progressGetValue(0x12) == 0) {
+    if (progressGetValue(PROGRESS_FIELD_SHOPPING_ERRAND_ACTIVE) == 0) {
         landmarkCreate(D_80158E60_scene_springleaf_entrance, 10.5F, 239.56F, 0x90);
         landmarkCreate(115.0F, D_80158E64_scene_springleaf_entrance, 267.0F, 0x8E);
     }

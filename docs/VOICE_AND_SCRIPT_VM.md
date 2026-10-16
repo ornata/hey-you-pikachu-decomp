@@ -519,6 +519,32 @@ storage and terminating animation/hierarchy traversal. Eating has its own condit
 phase review, including replacement creation and registry removal. Deferred
 destruction and actor/VM lifetime between invocations remain separate obligations.
 
+`actorScriptTryHoldItem` replaces the requested handle with the actor's final held
+item kind. Rejection can therefore return the previously held kind rather than
+zero. Forced release does not bypass pickup eligibility. After accepting the new
+item, the helper attempts to release the old one but ignores that release result;
+an unreleasable old item can retain its ownership state. The immediate native
+invokes only the two retail release hooks above, with no hold hook or allocation.
+Valid item and owner layouts, stable handles and terminating hierarchy/animation
+traversal are prerequisites of this contract.
+
+Three setters have narrower effects than their names might suggest:
+
+| Native | Immediate effect |
+| --- | --- |
+| `actorScriptSetPlayerYaw` | When permission allows it, normalizes yaw and also normalizes and clamps the existing player pitch. It does not refresh the camera. |
+| `actorScriptSetItemImpactCount` | Stores the full signed 32-bit bounce count unchanged on an available item; returns one on update, zero otherwise. |
+| `actorScriptSetPikachuAppearanceVariants` | Stores two signed variant selections on the active Pikachu and sets or clears their persistence flag; returns zero. |
+
+Yaw wrapping requires values for which the original repeated floating-point
+adjustments terminate; finite values alone do not guarantee that. Negative bounce
+counts and unchecked appearance variants can be stored immediately, but their
+later physics and rendering behavior need separate validation. Thirteen authored
+original-instruction probes cover permitted and denied yaw updates, signed counts,
+missing or ineligible item targets, and both persistence branches. They preserve
+protected VM values and guarded surrounding storage; they do not establish later
+resource lifetimes or valid renderer indices.
+
 Three retained attached-effect definitions at `0x80074EB8` select templates of
 runtime kind `0xAC`, with no child or sibling templates. Their scales are
 `0.1`, `1`, `1`; opacity-program selectors are `0`, `0`, `1`.
@@ -807,6 +833,14 @@ validate or dereference the string. Protected values, frame metadata and invente
 catalog/text storage remain unchanged. The inactive former selector slot is not
 cleared. These observations establish the immediate footprint, not safe later use.
 
+Actor display names use the same borrowed-pointer result but a different selector
+contract: zero prefers the alternate name, while any nonzero value requests the
+default. The two operands are actor kind followed by selector. A missing alternate
+falls back to the default, which may itself be null. The immediate accessor neither
+reads the text nor extends its lifetime. The messenger-contact and player-movement
+getters likewise return their stored signed words unchanged, without validating or
+normalizing them; the movement getter reads the primary player, not the caller.
+
 Four additional update contracts distinguish stored values from success flags:
 
 | Native | Operands in push order | Integer result |
@@ -840,11 +874,30 @@ Recovered field names now distinguish these saved roles:
 | 6 | Completed visits, displayed as days spent with Pikachu. |
 | 8 | Select follow movement when enabling companion control; zero selects Pikachu view tracking. |
 | 10 / 11 | Saved music / sound-effect volume, each zero through fifteen. |
+| 13 | Completed chapter-three visits used for early story progression. |
 | 14 | Game-clear flag enabling post-clear behavior. |
+| 16 | Shopping-errand cardboard-box instruction sequence recorded. |
+| 17 / 18 | Disappearance / shopping-errand episode currently active. |
+| 19 / 20 | Visit-based disappearance / errand trigger counters. |
 | 22 / 23 | Togepi hatched / egg growth stage. Qualifying Abra-shop turn-ins advance growth up to five on the recovered path; storage permits fifteen. |
+| 24 | Saved normalized Togepi hatch-size parameter. |
 | 86 | Additional Ochre entrance resident stage, zero through three; not a count including the unconditional Bulbasaur. |
+| 93 | Completed disappearance episodes, used for first/repeat search narration. |
 | 160 | Bedroom passage to the front yard enabled instead of its initial descriptive proxy. |
 | 162 | Bedroom quiz unlock stage: picture, shadow, then strobe-shadow. |
+
+The disappearance trigger counter adds one or two per completed visit, while the
+errand trigger counter adds one. Their retained debug names end in `Timer`, but
+neither measures seconds. Chapter eight can select an errand independently of
+the counter. The disappearance count advances on the recovered episode exit paths;
+it does not count every Viridian-edge visit or prove a successful voice response.
+
+The egg script derives field 24 from delivered player voice messages, capped at
+the field maximum, and saves it before hatching. Later Togepi creation converts
+that normalized parameter to a scale between one-half and full area scale. It is
+separate from egg growth stage and does not establish an ongoing age counter.
+Fields 15 and 26 remain numeric: a debug abbreviation and an association with
+unidentified effects do not yet establish their meanings.
 
 The bedroom script advances quiz stage zero to one after at least eight correct
 picture-quiz answers, and one to two after a perfect shadow round. Its selection

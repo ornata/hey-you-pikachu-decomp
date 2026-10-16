@@ -308,6 +308,7 @@
         "object_update.h",
         "orbit_follower.h",
         "pikachu_actor.h",
+        "progress_field_ids.h",
         "progress_fields.h",
         "progress_value.h",
         "render_state.h",
@@ -328,8 +329,8 @@
       "locations": {
         "raw_offset_candidates": {
           "kind - 1": [
-            "639:72",
-            "812:72"
+            "640:72",
+            "813:72"
           ]
         }
       }
@@ -963,10 +964,10 @@
             "448:21"
           ],
           "gItemKind8FCollectionValue + 0x64": [
-            "1742:15"
+            "1745:15"
           ],
           "currentChapter + 1": [
-            "1760:18"
+            "1763:18"
           ]
         }
       }
@@ -4045,22 +4046,22 @@
             "966:46"
           ],
           "y + 3": [
-            "1119:14"
+            "1121:14"
           ],
           "x + 80": [
-            "1120:13"
+            "1122:13"
           ],
           "selected - 2": [
-            "1133:40"
+            "1135:40"
           ],
           "top - 3": [
-            "1133:54"
+            "1135:54"
           ],
           "selected + 2": [
-            "1133:63"
+            "1135:63"
           ],
           "bottom + 3": [
-            "1133:77"
+            "1135:77"
           ]
         }
       }
@@ -4177,6 +4178,7 @@
         "math_scalar.h",
         "maze_scatter.h",
         "object_lifecycle.h",
+        "progress_field_ids.h",
         "progress_fields.h",
         "random.h",
         "random_scale.h",
@@ -4189,15 +4191,15 @@
       "locations": {
         "raw_offset_candidates": {
           "residentIndex + 0x65": [
-            "59:30"
+            "60:30"
           ],
           "state - 2": [
-            "82:50"
+            "83:50"
           ],
           "i + 0x65": [
-            "138:30",
-            "144:30",
-            "197:30"
+            "139:30",
+            "145:30",
+            "198:30"
           ]
         }
       }
@@ -4212,6 +4214,7 @@
         "math_scalar.h",
         "maze_scatter.h",
         "object_lifecycle.h",
+        "progress_field_ids.h",
         "progress_fields.h",
         "progress_value.h",
         "random.h",
@@ -4225,15 +4228,15 @@
       "locations": {
         "raw_offset_candidates": {
           "residentIndex + 0x70": [
-            "53:30"
+            "54:30"
           ],
           "state - 2": [
-            "76:50"
+            "77:50"
           ],
           "i + 0x70": [
-            "117:30",
-            "123:30",
-            "188:30"
+            "118:30",
+            "124:30",
+            "189:30"
           ]
         }
       }

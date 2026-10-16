@@ -1109,7 +1109,7 @@ void playerResumeNormalControl(void) {
 /// \returns One if a menu was requested, or zero if no permitted request was present.
 /// \note Original decompilation identifier: \c func_80110308 (0x80110308).
 s32 playerTryOpenMenu(u8 *player, ControllerState *controller) {
-    if ((playerGetChaseStage() <= 0) || (progressGetValue(0x12) != 0)) {
+    if ((playerGetChaseStage() <= 0) || (progressGetValue(PROGRESS_FIELD_SHOPPING_ERRAND_ACTIVE) != 0)) {
         if ((controller->pressed & 0x1000) &&
             (((PlayerControlPrefix *)player)->permissions & PLAYER_PERMISSION_SYSTEM_MENU)) {
             playerStopTrackedSoundEffect(player);
