@@ -1242,44 +1242,44 @@ extern u8 gParticleClusterRendererTemplate[];
 /// \returns Registered cluster object, managed by the object system.
 /// \note Original decompilation identifier: \c func_80019B08 (0x80019B08).
 u8 *particleClusterCreate(s32 count, f32 lifetime, f32 radialScale, f32 particleScale, u8 *source) {
-    u8 *obj;
-    EffectEmitterState *state;
-    u8 *prev;
-    u8 *e;
-    s32 i;
+    u8 *rootObject;
+    EffectEmitterState *emitterState;
+    u8 *previousParticle;
+    u8 *childObject;
+    s32 particleIndex;
 
-    obj = objectCreateFromTemplate((ObjectTemplate *)gParticleClusterObjectTemplate);
-    state = ((RuntimeObjectPrefix *)obj)->state.pointer;
-    prev = NULL;
-    ((RuntimeObjectPrefix *)obj)->position[0] = ((RuntimeObjectPrefix *)source)->worldPosition[0];
-    ((RuntimeObjectPrefix *)obj)->position[1] = ((RuntimeObjectPrefix *)source)->worldPosition[1];
-    ((RuntimeObjectPrefix *)obj)->position[2] = ((RuntimeObjectPrefix *)source)->worldPosition[2];
-    ((RuntimeObjectPrefix *)obj)->worldPosition[0] = ((RuntimeObjectPrefix *)source)->worldPosition[0];
-    ((RuntimeObjectPrefix *)obj)->worldPosition[1] = ((RuntimeObjectPrefix *)source)->worldPosition[1];
-    ((RuntimeObjectPrefix *)obj)->worldPosition[2] = ((RuntimeObjectPrefix *)source)->worldPosition[2];
-    state->targetHandle = ((RuntimeObjectPrefix *)source)->handle;
-    state->remaining = lifetime;
-    for (i = 0; i < count; i++) {
-        e = objectCreateFromTemplate((ObjectTemplate *)gParticleClusterElementTemplate);
-        ((RuntimeObjectPrefix *)e)->rotation[0] = (s32)randomBelow(360);
-        ((RuntimeObjectPrefix *)e)->rotation[1] = (s32)randomBelow(360);
-        ((RuntimeObjectPrefix *)e)->rotation[2] = (s32)randomBelow(360);
-        ((RuntimeObjectPrefix *)e)->scale[0] = radialScale;
-        ((RuntimeObjectPrefix *)e)->scale[2] = particleScale;
-        if (prev != NULL) {
-            ((RuntimeObjectPrefix *)prev)->sibling.bytes = e;
+    rootObject = objectCreateFromTemplate((ObjectTemplate *)gParticleClusterObjectTemplate);
+    emitterState = ((RuntimeObjectPrefix *)rootObject)->state.pointer;
+    previousParticle = NULL;
+    ((RuntimeObjectPrefix *)rootObject)->position[0] = ((RuntimeObjectPrefix *)source)->worldPosition[0];
+    ((RuntimeObjectPrefix *)rootObject)->position[1] = ((RuntimeObjectPrefix *)source)->worldPosition[1];
+    ((RuntimeObjectPrefix *)rootObject)->position[2] = ((RuntimeObjectPrefix *)source)->worldPosition[2];
+    ((RuntimeObjectPrefix *)rootObject)->worldPosition[0] = ((RuntimeObjectPrefix *)source)->worldPosition[0];
+    ((RuntimeObjectPrefix *)rootObject)->worldPosition[1] = ((RuntimeObjectPrefix *)source)->worldPosition[1];
+    ((RuntimeObjectPrefix *)rootObject)->worldPosition[2] = ((RuntimeObjectPrefix *)source)->worldPosition[2];
+    emitterState->targetHandle = ((RuntimeObjectPrefix *)source)->handle;
+    emitterState->remaining = lifetime;
+    for (particleIndex = 0; particleIndex < count; particleIndex++) {
+        childObject = objectCreateFromTemplate((ObjectTemplate *)gParticleClusterElementTemplate);
+        ((RuntimeObjectPrefix *)childObject)->rotation[0] = (s32)randomBelow(360);
+        ((RuntimeObjectPrefix *)childObject)->rotation[1] = (s32)randomBelow(360);
+        ((RuntimeObjectPrefix *)childObject)->rotation[2] = (s32)randomBelow(360);
+        ((RuntimeObjectPrefix *)childObject)->scale[0] = radialScale;
+        ((RuntimeObjectPrefix *)childObject)->scale[2] = particleScale;
+        if (previousParticle != NULL) {
+            ((RuntimeObjectPrefix *)previousParticle)->sibling.bytes = childObject;
         } else {
-            ((RuntimeObjectPrefix *)obj)->child.bytes = e;
+            ((RuntimeObjectPrefix *)rootObject)->child.bytes = childObject;
         }
-        prev = e;
+        previousParticle = childObject;
     }
-    e = objectCreateFromTemplate((ObjectTemplate *)gParticleClusterRendererTemplate);
-    ((RuntimeObjectPrefix *)e)->displayList = (Gfx *)particleClusterCreateDisplayList(count);
-    ((RuntimeObjectPrefix *)prev)->sibling.bytes = e;
-    objectMakeHierarchyRoot(obj);
-    objectAllocateHierarchyMatrixBuffers(obj);
-    objectRegisterActiveHierarchy(obj);
-    return obj;
+    childObject = objectCreateFromTemplate((ObjectTemplate *)gParticleClusterRendererTemplate);
+    ((RuntimeObjectPrefix *)childObject)->displayList = (Gfx *)particleClusterCreateDisplayList(count);
+    ((RuntimeObjectPrefix *)previousParticle)->sibling.bytes = childObject;
+    objectMakeHierarchyRoot(rootObject);
+    objectAllocateHierarchyMatrixBuffers(rootObject);
+    objectRegisterActiveHierarchy(rootObject);
+    return rootObject;
 }
 
 /// Hierarchy template for falling particles.

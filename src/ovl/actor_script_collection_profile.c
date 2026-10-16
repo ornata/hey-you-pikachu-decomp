@@ -787,10 +787,12 @@ s32 actorScriptPlayerTryHoldItem(u8 *actor) {
 /// Create a scrolling text board with preset text, appearance, and transform settings.
 /// \param actor Actor whose script VM supplies, in order, a text preset index of zero or one, text style (zero through two, or another value for the default), positive width in twelve-pixel columns, positive height in sixteen-pixel lines, position X/Y/Z, rotation X/Y/Z in degrees, red/green/blue/alpha components from zero through 255, top-left and bottom-right outline palette indices, uniform scale relative to the scene scale, and scroll speed in pixels per second. Outline indices must be zero through 15, or minus one to disable the corresponding outline; the VM receives the new board hierarchy handle, to release through hierarchy destruction.
 /// \returns Zero, allowing script execution to continue.
+/// \pre Columns are one through 85. Preset zero supports one through 132 visible lines; preset one supports one.
+/// \note Preset one has only one valid text entry; later scrolling into its remaining entries is unsupported.
 /// \note Original decompilation identifier: \c func_801209E8 (0x801209E8).
 s32 actorScriptCreateScrollBoard(u8 *actor) {
     s32 vmAddress;
-    u8 *created;
+    u8 *hierarchyRoot;
     s32 preset;
     s32 style;
     s32 columns;
@@ -824,29 +826,32 @@ s32 actorScriptCreateScrollBoard(u8 *actor) {
     columns = scriptVmPopInteger((ScriptVm *)(vmAddress));
     style = scriptVmPopInteger((ScriptVm *)(vmAddress));
     preset = scriptVmPopInteger((ScriptVm *)(vmAddress));
-    created = scrollBoardCreateHierarchy(columns, lines, red, green, blue, alpha, leadingOutline, trailingOutline);
-    scrollBoardSelectPresetText(((RuntimeObjectPrefix *)created)->handle, preset, style);
-    scrollBoardSetHierarchySpeed(created, scrollSpeed);
-    objectSetUniformTransform(created, position, rotation, gCurrentAreaConfiguration->objectScale * scale);
-    scriptVmPushInteger((ScriptVm *)(vmAddress), ((RuntimeObjectPrefix *)created)->handle);
+    hierarchyRoot =
+        scrollBoardCreateHierarchy(columns, lines, red, green, blue, alpha, leadingOutline, trailingOutline);
+    scrollBoardSelectPresetText(((RuntimeObjectPrefix *)hierarchyRoot)->handle, preset, style);
+    scrollBoardSetHierarchySpeed(hierarchyRoot, scrollSpeed);
+    objectSetUniformTransform(hierarchyRoot, position, rotation, gCurrentAreaConfiguration->objectScale * scale);
+    scriptVmPushInteger((ScriptVm *)(vmAddress), ((RuntimeObjectPrefix *)hierarchyRoot)->handle);
     return 0;
 }
 
 /// Select preset text for a scrolling-board hierarchy.
 /// \param actor Actor whose script VM supplies a live scrolling-board hierarchy handle, a text preset index of zero or one, and a text style, in that order; the VM receives zero.
 /// \returns Zero, allowing script execution to continue.
+/// \pre The board has one through 132 visible lines for preset zero, or one for preset one.
+/// \note Text selection preserves speed and borrows the preset list. Preset one later entries are not valid strings.
 /// \note Original decompilation identifier: \c func_80120B78 (0x80120B78).
 s32 actorScriptSelectScrollBoardText(u8 *actor) {
-    s32 sp_pop;
+    s32 hierarchyHandle;
     s32 vmAddress;
-    s32 sp24;
-    s32 sp20;
+    s32 presetIndex;
+    s32 textStyle;
 
     vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    sp20 = scriptVmPopInteger((ScriptVm *)(vmAddress));
-    sp24 = scriptVmPopInteger((ScriptVm *)(vmAddress));
-    sp_pop = scriptVmPopInteger((ScriptVm *)(vmAddress));
-    scrollBoardSelectPresetText(sp_pop, sp24, sp20);
+    textStyle = scriptVmPopInteger((ScriptVm *)(vmAddress));
+    presetIndex = scriptVmPopInteger((ScriptVm *)(vmAddress));
+    hierarchyHandle = scriptVmPopInteger((ScriptVm *)(vmAddress));
+    scrollBoardSelectPresetText(hierarchyHandle, presetIndex, textStyle);
     scriptVmPushInteger((ScriptVm *)(vmAddress), 0);
     return 0;
 }

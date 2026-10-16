@@ -104,11 +104,11 @@
       "member": "unknown06",
       "line": 14,
       "declaration": "s8 unknown06;",
-      "known_facts": "Each glyph has an eight-byte stride; pixel offset and horizontal boundaries occupy the first six bytes.",
+      "known_facts": "The eight-byte glyph record uses the pixel offset at zero and horizontal bounds at four/five. All 1,374 retained records across the three original metric banks have zero in bytes six and seven. Decoded glyph pixel bounds refute interpreting this pair as inclusive vertical bounds.",
       "reason": "The role of this exact byte range is not established by the current producer/consumer evidence; retaining its offset name avoids unsupported semantics.",
-      "next_evidence": "Inspect font resource records and all glyph-metric consumers for byte-six/seven accesses, including computed record addresses; resource zeros alone do not prove padding.",
+      "next_evidence": "Find an original font-generator schema or another version/consumer that uses these bytes. Repeating the retained-bank comparison will not distinguish reserved storage from a currently unused metric; zero data and absent known readers do not establish padding.",
       "matching_constraint": "Preserve declared width, signedness, extent and surrounding offsets; require the unchanged ROM and strict original-object baseline for any replacement.",
-      "evidence": "include/font_image_types.h (record declaration and neighboring layout checks)"
+      "evidence": "Original fontImageReadGlyph, fontImageGetCharacterLeft and fontImageGetCharacterRight instructions; ROM-authenticated metric banks (464, 455 and 455 records) and decoded pixel-bound comparison. Local reproducible evidence: build/script-decoder/remaining-allocation-review/pikachu-font-metric-tail-audit.json."
     },
     {
       "file": "include/font_image_types.h",
@@ -116,11 +116,11 @@
       "member": "unknown07",
       "line": 15,
       "declaration": "s8 unknown07;",
-      "known_facts": "Each glyph has an eight-byte stride; pixel offset and horizontal boundaries occupy the first six bytes.",
+      "known_facts": "The eight-byte glyph record uses the pixel offset at zero and horizontal bounds at four/five. All 1,374 retained records across the three original metric banks have zero in bytes six and seven. Decoded glyph pixel bounds refute interpreting this pair as inclusive vertical bounds.",
       "reason": "The role of this exact byte range is not established by the current producer/consumer evidence; retaining its offset name avoids unsupported semantics.",
-      "next_evidence": "Inspect font resource records and all glyph-metric consumers for byte-six/seven accesses, including computed record addresses; resource zeros alone do not prove padding.",
+      "next_evidence": "Find an original font-generator schema or another version/consumer that uses these bytes. Repeating the retained-bank comparison will not distinguish reserved storage from a currently unused metric; zero data and absent known readers do not establish padding.",
       "matching_constraint": "Preserve declared width, signedness, extent and surrounding offsets; require the unchanged ROM and strict original-object baseline for any replacement.",
-      "evidence": "include/font_image_types.h (record declaration and neighboring layout checks)"
+      "evidence": "Original fontImageReadGlyph, fontImageGetCharacterLeft and fontImageGetCharacterRight instructions; ROM-authenticated metric banks (464, 455 and 455 records) and decoded pixel-bound comparison. Local reproducible evidence: build/script-decoder/remaining-allocation-review/pikachu-font-metric-tail-audit.json."
     },
     {
       "file": "include/item_state.h",
@@ -529,18 +529,6 @@
       "next_evidence": "Trace all group table consumers and packed first-word accesses to distinguish the first two resource bytes from the proven selection weights.",
       "matching_constraint": "Preserve declared width, signedness, extent and surrounding offsets; require the unchanged ROM and strict original-object baseline for any replacement.",
       "evidence": "src/game/eye_catch.c (record declaration and neighboring layout checks)"
-    },
-    {
-      "file": "src/game/message_bar.c",
-      "record": "MessageBarState",
-      "member": "unknown46C",
-      "line": 54,
-      "declaration": "u8 unknown46C[0x3C];",
-      "known_facts": "Three text-image handles begin at 0x460; retained storage continues from 0x46C through the 0x4A8-byte extent.",
-      "reason": "The role of this exact byte range is not established by the current producer/consumer evidence; retaining its offset name avoids unsupported semantics.",
-      "next_evidence": "Trace message-bar initialization, transitions and image-slot aliases for uses of the tail; do not assume it is three more image records from size alone.",
-      "matching_constraint": "Preserve declared width, signedness, extent and surrounding offsets; require the unchanged ROM and strict original-object baseline for any replacement.",
-      "evidence": "src/game/message_bar.c (record declaration and neighboring layout checks)"
     },
     {
       "file": "src/game/sound_effect_player.c",

@@ -298,10 +298,20 @@
       "file": "include/actor_orientation_cache.h",
       "sha256": "2835fe1e1ea52dfa1896425d52967fc040279bf94c29406d25967c014531939a"
     },
+    "file:include/actor_part_shake.h": {
+      "kind": "file",
+      "file": "include/actor_part_shake.h",
+      "sha256": "34da4d89bc79bbde5af301600c9621bc6a83d9692bb206f835a33816cc42e9bf"
+    },
     "file:include/actor_parts.h": {
       "kind": "file",
       "file": "include/actor_parts.h",
       "sha256": "9bf8d7692a9c719db8bc35d7c7a480c4c76394b35c2cb177aba4262015feda94"
+    },
+    "file:include/actor_rotation.h": {
+      "kind": "file",
+      "file": "include/actor_rotation.h",
+      "sha256": "3d514ec20aa5e35515313f13db37be4e7eae089bc9367c1b227ef620e7eaa639"
     },
     "file:include/actor_script.h": {
       "kind": "file",
@@ -347,6 +357,11 @@
       "kind": "file",
       "file": "include/area_maze.h",
       "sha256": "5c818d297726c7558bd5fe39a5c74d5f6e1e932324a96067d4f97b92d19033d1"
+    },
+    "file:include/area_services.h": {
+      "kind": "file",
+      "file": "include/area_services.h",
+      "sha256": "1727196e2123aa379089a8a075d875c6403ef6d519b09862424dba22d1c33cd3"
     },
     "file:include/area_transition.h": {
       "kind": "file",
@@ -403,10 +418,20 @@
       "file": "include/backdrop_view.h",
       "sha256": "86bed5478af71836d83d78a7bfcef3af96a719f1a8c82feb49c802ceadcbea4e"
     },
+    "file:include/byte_strings.h": {
+      "kind": "file",
+      "file": "include/byte_strings.h",
+      "sha256": "0167aeb0cc910002fb7f024e9c1e0bfa86dccf3666673b4da637d0ada400e0ce"
+    },
     "file:include/camera_overlay.h": {
       "kind": "file",
       "file": "include/camera_overlay.h",
       "sha256": "0da2961a530c0ce494cbd969e4bfcb38bd49213f4961f48a7d2a3b8b559bdcb3"
+    },
+    "file:include/camera_projection.h": {
+      "kind": "file",
+      "file": "include/camera_projection.h",
+      "sha256": "b9ea0a2e487bfb928260ce139a582c2af72af013b855069afe17081c0d96bdb7"
     },
     "file:include/camera_storage.h": {
       "kind": "file",
@@ -438,6 +463,11 @@
       "file": "include/color_transition.h",
       "sha256": "926dc8ac98ec7d813e4ad59c5c85261445adbe0311f993fe6ad99643393ce889"
     },
+    "file:include/common.h": {
+      "kind": "file",
+      "file": "include/common.h",
+      "sha256": "9b1678bdd39dab2b11e25e863e984a07525b0dde8758bde7c48ed102fd150452"
+    },
     "file:include/controller_commands.h": {
       "kind": "file",
       "file": "include/controller_commands.h",
@@ -458,6 +488,11 @@
       "file": "include/controller_types.h",
       "sha256": "f5a5d0c9cf18c689d50638f633b2ef488fc90975854050875311b1eafde18047"
     },
+    "file:include/direction_animation.h": {
+      "kind": "file",
+      "file": "include/direction_animation.h",
+      "sha256": "c02a796c5dd50ca3bb1f2322af32baea61f61b91302cead1f4299ab8d72de242"
+    },
     "file:include/direction_animation_types.h": {
       "kind": "file",
       "file": "include/direction_animation_types.h",
@@ -467,6 +502,16 @@
       "kind": "file",
       "file": "include/effect_emitter.h",
       "sha256": "3986ee33746aa39241a9cb881a15f7183b905a31685ffbcaeb27250f58cf8786"
+    },
+    "file:include/font_cache.h": {
+      "kind": "file",
+      "file": "include/font_cache.h",
+      "sha256": "9c2124afe71c31c8a5f55923d62178b553a13f25c1f6638f1b36d177df582f2d"
+    },
+    "file:include/font_image.h": {
+      "kind": "file",
+      "file": "include/font_image.h",
+      "sha256": "bbc60cc2d6f55f26f229fa3e57fa53b1c282121c8a3ff1dc1ff530a6c421a32a"
     },
     "file:include/font_image_types.h": {
       "kind": "file",
@@ -482,6 +527,16 @@
       "kind": "file",
       "file": "include/game_message.h",
       "sha256": "02909f6c14c187481d544f5e915d15bc5883da53867842605c5de1ddc7175303"
+    },
+    "file:include/graphics_output.h": {
+      "kind": "file",
+      "file": "include/graphics_output.h",
+      "sha256": "72addb66e50e2d4f5782246d2baf225b0df5bb75c09ada7d48554e74cbf77acf"
+    },
+    "file:include/graphics_tasks.h": {
+      "kind": "file",
+      "file": "include/graphics_tasks.h",
+      "sha256": "fe7efdda5fadbeeadba8f0fbaf8b824145447006b0bb4304a708484ec9245b81"
     },
     "file:include/heap_alloc.h": {
       "kind": "file",
@@ -518,6 +573,11 @@
       "file": "include/hud.h",
       "sha256": "9c1ea0143831cf8cfff75038a12b305df4dbde4c6fb1174a4784f7199668aeca"
     },
+    "file:include/image_outline.h": {
+      "kind": "file",
+      "file": "include/image_outline.h",
+      "sha256": "cabe090e85a814ccb10615bd55d7a5fd234f820bab1de9ec7506ce38923640a2"
+    },
     "file:include/integer_animation.h": {
       "kind": "file",
       "file": "include/integer_animation.h",
@@ -547,6 +607,11 @@
       "kind": "file",
       "file": "include/item_mode.h",
       "sha256": "7f86b14c1492ce0dcd49b3faceff64a60607314df2cc3cfb1262dc381c46b5f1"
+    },
+    "file:include/item_object.h": {
+      "kind": "file",
+      "file": "include/item_object.h",
+      "sha256": "0c713f222a9ce5106becda1bfcf38cfbe9032337a20863de1093778a390af06b"
     },
     "file:include/item_participation.h": {
       "kind": "file",
@@ -598,6 +663,16 @@
       "file": "include/libc/xstdio.h",
       "sha256": "79410e135cc799a90d78afe08cd53c767bf1d19985598772bd41793aec9887d5"
     },
+    "file:include/linked_effect.h": {
+      "kind": "file",
+      "file": "include/linked_effect.h",
+      "sha256": "0f7f6b051a851d54fad19f7b860fcc89c6d21eec516aea68784f3b9b3999166a"
+    },
+    "file:include/m2c_macros.h": {
+      "kind": "file",
+      "file": "include/m2c_macros.h",
+      "sha256": "3a6dcba42073745b889247c9ab4c9779a6d1a0c40f5714a55ccfaec4320b3cc0"
+    },
     "file:include/managed_object_types.h": {
       "kind": "file",
       "file": "include/managed_object_types.h",
@@ -613,6 +688,11 @@
       "file": "include/math_scalar.h",
       "sha256": "868db2e2fa4ea865f37216086199d007c047761dbe694ab367cacbf2ad7bb0bc"
     },
+    "file:include/matrix_basic.h": {
+      "kind": "file",
+      "file": "include/matrix_basic.h",
+      "sha256": "042c248223cb396008e927a2e3f06a00e00466f8b1354483934ea9d563efa33e"
+    },
     "file:include/matrix_point.h": {
       "kind": "file",
       "file": "include/matrix_point.h",
@@ -627,6 +707,21 @@
       "kind": "file",
       "file": "include/maze_types.h",
       "sha256": "ecfa4d758996c37c238bb7551b3e6728b906b19c51a82ddaada52708740363e5"
+    },
+    "file:include/message_bar.h": {
+      "kind": "file",
+      "file": "include/message_bar.h",
+      "sha256": "3b41e4647f84600a1d13eddfe59f8739bcaa3196b7e22dead58f9ddd89d13a0a"
+    },
+    "file:include/messenger.h": {
+      "kind": "file",
+      "file": "include/messenger.h",
+      "sha256": "697fd877f89e004e09d66d7fb6ea32a3b1d7eced963339a397f4b43edc60cd31"
+    },
+    "file:include/messenger_tracking.h": {
+      "kind": "file",
+      "file": "include/messenger_tracking.h",
+      "sha256": "a014f1cdaef7681c667aa14110187e4ee2629444416e65e873cf8058c948e05a"
     },
     "file:include/microphone_configuration.h": {
       "kind": "file",
@@ -693,6 +788,16 @@
       "file": "include/object_audio.h",
       "sha256": "58237ab564b64ecf6a41e02371dd2cd6644c5cb740ba30c8679c9952c4dc55d6"
     },
+    "file:include/object_bounds.h": {
+      "kind": "file",
+      "file": "include/object_bounds.h",
+      "sha256": "370ac3efcab1ce0dbbcd8e271ee8ee8982957424de18e160fb716014a4642dbb"
+    },
+    "file:include/object_create.h": {
+      "kind": "file",
+      "file": "include/object_create.h",
+      "sha256": "f1960fefcac4506a54b3fdccdb31f79728a5fc4205899bfe79242fbbe123b22a"
+    },
     "file:include/object_distance.h": {
       "kind": "file",
       "file": "include/object_distance.h",
@@ -702,6 +807,16 @@
       "kind": "file",
       "file": "include/object_flags.h",
       "sha256": "135a2ddab3b6c3e703f08bc85faa083742809cf81a1edc43bd05469d2faac637"
+    },
+    "file:include/object_group.h": {
+      "kind": "file",
+      "file": "include/object_group.h",
+      "sha256": "d7fe9aba3a1fa59f33f55b709723a49f5fa7dff30924b23a5d79eeed8226d95e"
+    },
+    "file:include/object_hierarchy_create.h": {
+      "kind": "file",
+      "file": "include/object_hierarchy_create.h",
+      "sha256": "7f8a7d54d30c004e6ea4ebeb7cbf317c1881efdad993f8734144420996696e41"
     },
     "file:include/object_kind_callbacks.h": {
       "kind": "file",
@@ -718,6 +833,16 @@
       "file": "include/object_lookup.h",
       "sha256": "73ebbf15e34d0f8a47bc0919bcbedbd65c997fb3793228f0aa86649c7a37036a"
     },
+    "file:include/object_matrix_buffers.h": {
+      "kind": "file",
+      "file": "include/object_matrix_buffers.h",
+      "sha256": "316f5bd1fb9e345f97723f217264b599762e9aaabebc3d60edc87779dac47cd7"
+    },
+    "file:include/object_movement.h": {
+      "kind": "file",
+      "file": "include/object_movement.h",
+      "sha256": "cd743be4007d4f14722a8e61b986c00945883b89c846f87be91e302caf39022a"
+    },
     "file:include/object_script_query.h": {
       "kind": "file",
       "file": "include/object_script_query.h",
@@ -733,6 +858,11 @@
       "file": "include/object_template.h",
       "sha256": "4ac4abe8965ed6eb5ae1f8c32153a0b670b14ebe030d4f7bbb4fbee84c098a26"
     },
+    "file:include/object_transform.h": {
+      "kind": "file",
+      "file": "include/object_transform.h",
+      "sha256": "bf9970e79b5f0c9513292510922a43f73fb2a0d9aa98ef2b5142db156a03ed7b"
+    },
     "file:include/object_types.h": {
       "kind": "file",
       "file": "include/object_types.h",
@@ -742,6 +872,11 @@
       "kind": "file",
       "file": "include/opacity_animation_programs.h",
       "sha256": "d9c8e55c839b9cc76e060f0884c827f3d3539619565107331f6902e026a72328"
+    },
+    "file:include/particle_cluster.h": {
+      "kind": "file",
+      "file": "include/particle_cluster.h",
+      "sha256": "73f1137c9052b3345210c7c8ea2a1746d77ce6b3886cb7261863a5e6c08b156e"
     },
     "file:include/passage_types.h": {
       "kind": "file",
@@ -833,6 +968,11 @@
       "file": "include/render_frame.h",
       "sha256": "a98c9c12cf3125ecf901011991d62e8a6499d41a3bbf5cf1c23b11640405cf99"
     },
+    "file:include/render_state.h": {
+      "kind": "file",
+      "file": "include/render_state.h",
+      "sha256": "096ffd0e72ab4a08ca193e78b3cfb43b2de2329e9c61afa2fb04b9b8dedfc228"
+    },
     "file:include/rom_cache.h": {
       "kind": "file",
       "file": "include/rom_cache.h",
@@ -873,6 +1013,11 @@
       "file": "include/scene_types.h",
       "sha256": "a6bf4259a1711764693beeeab6075f4377d64e20a7920328981227031e288e63"
     },
+    "file:include/scheduler_types.h": {
+      "kind": "file",
+      "file": "include/scheduler_types.h",
+      "sha256": "b282430c119d0964e176853f713cfd5945f57b95d3e8d5c6abd540220fff4c3c"
+    },
     "file:include/script_message.h": {
       "kind": "file",
       "file": "include/script_message.h",
@@ -893,10 +1038,20 @@
       "file": "include/script_vm_commands.h",
       "sha256": "89dd5af53ff9f3da6b05812e09d3f816719a5122f3038d0d0f25c3e7968980fc"
     },
+    "file:include/script_vm_execution.h": {
+      "kind": "file",
+      "file": "include/script_vm_execution.h",
+      "sha256": "abecda09d026f32d22ee72cb85d2ca399abaa335e0095dd76ef86a14667481c1"
+    },
     "file:include/script_vm_globals.h": {
       "kind": "file",
       "file": "include/script_vm_globals.h",
       "sha256": "89d55d9da78ef168a84c7fb0fc7466651a09d95ed01ed617efc737b71f9ff1a8"
+    },
+    "file:include/script_vm_lifecycle.h": {
+      "kind": "file",
+      "file": "include/script_vm_lifecycle.h",
+      "sha256": "9aa27da3fcd47e250cd2c607d91c448faa94f1a25f1d6d9e346e11990c87154c"
     },
     "file:include/script_vm_stack.h": {
       "kind": "file",
@@ -988,6 +1143,11 @@
       "file": "include/terrain_surface.h",
       "sha256": "d32574dc05603061ac29954c5004c540624e6d966e351ef9b633ad1105014e2f"
     },
+    "file:include/text_draw.h": {
+      "kind": "file",
+      "file": "include/text_draw.h",
+      "sha256": "6f27696b80778a944fac73bdaa41514abe55e04db73327ec2ca303da94f147e4"
+    },
     "file:include/text_image.h": {
       "kind": "file",
       "file": "include/text_image.h",
@@ -997,6 +1157,21 @@
       "kind": "file",
       "file": "include/text_image_configurations.h",
       "sha256": "ca42589581f8c9bad95ce6e701043a4a8ff7618dabd7d1e192dac8f91093baff"
+    },
+    "file:include/text_image_create.h": {
+      "kind": "file",
+      "file": "include/text_image_create.h",
+      "sha256": "811ba235330c1c940809fe9d2ae97fa6714fbc4a2aee0ec612ada245dababc47"
+    },
+    "file:include/text_panel.h": {
+      "kind": "file",
+      "file": "include/text_panel.h",
+      "sha256": "198b28002be050399c8fb620c929bf5a7e222c92cd803e414ff33de99180750f"
+    },
+    "file:include/text_panel_types.h": {
+      "kind": "file",
+      "file": "include/text_panel_types.h",
+      "sha256": "173d944ee6606c56b84267a690a7deae64ac6f292269a8226423f2c54933fbff"
     },
     "file:include/text_window.h": {
       "kind": "file",
@@ -1023,6 +1198,11 @@
       "file": "include/texture_draw_types.h",
       "sha256": "b74cd0c0e1b580eca02a05d450985d198e43cf067ed35ce6318eb1ad2275ab8d"
     },
+    "file:include/texture_image.h": {
+      "kind": "file",
+      "file": "include/texture_image.h",
+      "sha256": "410b9c0792fbaa0df221083c4d5fb2c3b262e498df1799575d2b773c82d8ddf8"
+    },
     "file:include/title_screen.h": {
       "kind": "file",
       "file": "include/title_screen.h",
@@ -1048,6 +1228,16 @@
       "file": "include/ultra64.h",
       "sha256": "f20e88de98f687b2572e41a0a1b351f89e420c4d10c1ff9da381122a53898450"
     },
+    "file:include/vector3_types.h": {
+      "kind": "file",
+      "file": "include/vector3_types.h",
+      "sha256": "89aeee424fa74d93185744ff2cd6b516a5603a0c83ada255b86a677bd2fc9b52"
+    },
+    "file:include/vector_direction.h": {
+      "kind": "file",
+      "file": "include/vector_direction.h",
+      "sha256": "86116d5db17005d66d78564709768eb3a8db04607d5c6a52485a4fe2e317e084"
+    },
     "file:include/vector_metrics.h": {
       "kind": "file",
       "file": "include/vector_metrics.h",
@@ -1062,6 +1252,11 @@
       "kind": "file",
       "file": "include/voice_commands.h",
       "sha256": "15dc4f7ed05382bdc0541c0d2b6ddb2fa8f31fd5713b8baa3d4592771efa9b53"
+    },
+    "file:include/voice_phrases.h": {
+      "kind": "file",
+      "file": "include/voice_phrases.h",
+      "sha256": "2f7c3fe56bfae6f2ce243c993883888c1f4676da6086cc1f36b018f684464abf"
     },
     "file:include/voice_reactive_spinner_types.h": {
       "kind": "file",
@@ -1171,7 +1366,7 @@
     "file:src/game/flipbook_messenger.c": {
       "kind": "file",
       "file": "src/game/flipbook_messenger.c",
-      "sha256": "50c8c716667721bb150071507a86f56212eac5dd8b514b87582357c30cd871e5"
+      "sha256": "4192fb385cc1dc9b11e44ae2c3448fc4237454d880869b7c66bd253df6c915be"
     },
     "file:src/game/graphics_text.c": {
       "kind": "file",
@@ -1206,7 +1401,7 @@
     "file:src/game/message_bar.c": {
       "kind": "file",
       "file": "src/game/message_bar.c",
-      "sha256": "205e64b0f2d0d9952169c0d28ac62ccd350d2f03c178f12528bec7bc6b9141f9"
+      "sha256": "5d72509b0410398cd0043f6951789c666016feba96710be171f3b7ed3a1cb474"
     },
     "file:src/game/microphone_requests.c": {
       "kind": "file",
@@ -1246,7 +1441,7 @@
     "file:src/game/particle_effects.c": {
       "kind": "file",
       "file": "src/game/particle_effects.c",
-      "sha256": "f6a01365e9105acc20be9bfc80eba8c81fa8c8d1d9f34e1810dcfd4b13c53b75"
+      "sha256": "9159f63a63d1f80172bc66ee73b2c660b14820cf5ecead35224225ea3fced8e5"
     },
     "file:src/game/rom_cache.c": {
       "kind": "file",
@@ -1313,6 +1508,11 @@
       "file": "src/game/vector_math.c",
       "sha256": "bc6182aae1eae42d43261fac14526253798f88bdf868762540b9c87cf66d91ff"
     },
+    "file:src/game/voice_commands_text_panel.c": {
+      "kind": "file",
+      "file": "src/game/voice_commands_text_panel.c",
+      "sha256": "1dc8ace4d57cbd1c31bd59913a02787808e760b59769356cf6a180dd0c09909a"
+    },
     "file:src/game/voice_recognition.c": {
       "kind": "file",
       "file": "src/game/voice_recognition.c",
@@ -1341,7 +1541,7 @@
     "file:src/ovl/actor_script_collection_profile.c": {
       "kind": "file",
       "file": "src/ovl/actor_script_collection_profile.c",
-      "sha256": "38a50d2eebcb1641fd7c49ccefaa33a43e74ddcabba3cb8dd643b874b5bb34b2"
+      "sha256": "ee390d5cc863ddbbd7dbf32071adfae62d56179ee601fb52834a6f4eebaec495"
     },
     "file:src/ovl/actor_script_messages_items.c": {
       "kind": "file",
@@ -1361,7 +1561,7 @@
     "file:src/ovl/area_terrain_maze.c": {
       "kind": "file",
       "file": "src/ovl/area_terrain_maze.c",
-      "sha256": "2cb68d3ab7e188a2e12a982b74c3dabdf15b5fcada878f04d66003d775c427f7"
+      "sha256": "5404aa0e04d2fd1f47f042580e448d4414f10467d5b4ca016ae4799d6163d4eb"
     },
     "file:src/ovl/item_registry.c": {
       "kind": "file",
@@ -1645,23 +1845,65 @@
       "sha256": "b1b460ee566cc53ded20ef82983f2adc9247a7452916d95850fcced2c3475b26",
       "function": "doorSetAccessState"
     },
+    "function:src/game/flipbook_messenger.c:flipbookBuildGeometryDisplayList": {
+      "kind": "function",
+      "file": "src/game/flipbook_messenger.c",
+      "sha256": "1c1b0ce0e4a473a23d23e0ecf90276045aa059606a87f3891368255ef35d049b",
+      "function": "flipbookBuildGeometryDisplayList"
+    },
+    "function:src/game/flipbook_messenger.c:flipbookInitialize": {
+      "kind": "function",
+      "file": "src/game/flipbook_messenger.c",
+      "sha256": "59ba8ea99b5254752ee12a4d2d0c289fabb45eacc117a327692331737fac34f3",
+      "function": "flipbookInitialize"
+    },
+    "function:src/game/flipbook_messenger.c:flipbookInitializeGeometry": {
+      "kind": "function",
+      "file": "src/game/flipbook_messenger.c",
+      "sha256": "56dee12837782e7c3b3151b20a91a0c867f2b2a4c5a6f2485584693aa1f115f3",
+      "function": "flipbookInitializeGeometry"
+    },
+    "function:src/game/flipbook_messenger.c:flipbookResetImageDisplayLists": {
+      "kind": "function",
+      "file": "src/game/flipbook_messenger.c",
+      "sha256": "09eaef880173e87f38db6e7d3b0e51635fcc713debdd19db5d9ce6b53459b437",
+      "function": "flipbookResetImageDisplayLists"
+    },
     "function:src/game/flipbook_messenger.c:objectSetUniformTransform": {
       "kind": "function",
       "file": "src/game/flipbook_messenger.c",
       "sha256": "3e19f045dce7716960cdfdb3866d75ec3f4c28587514800afac23bddc4c7ce93",
       "function": "objectSetUniformTransform"
     },
+    "function:src/game/flipbook_messenger.c:scrollBoardCreateHierarchy": {
+      "kind": "function",
+      "file": "src/game/flipbook_messenger.c",
+      "sha256": "402e926dfbe65a8e27732eeaf2b59e8877a876b3d2ff7aea739cf87cbda1b399",
+      "function": "scrollBoardCreateHierarchy"
+    },
+    "function:src/game/flipbook_messenger.c:scrollBoardCreateObject": {
+      "kind": "function",
+      "file": "src/game/flipbook_messenger.c",
+      "sha256": "9a8552f5188bb76b49004042185655b5160e4eb9180d521fbff0529015926849",
+      "function": "scrollBoardCreateObject"
+    },
+    "function:src/game/flipbook_messenger.c:scrollBoardInitializeObject": {
+      "kind": "function",
+      "file": "src/game/flipbook_messenger.c",
+      "sha256": "0cad881c79d751b724df4e139f82497d346f62907ed6d9da49bd59488952774d",
+      "function": "scrollBoardInitializeObject"
+    },
     "function:src/game/flipbook_messenger.c:scrollBoardSetHierarchySpeed": {
       "kind": "function",
       "file": "src/game/flipbook_messenger.c",
-      "function": "scrollBoardSetHierarchySpeed",
-      "sha256": "d6c0540a38baf97c517f4d31337a25de5090ca6711a75d1910387290996a9bcd"
+      "sha256": "d6c0540a38baf97c517f4d31337a25de5090ca6711a75d1910387290996a9bcd",
+      "function": "scrollBoardSetHierarchySpeed"
     },
     "function:src/game/flipbook_messenger.c:scrollBoardSetSpeed": {
       "kind": "function",
       "file": "src/game/flipbook_messenger.c",
-      "function": "scrollBoardSetSpeed",
-      "sha256": "9c82ad788473b7b039888176d971926e809b9dd3b264ae6f321b13ab5838d137"
+      "sha256": "9c82ad788473b7b039888176d971926e809b9dd3b264ae6f321b13ab5838d137",
+      "function": "scrollBoardSetSpeed"
     },
     "function:src/game/graphics_text.c:fontCacheReadGlyph": {
       "kind": "function",
@@ -1810,8 +2052,8 @@
     "function:src/game/keyed_pool.c:keyedPoolFindEntry": {
       "kind": "function",
       "file": "src/game/keyed_pool.c",
-      "sha256": "2c4d9787ed139519f2981eb227805c3b38046a0baf47287ae6ecc2156f5665c6",
-      "function": "keyedPoolFindEntry"
+      "function": "keyedPoolFindEntry",
+      "sha256": "2c4d9787ed139519f2981eb227805c3b38046a0baf47287ae6ecc2156f5665c6"
     },
     "function:src/game/keyed_pool.c:keyedPoolFindEntryWithValue": {
       "kind": "function",
@@ -2056,8 +2298,8 @@
     "function:src/game/object_hierarchy.c:objectAssignHierarchyRoot": {
       "kind": "function",
       "file": "src/game/object_hierarchy.c",
-      "sha256": "c2065709662c1662c00c0b2dd4443d9da989541703c17728fe538343feeb798b",
-      "function": "objectAssignHierarchyRoot"
+      "function": "objectAssignHierarchyRoot",
+      "sha256": "c2065709662c1662c00c0b2dd4443d9da989541703c17728fe538343feeb798b"
     },
     "function:src/game/object_hierarchy.c:objectClearHierarchyFlags": {
       "kind": "function",
@@ -2076,6 +2318,12 @@
       "file": "src/game/object_hierarchy.c",
       "function": "objectCompareSearchTreeOrder",
       "sha256": "ae1fe28cb61c83a5e419489ece230bd34b32755e29dc7a0deb4f19e75f517151"
+    },
+    "function:src/game/object_hierarchy.c:objectCreateDefault": {
+      "kind": "function",
+      "file": "src/game/object_hierarchy.c",
+      "sha256": "0918c3a5530f9b919327faebe822c5b136ea41eec8ecd4672e269365ae4761c2",
+      "function": "objectCreateDefault"
     },
     "function:src/game/object_hierarchy.c:objectCreateFromTemplate": {
       "kind": "function",
@@ -2110,8 +2358,8 @@
     "function:src/game/object_hierarchy.c:objectMakeHierarchyRoot": {
       "kind": "function",
       "file": "src/game/object_hierarchy.c",
-      "sha256": "302b15e9689b44849da5eb2689b63c7b32099f32de67c3da0866e375dd6933ef",
-      "function": "objectMakeHierarchyRoot"
+      "function": "objectMakeHierarchyRoot",
+      "sha256": "302b15e9689b44849da5eb2689b63c7b32099f32de67c3da0866e375dd6933ef"
     },
     "function:src/game/object_hierarchy.c:objectPlaySpatialSound": {
       "kind": "function",
@@ -2160,6 +2408,42 @@
       "file": "src/game/object_hierarchy.c",
       "function": "romByteReaderRead",
       "sha256": "01ad7216627247be72b2acf3bea800cf56ac527d5943a68565f1e3666a831e74"
+    },
+    "function:src/game/particle_effects.c:effectEmitterCreateForStyle": {
+      "kind": "function",
+      "file": "src/game/particle_effects.c",
+      "function": "effectEmitterCreateForStyle",
+      "sha256": "ccaefcc5eb0451187d71ce3e2552fcee450c1163dd23eab1637af1c8213b4e43"
+    },
+    "function:src/game/particle_effects.c:effectEmitterCreateWithCallback": {
+      "kind": "function",
+      "file": "src/game/particle_effects.c",
+      "function": "effectEmitterCreateWithCallback",
+      "sha256": "f4029a7256f5db1c6a40f937a2ed1eaa047de316768a9df8da8603e095035e9a"
+    },
+    "function:src/game/particle_effects.c:effectEmitterInitialize": {
+      "kind": "function",
+      "file": "src/game/particle_effects.c",
+      "function": "effectEmitterInitialize",
+      "sha256": "d3c676a2fd2400cf1d30f05335980b0e614b52b7499d5966d76ca141266cc765"
+    },
+    "function:src/game/particle_effects.c:particleClusterCreate": {
+      "kind": "function",
+      "file": "src/game/particle_effects.c",
+      "function": "particleClusterCreate",
+      "sha256": "ca02facd2ec5f42cd654d7ec5c78bb80ffad5c9aef90a9dfc764be99ba5e395c"
+    },
+    "function:src/game/particle_effects.c:particleClusterCreateDisplayList": {
+      "kind": "function",
+      "file": "src/game/particle_effects.c",
+      "function": "particleClusterCreateDisplayList",
+      "sha256": "809d321e7300a1b5c80e4f3b9d4661fbcef239f3de5c5cf3d56e6fe88b12448a"
+    },
+    "function:src/game/particle_effects.c:particleClusterRendererInitialize": {
+      "kind": "function",
+      "file": "src/game/particle_effects.c",
+      "function": "particleClusterRendererInitialize",
+      "sha256": "c9870acd78214d891049e991e6cccc6a09d570a363b0967edee88fbf59e8ba05"
     },
     "function:src/game/rom_cache.c:romCacheAllocateEntry": {
       "kind": "function",
@@ -2238,6 +2522,24 @@
       "file": "src/game/save_progress.c",
       "function": "directionAnimationReset",
       "sha256": "75b5ba40224bc517d227342dcbbd145a635ada7f20b66ea9263399249cce4df2"
+    },
+    "function:src/game/save_progress.c:directionAnimationSetNextPoseAngles": {
+      "kind": "function",
+      "file": "src/game/save_progress.c",
+      "function": "directionAnimationSetNextPoseAngles",
+      "sha256": "3267e7fbd508506bc3330568dd2a402a044e87f0f250a607657af838cbf7bcd7"
+    },
+    "function:src/game/save_progress.c:directionAnimationStartMotion": {
+      "kind": "function",
+      "file": "src/game/save_progress.c",
+      "function": "directionAnimationStartMotion",
+      "sha256": "e023913e96a0458c65c7407bceb7a01b4889ed87377e881ee5a3b3de2e89fed2"
+    },
+    "function:src/game/save_progress.c:directionPoseSetAngles": {
+      "kind": "function",
+      "file": "src/game/save_progress.c",
+      "function": "directionPoseSetAngles",
+      "sha256": "53b79badebc48161aee7682e2728408d1437bbd7950dad094a91b060e7900ff0"
     },
     "function:src/game/save_progress.c:progressAddValue": {
       "kind": "function",
@@ -2383,6 +2685,12 @@
       "function": "soundEffectPlayerStop",
       "sha256": "f940973ba7412cc3cfdd8b6d736fd8a9790e3cafc61a6cb095dadf86e840b983"
     },
+    "function:src/game/texture_images_word_map.c:textureImageInitialize": {
+      "kind": "function",
+      "file": "src/game/texture_images_word_map.c",
+      "sha256": "f4b383471a63b774b9d001faf1b135606b984f15879720a8531d5137e387d184",
+      "function": "textureImageInitialize"
+    },
     "function:src/game/title_screen.c:titleScreenBeginDemoTransition": {
       "kind": "function",
       "file": "src/game/title_screen.c",
@@ -2491,6 +2799,12 @@
       "function": "randomNext",
       "sha256": "03137dd2546aa2abf4099a0d6768ca2401f61657b9f915822b81b788e003fd56"
     },
+    "function:src/game/trigonometry.c:vector3GetLookAnglesDegrees": {
+      "kind": "function",
+      "file": "src/game/trigonometry.c",
+      "function": "vector3GetLookAnglesDegrees",
+      "sha256": "66121b5659c2f71e26af387251649fb9b67ba24f4fa031835e07ee7c276314f1"
+    },
     "function:src/game/trigonometry.c:vector3Length": {
       "kind": "function",
       "file": "src/game/trigonometry.c",
@@ -2509,6 +2823,18 @@
       "function": "vector3Normalize",
       "sha256": "e8982d3bbb1935ba544bc26ce60dd228705d6f6a385fec561094929d845966c3"
     },
+    "function:src/game/trigonometry.c:vector3PackNormalBytes": {
+      "kind": "function",
+      "file": "src/game/trigonometry.c",
+      "function": "vector3PackNormalBytes",
+      "sha256": "ceb8e192fb9c3d1f522533a88acd79d082c82c02ac16b542f92f801da40e786a"
+    },
+    "function:src/game/trigonometry.c:vector3UnpackNormalBytes": {
+      "kind": "function",
+      "file": "src/game/trigonometry.c",
+      "function": "vector3UnpackNormalBytes",
+      "sha256": "28af8a37b04aef254967ba7f254ab1020bba48270f1dfad3844ad325c7d9e7df"
+    },
     "function:src/game/vector_math.c:audioGetPositionVolumeAndPan": {
       "kind": "function",
       "file": "src/game/vector_math.c",
@@ -2526,6 +2852,36 @@
       "file": "src/game/vector_math.c",
       "function": "vector2NormalizeComponentsApprox",
       "sha256": "fd6ea4b2e8afc6140a1f1ad76e5ebe1bc08727bbfb934c3f64cce9808a6bf11f"
+    },
+    "function:src/game/vector_math.c:vector3EvaluateOppositeLookAngles": {
+      "kind": "function",
+      "file": "src/game/vector_math.c",
+      "function": "vector3EvaluateOppositeLookAngles",
+      "sha256": "81fc63c8380f998d2b180e35c11424cedce1b58d7645d75a5f6712994d0234ad"
+    },
+    "function:src/game/vector_math.c:vector3FromPitchYawDegrees": {
+      "kind": "function",
+      "file": "src/game/vector_math.c",
+      "function": "vector3FromPitchYawDegrees",
+      "sha256": "57290ec375bbfbc5b86611eb2589d4344d924406a1722f5d30a6680471446cca"
+    },
+    "function:src/game/voice_commands_text_panel.c:textPanelInitialize": {
+      "kind": "function",
+      "file": "src/game/voice_commands_text_panel.c",
+      "sha256": "d7f61e6938ac7c1fdd646f716be52124bb5ea6c3ec10a2a9085f05f3de6ffe3e",
+      "function": "textPanelInitialize"
+    },
+    "function:src/game/voice_commands_text_panel.c:textPanelSetColor": {
+      "kind": "function",
+      "file": "src/game/voice_commands_text_panel.c",
+      "sha256": "0b2e3ea99cd40977db40ef5a044c1b42c979aef6ac11d28b4c45f812b3f14bf6",
+      "function": "textPanelSetColor"
+    },
+    "function:src/game/voice_commands_text_panel.c:textPanelSetLineColor": {
+      "kind": "function",
+      "file": "src/game/voice_commands_text_panel.c",
+      "sha256": "cbc3de38f0fb0e45a1a74f6ecbd6fa50be83a6f3e9deb38609b4f627a45f1e73",
+      "function": "textPanelSetLineColor"
     },
     "function:src/game/voice_recognition.c:voiceDictionaryGetWordId": {
       "kind": "function",
@@ -3169,6 +3525,12 @@
       "function": "areaTestCameraVisibility",
       "sha256": "f06671e9d6c2d25c70b8e591537536a8ef326daf96c3991b92de0f1cfdbfd5e3"
     },
+    "function:src/ovl/area_terrain_maze.c:mazeRemoveBlockObject": {
+      "kind": "function",
+      "file": "src/ovl/area_terrain_maze.c",
+      "function": "mazeRemoveBlockObject",
+      "sha256": "a4e258267a638589fdf650d27a6f9661d4f3112ac832812f25d3d01523c37396"
+    },
     "function:src/ovl/area_terrain_maze.c:terrainFindSurfaceLocalHeight": {
       "kind": "function",
       "file": "src/ovl/area_terrain_maze.c",
@@ -3366,6 +3728,12 @@
       "file": "src/ovl/item_registry.c",
       "function": "itemSetTint",
       "sha256": "5f0f4488674c1d5f8dc4159f2e500a9f63e9f006ae5cbb35f8e2bae471ddbfb6"
+    },
+    "function:src/ovl/item_registry.c:itemStartDirectionMotion": {
+      "kind": "function",
+      "file": "src/ovl/item_registry.c",
+      "function": "itemStartDirectionMotion",
+      "sha256": "81b49d3fe2954803dd0b5b025e774ac266484fb2808e7ee2c938d896172bb112"
     },
     "function:src/ovl/item_registry.c:itemStartMaterialAnimation": {
       "kind": "function",
@@ -3906,7 +4274,11 @@
     "actorScriptRequestSavePrompt",
     "actorScriptSetScrollBoardSpeed",
     "actorScriptSelectBackdrop",
-    "actorScriptPushLegacyVoiceResult"
+    "actorScriptPushLegacyVoiceResult",
+    "scriptCommandRemoveMazeBlock",
+    "scriptCommandCreateItemParticles",
+    "actorScriptSelectScrollBoardText",
+    "actorScriptCreateScrollBoard"
   ],
   "callback_files": [
     {
@@ -3915,7 +4287,7 @@
     },
     {
       "file": "native_frame_reviews/src__ovl__actor_script_collection_profile.json",
-      "sha256": "52ac74bc8f7a6c8cbbd0e1818792fbd2ce9b39135f4d512a3448ffd90d2d3207"
+      "sha256": "d8de788a60380936507de5a3ceb9b115998965b32ecb04e31b719a62562f268d"
     },
     {
       "file": "native_frame_reviews/src__ovl__actor_script_messages_items.json",
@@ -3927,7 +4299,7 @@
     },
     {
       "file": "native_frame_reviews/src__ovl__script_demo_item_commands.json",
-      "sha256": "3f897aa6e4a8ebefc88d729e76e7da7354e769cb293cae4f6d54b96298b592ec"
+      "sha256": "8050a202cf25a32f7a1f1324c878b0b1600f244cebc6087219b80a8efc0f0c15"
     }
   ]
 }

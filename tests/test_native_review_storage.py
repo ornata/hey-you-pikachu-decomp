@@ -266,6 +266,35 @@ class NativeReviewStorageTests(unittest.TestCase):
         review['semantic_scope'] = 'defined_c'
         self.assertFalse(analyze_caller_frames(rows, {'legacy': review})['roots'][0]['conditional_floor_proven'])
 
+    def test_eighteen_operand_creation_respects_the_protected_frame_floor(self):
+        from tools.script_decoder.caller_frames import analyze_caller_frames
+
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            _, manifest = fixture(root)
+            review = manifest['callbacks'][0]
+            review.update(effect='replace_arguments_with_scalar', arguments=18, stack_delta=-17)
+            self.assertIn('alpha', native_frame_reviews(root, manifest)['active'])
+            review['stack_delta'] = -18
+            self.assertNotIn('alpha', native_frame_reviews(root, manifest)['active'])
+            review['stack_delta'] = -17
+            for available in (17, 18):
+                rows = [dict(offset=0, size=1, opcode=32,
+                             operands=[dict(tag=0, value=n) for n in (0, 3, 0)])]
+                rows.extend(dict(offset=i + 1, size=1, opcode=24,
+                                 successors=[dict(offset=i + 2, kind='fallthrough')])
+                            for i in range(available))
+                rows.extend([dict(offset=available + 1, size=1, opcode=27,
+                                  native=dict(functions=['alpha']),
+                                  successors=[dict(offset=available + 2, kind='fallthrough')]),
+                             dict(offset=available + 2, size=1, opcode=30)])
+                result = analyze_caller_frames(rows, {'alpha': review})
+                self.assertEqual(result['roots'][0]['conditional_floor_proven'], available == 18)
+                if available == 17:
+                    self.assertIn('protected locals/frame metadata', result['roots'][0]['diagnostics'][0])
+                else:
+                    self.assertEqual(result['summaries'][0]['required_value_slots_from_argument_base'], 23)
+
     def test_empty_callback_index_cannot_follow_an_outside_tools_directory(self):
         with tempfile.TemporaryDirectory() as directory:
             base = Path(directory)

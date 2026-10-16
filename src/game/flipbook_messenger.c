@@ -183,11 +183,11 @@ void flipbookInitializeGeometry(u8 *object, u8 red, u8 green, u8 blue, u8 alpha)
     s32 y;
     s32 halfWidth;
     Vtx *vertices;
-    s32 i;
+    s32 rowIndex;
     y = (((Flipbook *)object)->stripCount * 16) / 2;
     halfWidth = ((Flipbook *)object)->width / 2;
     vertices = ((Flipbook *)object)->vertices;
-    for (i = 0; i < ((Flipbook *)object)->stripCount; i++) {
+    for (rowIndex = 0; rowIndex < ((Flipbook *)object)->stripCount; rowIndex++) {
         vertices[0].v.ob[0] = 0;
         vertices[0].v.ob[1] = y;
         vertices[0].v.ob[2] = halfWidth;
@@ -238,49 +238,50 @@ void flipbookInitializeGeometry(u8 *object, u8 red, u8 green, u8 blue, u8 alpha)
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80025308 (0x80025308).
 void flipbookBuildGeometryDisplayList(u8 *object) {
-    Gfx *gp;
-    Vtx *vtx;
-    s32 vtxLeft;
-    s32 vtxMax;
-    s32 vtxIdx;
-    s32 i;
+    Gfx *commands;
+    Vtx *vertices;
+    s32 remainingVertices;
+    s32 loadedVertexCount;
+    s32 vertexIndex;
+    s32 rowIndex;
 
-    gp = ((Flipbook *)object)->displayList;
-    vtxMax = 0;
-    vtxIdx = 0;
-    vtxLeft = (s32)((u32)((Flipbook *)object)->stripCount << 2);
-    vtx = ((Flipbook *)object)->vertices;
-    gDPPipeSync(gp++);
-    gSPLoadGeometryMode(gp++, G_ZBUFFER | G_SHADE | G_SHADING_SMOOTH);
-    gDPSetRenderMode(gp++, 0x0C184A50, 0);
-    gDPSetTextureLOD(gp++, G_TL_TILE);
-    gDPSetTextureDetail(gp++, G_TD_CLAMP);
-    gDPSetTexturePersp(gp++, G_TP_PERSP);
-    gDPSetTextureFilter(gp++, G_TF_BILERP);
-    gDPSetTextureConvert(gp++, G_TC_FILT);
-    gSPTexture(gp++, 0x7FFF, 0, 0, G_TX_RENDERTILE, G_ON);
-    gMoveWd(gp++, G_MW_FOG, 0x10, 0x7FFF);
-    for (i = 0; i < ((Flipbook *)object)->stripCount; i++) {
+    commands = ((Flipbook *)object)->displayList;
+    loadedVertexCount = 0;
+    vertexIndex = 0;
+    remainingVertices = (s32)((u32)((Flipbook *)object)->stripCount << 2);
+    vertices = ((Flipbook *)object)->vertices;
+    gDPPipeSync(commands++);
+    gSPLoadGeometryMode(commands++, G_ZBUFFER | G_SHADE | G_SHADING_SMOOTH);
+    gDPSetRenderMode(commands++, 0x0C184A50, 0);
+    gDPSetTextureLOD(commands++, G_TL_TILE);
+    gDPSetTextureDetail(commands++, G_TD_CLAMP);
+    gDPSetTexturePersp(commands++, G_TP_PERSP);
+    gDPSetTextureFilter(commands++, G_TF_BILERP);
+    gDPSetTextureConvert(commands++, G_TC_FILT);
+    gSPTexture(commands++, 0x7FFF, 0, 0, G_TX_RENDERTILE, G_ON);
+    gMoveWd(commands++, G_MW_FOG, 0x10, 0x7FFF);
+    for (rowIndex = 0; rowIndex < ((Flipbook *)object)->stripCount; rowIndex++) {
         s32 *count = &((Flipbook *)object)->stripCount;
 
-        if (vtxIdx >= vtxMax) {
-            vtxIdx = 0;
-            vtxMax = (vtxLeft > 32) ? 32 : vtxLeft;
-            gSPVertex(gp++, vtx, vtxMax, 0);
-            vtxLeft -= vtxMax;
-            vtx += vtxMax;
-            TRACE("vtxIdx:%d  vtxMax:%d  vtxLeft:%d\n", vtxIdx, vtxMax, vtxLeft);
+        if (vertexIndex >= loadedVertexCount) {
+            vertexIndex = 0;
+            loadedVertexCount = (remainingVertices > 32) ? 32 : remainingVertices;
+            gSPVertex(commands++, vertices, loadedVertexCount, 0);
+            remainingVertices -= loadedVertexCount;
+            vertices += loadedVertexCount;
+            TRACE("vtxIdx:%d  vtxMax:%d  vtxLeft:%d\n", vertexIndex, loadedVertexCount, remainingVertices);
         }
-        gSPDisplayList(gp++, (Gfx *)0x06000000 + i);
-        gSP2Triangles(gp++, vtxIdx, vtxIdx + 1, vtxIdx + 2, 0, vtxIdx, vtxIdx + 2, vtxIdx + 3, 0);
-        vtxIdx += 4;
-        if (gp - ((Flipbook *)object)->displayList > (*count * 8) + 20) {
-            TRACE("ERROR: gpSize over:%d\n", gp - ((Flipbook *)object)->displayList);
+        gSPDisplayList(commands++, (Gfx *)0x06000000 + rowIndex);
+        gSP2Triangles(commands++, vertexIndex, vertexIndex + 1, vertexIndex + 2, 0, vertexIndex, vertexIndex + 2,
+                      vertexIndex + 3, 0);
+        vertexIndex += 4;
+        if (commands - ((Flipbook *)object)->displayList > (*count * 8) + 20) {
+            TRACE("ERROR: gpSize over:%d\n", commands - ((Flipbook *)object)->displayList);
         }
     }
-    gSPTexture(gp++, 0x7FFF, 0, 0, G_TX_RENDERTILE, G_OFF);
-    gMoveWd(gp++, G_MW_FOG, 0x10, 0x7FFF);
-    gSPEndDisplayList(gp++);
+    gSPTexture(commands++, 0x7FFF, 0, 0, G_TX_RENDERTILE, G_OFF);
+    gMoveWd(commands++, G_MW_FOG, 0x10, 0x7FFF);
+    gSPEndDisplayList(commands++);
 }
 
 /// Reset the model drawing buffers to show no text images.
@@ -530,13 +531,13 @@ extern u8 gScrollBoardObjectTemplate[];
 /// \note Original decompilation identifier: \c func_80025BE0 (0x80025BE0).
 s32 scrollBoardCreateObject(s32 columns, s32 lines, u8 red, u8 green, u8 blue, u8 alpha, s32 leadingOutline,
                             s32 trailingOutline) {
-    u8 *sp30;
+    u8 *unusedBoardObject;
     u8 *boardObject;
     s32 boardStateAddress;
 
     TRACE("sbdScrollBoardNew(%d, %d)\n", columns, lines);
     boardObject = objectCreateFromTemplate((ObjectTemplate *)gScrollBoardObjectTemplate);
-    sp30 = boardObject;
+    unusedBoardObject = boardObject;
     boardStateAddress = ((RuntimeObjectPrefix *)boardObject)->state.address;
     flipbookInitialize((u8 *)&((ScrollBoardState *)boardStateAddress)->model, columns, lines, red, green, blue, alpha,
                        leadingOutline, trailingOutline);
@@ -545,32 +546,33 @@ s32 scrollBoardCreateObject(s32 columns, s32 lines, u8 red, u8 green, u8 blue, u
 
 /// Assign scrolling text-board content and return to the beginning of non-null text, preserving scrolling speed.
 /// \param object Initialized scrolling text board with valid model state.
-/// \param list Borrowed zero-terminated array with at least one entry per visible line; the array and null-terminated text must remain valid while assigned, or pass null to hide the text. Entries must be nonempty when outlines are enabled.
+/// \param list Borrowed zero-terminated pointer view with one readable text entry per visible line, or null to hide text. The view must remain readable while assigned; later scrolling requires readable later strings. Visible entries must be nonempty when outlines are enabled.
 /// \param style Text configuration 0 through 2, or another value to select the default configuration.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80025C5C (0x80025C5C).
 void scrollBoardSetText(u8 *object, u8 **list, s32 style) {
-    u8 *v = ((RuntimeObjectPrefix *)object)->state.bytes;
-    s32 n;
-    u8 **p;
+    u8 *boardStateBytes = ((RuntimeObjectPrefix *)object)->state.bytes;
+    s32 textCount;
+    u8 **textCursor;
 
     if (list == NULL) {
-        ((ScrollBoardState *)v)->text = list;
-        ((ScrollBoardState *)v)->textCount = 0;
+        ((ScrollBoardState *)boardStateBytes)->text = list;
+        ((ScrollBoardState *)boardStateBytes)->textCount = 0;
         return;
     }
-    n = 0;
-    for (p = list; *p != 0; n++) {
-        p++;
+    textCount = 0;
+    for (textCursor = list; *textCursor != 0; textCount++) {
+        textCursor++;
     }
-    ((ScrollBoardState *)v)->textCount = n;
-    ((ScrollBoardState *)v)->text = list;
-    ((ScrollBoardState *)v)->topLine = 0;
-    ((ScrollBoardState *)v)->rowOffset = 0.0F;
+    ((ScrollBoardState *)boardStateBytes)->textCount = textCount;
+    ((ScrollBoardState *)boardStateBytes)->text = list;
+    ((ScrollBoardState *)boardStateBytes)->topLine = 0;
+    ((ScrollBoardState *)boardStateBytes)->rowOffset = 0.0F;
     ((RuntimeObjectPrefix *)object)->position[1] = 0.0F;
-    textPanelSetTextConfiguration(&((ScrollBoardState *)v)->model.panels[0], style);
-    textPanelSetTextConfiguration(&((ScrollBoardState *)v)->model.panels[1], style);
-    flipbookSetText((u8 *)&((ScrollBoardState *)v)->model, list, ((ScrollBoardState *)v)->model.stripCount);
+    textPanelSetTextConfiguration(&((ScrollBoardState *)boardStateBytes)->model.panels[0], style);
+    textPanelSetTextConfiguration(&((ScrollBoardState *)boardStateBytes)->model.panels[1], style);
+    flipbookSetText((u8 *)&((ScrollBoardState *)boardStateBytes)->model, list,
+                    ((ScrollBoardState *)boardStateBytes)->model.stripCount);
 }
 
 /// Set the scrolling text-board speed.
@@ -609,7 +611,7 @@ u8 *scrollBoardCreateHierarchy(s32 columns, s32 lines, u8 red, u8 green, u8 blue
 
 /// Assign text to the scrolling board in a hierarchy.
 /// \param root Hierarchy root containing the scrolling text board.
-/// \param list Borrowed zero-terminated array with at least one entry per visible line; the array and null-terminated text must remain valid while assigned, or pass null to hide the text. Entries must be nonempty when outlines are enabled.
+/// \param list Borrowed zero-terminated pointer view with one readable text entry per visible line, or null to hide text. The view must remain readable while assigned; later scrolling requires readable later strings. Visible entries must be nonempty when outlines are enabled.
 /// \param style Text configuration 0 through 2, or another value to select the default configuration.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80025DAC (0x80025DAC).

@@ -52,7 +52,7 @@ typedef struct MessageBarState {
     s32 displayImageIndex;      ///< Image slot currently displayed.
     s32 workImageIndex;         ///< Image slot available for preparation.
     TextImageHandle handles[3]; ///< Owned text images used during transitions.
-    u8 unknown46C[0x3C];        ///< Retained storage with no established role.
+    u8 currentText[0x3C];       ///< Displayed-message text view accessed through its separate original alias.
 } MessageBarState;
 typedef char QueuedMessageSizeCheck[(sizeof(QueuedMessage) == 0x44) ? 1 : -1];
 typedef char MessageBarStateSizeCheck[(sizeof(MessageBarState) == 0x4A8) ? 1 : -1];
@@ -61,6 +61,7 @@ typedef char MessageQueueOffsetCheck[(MESSAGE_OFFSET(queued) == 0x18) ? 1 : -1];
 typedef char MessageDisplaySlotOffsetCheck[(MESSAGE_OFFSET(displayImageIndex) == 0x458) ? 1 : -1];
 typedef char MessageWorkSlotOffsetCheck[(MESSAGE_OFFSET(workImageIndex) == 0x45C) ? 1 : -1];
 typedef char MessageImagesOffsetCheck[(MESSAGE_OFFSET(handles) == 0x460) ? 1 : -1];
+typedef char MessageCurrentTextOffsetCheck[(MESSAGE_OFFSET(currentText) == 0x46C) ? 1 : -1];
 #undef MESSAGE_OFFSET
 /// Shared queued-message, timing, scrolling and text-image state for the message bar.
 /// \note Original identifier: \c D_800F06C0 (0x800F06C0).

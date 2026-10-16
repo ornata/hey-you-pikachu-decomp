@@ -1533,6 +1533,30 @@ the supplied ROM and linked ELF before activating this exception. The
 relative VM storage can be reviewed without claiming defined C behavior or a
 meaningful result. Missing inputs or changed instruction spans revoke the review.
 
+### Scrolling text ownership and presets
+
+Scrolling boards retain a borrowed text-pointer view and own the images produced
+for the initially visible lines. Text selection replaces the inactive image bank
+and marks it pending; it preserves scrolling speed. A null text view hides the
+board while retaining its previous image allocations and offsets. Rendering can
+also change shared font, spacing and palette state and request glyph-cache DMA.
+
+Preset zero has 132 valid text entries. Preset one has one valid string followed
+by three words equal to the float encoding `0x3F800000`, then a zero word. The
+pointer scan therefore records four entries, although only its first entry is a
+readable string. Both retained credits requests for preset one use one visible
+line and zero speed. That initial call renders the first string successfully;
+advancing into later entries remains unsupported. This is a distinction between
+an authenticated immediate footprint and safe future scrolling, not evidence that
+the neighboring words belong to a larger text array.
+
+The four remaining allocation and text handlers now have complete conditional
+immediate reviews, including original creation callbacks, owned buffers, geometry,
+registry changes and cold-cache transfer requirements. Later drawing, GPU ownership,
+allocation failure, transfer liveness and gameplay reachability remain separate
+obligations. All 278 retained handlers have immediate reviews; the legacy
+voice-result entry retains its separate original-instruction-only scope.
+
 ### Player view selection
 
 The view query is `playerIsViewControlSelected`, exposed to scripts by

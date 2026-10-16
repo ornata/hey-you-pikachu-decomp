@@ -23,8 +23,8 @@ u8 *scrollBoardCreateHierarchy(s32 columns, s32 lines, u8 red, u8 green, u8 blue
 /// Assign borrowed text to a board and reset its scroll position, preserving speed.
 /// \param root Live hierarchy containing an initialized scrolling board.
 /// \param list Null-terminated array with at least one text entry per visible row,
-/// or null to hide text. The array and strings must remain valid while assigned;
-/// entries must be nonempty when outlines are enabled.
+/// or null to hide text. The pointer view must remain readable while assigned;
+/// later scrolling requires readable later strings. Visible entries must be nonempty when outlines are enabled.
 /// \param style Configuration index zero through two, or another value for defaults.
 /// \returns Nothing.
 /// \note Original identifier: \c func_80025DAC (0x80025DAC).

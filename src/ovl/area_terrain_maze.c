@@ -1780,10 +1780,12 @@ void mazePlaceBlockObject(u8 *position, u8 *objectTemplate) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8010DC14 (0x8010DC14).
 void mazeRemoveBlockObject(u8 *object) {
-    *(s32 *)areaFindPositionNode(
-        (gCurrentAreaConfiguration->cellDimensions[0] / 2) + ((RuntimeObjectPrefix *)object)->position[0],
-        (gCurrentAreaConfiguration->cellDimensions[1] / 2) + ((RuntimeObjectPrefix *)object)->position[1],
-        (gCurrentAreaConfiguration->cellDimensions[2] / 2) + ((RuntimeObjectPrefix *)object)->position[2]) = 0;
+    ((MazeNode *)areaFindPositionNode(
+         (gCurrentAreaConfiguration->cellDimensions[0] / 2) + ((RuntimeObjectPrefix *)object)->position[0],
+         (gCurrentAreaConfiguration->cellDimensions[1] / 2) + ((RuntimeObjectPrefix *)object)->position[1],
+         (gCurrentAreaConfiguration->cellDimensions[2] / 2) + ((RuntimeObjectPrefix *)object)->position[2]))
+        ->objects[0]
+        .address = 0;
     objectRequestHierarchyDestruction(object);
 }
 

@@ -14,6 +14,7 @@
 /// \param background Background pixel value from zero through fifteen that may receive the outline.
 /// \param outline Outline pixel value from zero through fifteen.
 /// \returns Nothing.
+/// \note Portability/UB: Original clipping temporarily forms a pointer before a pixel row. Target access bounds do not establish portable C pointer validity.
 /// \note Original decompilation identifier: \c func_80012F8C (0x80012F8C).
 void image4BitAddOffsetOutline(TextImage *image, s32 dx, s32 dy, s32 background, s32 outline);
 
