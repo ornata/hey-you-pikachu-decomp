@@ -1387,6 +1387,29 @@ reports that additional precondition; it does not prove the operand floor.
 Integer and code-reference payloads are read as integers; supported finite float
 handles truncate toward zero. Invalid numeric conversions remain outside the review.
 
+The three general object queries are not interchangeable:
+
+| Query | Result domain | Example for a registered item |
+| --- | --- | --- |
+| `GetObjectCategory` | Compact `ObjectScriptCategory` | `SCRIPT_CATEGORY_ITEM` (1) |
+| `GetObjectKind` | Item-catalog ID, actor configuration ID, or a supported runtime kind, depending on category | The item's catalog ID |
+| `GetObjectType` | Unsigned runtime lifecycle kind, widened to a VM integer | `RUNTIME_OBJECT_KIND_ITEM` (134) |
+
+The catalog's `object_query_roles` binds immediate captures and comparisons to
+this raw-kind query. Across retained configurations it records 65 capture
+observations and twelve equality observations: seven against runtime item kind
+134, four against Poliwag actor kind 12 and one against cave kind 176. Shared
+programs referenced by multiple configurations are counted more than once. These
+are operand meanings, not proven branch outcomes or persistent names for the
+destination variables. Intervening operations
+end this analysis; later reads require a separate reaching-definition proof.
+
+Actor configurations use runtime kinds 1–37, so their raw kind and actor ID
+coincide. That does not extend to item catalog IDs. An available player-control
+root has runtime kind 127 and category 2, yet `GetObjectKind` returns zero because
+it has no supported script-kind result. Zero therefore does not prove a failed
+lookup; even the raw query can return zero for a live kind-zero object.
+
 The domains are distinct: `RUNTIME_OBJECT_KIND_ITEM` (134 / 0x86) selects item-owned
 state, whose item-catalog kind is a separate value. Actor configuration kinds span
 1 through 37, including props. Runtime tag 130 is the voice-reactive spinner, whose

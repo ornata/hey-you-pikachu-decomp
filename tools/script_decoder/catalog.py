@@ -47,6 +47,7 @@ from .path_item_helpers import path_item_helper_roles
 from .name_selection_roles import name_selection_roles
 from .fishing_record_helpers import fishing_record_helper_roles
 from .fishing_measurement_roles import fishing_measurement_roles
+from .object_query_roles import object_query_roles
 
 
 def companion_sites(image):
@@ -241,6 +242,8 @@ def catalog(image, max_instructions=100000):
                                                           if not decoded['diagnostics'] else []),
                              fishing_measurement_roles=(fishing_measurement_roles(decoded['instructions'], snapshot=literal_context_snapshot)
                                                         if not decoded['diagnostics'] else dict(status='unresolved', reason='Incomplete decoded CFG.')),
+                             object_query_roles=(object_query_roles(decoded['instructions'], snapshot=literal_context_snapshot)
+                                                 if not decoded['diagnostics'] else dict(status='unresolved', reason='Incomplete decoded CFG.')),
                              messenger_contact_requests=messenger_contact_requests(decoded['instructions'], contact_policies),
                              costed_action_requests=costed_action_requests(decoded['instructions'], cost_policies['records'],
                                  preserved_natives=local_preservation['preserved_native_functions']),
@@ -343,7 +346,7 @@ def main(argv=None):
         report['elf_sha256'] = hashlib.sha256(args.elf.read_bytes()).hexdigest()
         report['decoder_sha256'] = hashlib.sha256(Path(__file__).with_name('formats.py').read_bytes()).hexdigest()
         report['analysis_sha256'] = {name: hashlib.sha256(Path(__file__).with_name(name + '.py').read_bytes()).hexdigest()
-                                     for name in ('catalog', 'stack', 'messages', 'actions', 'scenarios', 'actors', 'functions', 'table_returns', 'vocabulary', 'dictionaries', 'name_catalog', 'saved_dictionary', 'native_frames', 'control_schemes', 'windows', 'caller_frames', 'progress_fields', 'items', 'effects', 'transitions', 'responses', 'local_flow', 'paired_flow', 'contacts', 'motion_archives', 'model_parts', 'callee_contexts', 'native_arguments', 'caller_sources', 'path_item_helpers', 'name_selection_roles', 'fishing_record_helpers', 'fishing_measurement_roles')}
+                                     for name in ('catalog', 'stack', 'messages', 'actions', 'scenarios', 'actors', 'functions', 'table_returns', 'vocabulary', 'dictionaries', 'name_catalog', 'saved_dictionary', 'native_frames', 'control_schemes', 'windows', 'caller_frames', 'progress_fields', 'items', 'effects', 'transitions', 'responses', 'local_flow', 'paired_flow', 'contacts', 'motion_archives', 'model_parts', 'callee_contexts', 'native_arguments', 'caller_sources', 'path_item_helpers', 'name_selection_roles', 'fishing_record_helpers', 'fishing_measurement_roles', 'object_query_roles')}
         report['native_frame_review_sha256'] = review_manifest_fingerprint()
         files = {'catalog.json': report, **{name + '.json': row for name, row in decodes.items()}}
         # Validate every output before writing any content, including existing symlinks.

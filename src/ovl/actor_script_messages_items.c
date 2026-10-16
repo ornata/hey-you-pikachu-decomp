@@ -1071,7 +1071,8 @@ s32 actorScriptGetObjectCategory(u8 *actor) {
 }
 
 /// Replace an object handle on the script stack with its script kind identifier.
-/// \param actor Actor whose script VM supplies a handle and receives its kind identifier, or zero for an unavailable or unsupported object.
+/// \param actor Actor whose script VM supplies a handle and receives its item or actor kind, or its supported runtime kind, according to the script category.
+/// \note Zero may denote an unavailable or unsupported object; interpret other results with the script category.
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011DCF8 (0x8011DCF8).
 s32 actorScriptGetObjectKind(u8 *actor) {
@@ -1106,8 +1107,9 @@ s32 actorScriptGetActorKind(u8 *actor) {
     return 0;
 }
 
-/// Replace an object handle on the script stack with its object type.
-/// \param actor Actor whose script VM supplies a handle and receives the object type, or zero for an unavailable handle.
+/// Replace an object handle on the script stack with its runtime lifecycle kind.
+/// \param actor Actor whose script VM supplies a handle and receives the unsigned runtime kind as an integer, or zero for an unavailable handle.
+/// \note The result is distinct from item catalog IDs and compact script categories.
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011DDB8 (0x8011DDB8).
 s32 actorScriptGetObjectType(u8 *actor) {

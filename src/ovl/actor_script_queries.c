@@ -410,6 +410,8 @@ s32 objectGetScriptCategory(u8 *actor, s32 handle) {
 /// Get the kind identifier exposed to actor scripts for an available object.
 /// \param handle Handle of the object to query.
 /// \returns The item or actor kind, the runtime kind for voice-reactive spinners and types 141 through 148, or zero for an unavailable or unsupported object.
+/// \note Interpret the result with the object's script category; the returned domains overlap.
+/// \note Zero alone does not establish availability or identify the result's domain.
 /// \note Original decompilation identifier: \c func_801178EC (0x801178EC).
 s32 objectGetScriptKind(s32 handle) {
     s32 objectKind;
@@ -473,9 +475,11 @@ u16 actorGetKindByHandle(s32 handle) {
     return 0;
 }
 
-/// Get the type of an available object.
+/// Get the runtime lifecycle kind of an available object.
 /// \param handle Handle of the object to query.
-/// \returns The object type, or zero when the handle is unavailable.
+/// \returns The unsigned runtime kind, or zero when the handle is unavailable.
+/// \note Actor configuration IDs share this domain; item catalog IDs and script categories do not.
+/// \note Zero does not distinguish an unavailable handle from a runtime kind of zero.
 /// \note Original decompilation identifier: \c func_80117A30 (0x80117A30).
 u16 objectGetTypeByHandle(s32 handle) {
     u8 *resolvedObject;
