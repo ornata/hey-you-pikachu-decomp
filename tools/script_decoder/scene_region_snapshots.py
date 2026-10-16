@@ -22,7 +22,7 @@ RUNTIME_KIND = 175
 NATIVE_BINDINGS = {'actorScriptFindObjectNearPosition': {'address': 2148657504,
                                        'arguments': 6,
                                        'file': 'src/ovl/actor_script_player_world.c',
-                                       'review_sha256': '27681715dc5cd823b9db3e5a60595c53ea76a6820a10b9d67d4ecfd6c0ecd2bf',
+                                       'review_sha256': '859e7d137f84bde80a750aa5c7067492b0effc27671bd635d3480f6f212698b0',
                                        'sha256': 'a909a8c16d552cdeeb9533e166b79df1d83489d2e82b28d1a1dcd4c577d5269d'},
  'actorScriptGetPlayerCoordinate': {'address': 2148655112,
                                     'arguments': 1,

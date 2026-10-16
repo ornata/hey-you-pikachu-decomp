@@ -11,7 +11,7 @@ from .scene_region_snapshots import _dependency_fingerprint
 NATIVE_BINDINGS = {'actorScriptFindItemInFacingCone': {'address': 2148653400,
                                      'arguments': 6,
                                      'file': 'src/ovl/actor_script_messages_items.c',
-                                     'review_sha256': '4d72bd4ae15d2eeb5b33406a0df8f5afa8653f43d17df55589a55f145c520b2a',
+                                     'review_sha256': 'e185f133c3266460a06b7cb73b31a15e59b47dc053583aa0fc8cb88a33ffcd41',
                                      'sha256': 'e75f34264337661a0958a0e3828027ec53ed841b49ee52ceda710a0463ecb7eb'},
  'actorScriptGetObjectDistance': {'address': 2148651584,
                                   'arguments': 1,

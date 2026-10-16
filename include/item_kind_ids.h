@@ -1,5 +1,5 @@
 /// \file
-/// Names established item-kind identifiers used by command routing and cooking results.
+/// Names established item identities used by commands, cooking and scene interactions.
 
 #ifndef ITEM_KIND_IDS_H
 #define ITEM_KIND_IDS_H
@@ -8,7 +8,11 @@
 /// Quality adjectives retain catalog labels without guaranteeing recipe success.
 /// Other catalog identifiers remain numeric until their consumers are reviewed.
 typedef enum ItemKindId {
-    ITEM_KIND_MEGAPHONE = 0x51, ///< Catalog names both variants "megaphone".
+    ITEM_KIND_BANANA = 8,          ///< Catalog identity whose permitted consumption replacement is banana peel.
+    ITEM_KIND_BANANA_PEEL = 77,    ///< Discarded banana skin, distinct from the edible item.
+    ITEM_KIND_PINATA = 78,         ///< Intact decorated container.
+    ITEM_KIND_CRACKED_PINATA = 79, ///< Catalog's cracked variant; a separate item identity.
+    ITEM_KIND_MEGAPHONE = 0x51,    ///< Catalog names both variants "megaphone".
     ITEM_KIND_TASTY_STEW = 106,
     ITEM_KIND_TYPICAL_STEW = 107,
     ITEM_KIND_WEIRD_STEW = 108,

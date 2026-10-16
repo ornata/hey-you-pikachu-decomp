@@ -661,6 +661,14 @@ no priority weighting. It saves the selected handle in shared cell 33. This
 is not a world-ownership or pickup-eligibility test, and the search still changes
 shared query state.
 
+[`ItemKindId`](../include/item_kind_ids.h) keeps banana (8), banana peel (77),
+piñata (78) and cracked piñata (79) as distinct catalog identities. The catalog
+records banana peel as banana's replacement for permitted consumption. For
+permitted cause-2 transformation, piñata's replacement is the cracked variant.
+The cracked variant has no configured replacement. Both piñata identities
+participate in the held-item wriggle check; that check does not distinguish an
+intact container from its cracked variant or prove a treasure outcome.
+
 The script scans the handle ledger starting at shared cell 28, using the count
 in cell 27, and stores the first matching index in cell 34. No match leaves the
 previous index intact; a zero search result can match a zero ledger entry.

@@ -23,6 +23,7 @@
 #include "item_types.h"
 #include "item_audio.h"
 #include "item_kind.h"
+#include "item_kind_ids.h"
 #include "object_types.h"
 
 /// Start item disposal with its transition sound.
@@ -654,7 +655,8 @@ void itemUpdateActorHeld(u8 *object) {
     ((RuntimeObjectPrefix *)object)->rotation[1] = ((ActorScriptState *)parentState)->orientation[1];
     ((RuntimeObjectPrefix *)object)->rotation[2] = ((ActorScriptState *)parentState)->orientation[2];
     kind = ((ItemStatePrefix *)state)->kind;
-    if ((kind == 0x4E || kind == 0x4F) && ((RuntimeObjectPrefix *)object)->scale[0] < 0.049999997F) {
+    if ((kind == ITEM_KIND_PINATA || kind == ITEM_KIND_CRACKED_PINATA) &&
+        ((RuntimeObjectPrefix *)object)->scale[0] < 0.049999997F) {
         pinataUpdateWriggle(object);
     }
 }

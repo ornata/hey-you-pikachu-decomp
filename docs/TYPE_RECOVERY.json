@@ -3480,6 +3480,7 @@
         "camera_pose.h",
         "item_audio.h",
         "item_kind.h",
+        "item_kind_ids.h",
         "item_mode.h",
         "item_object.h",
         "item_participation.h",
@@ -3507,23 +3508,23 @@
       "locations": {
         "raw_offset_candidates": {
           "gItemKindFrictionEntries - 0x30": [
-            "174:29",
-            "177:23"
+            "175:29",
+            "178:23"
           ],
           "bounceCount - 1U": [
-            "451:98"
+            "452:98"
           ],
           "wriggleAngle + 360": [
-            "589:63"
+            "590:63"
           ],
           "wriggleAngle - 360": [
-            "595:63"
+            "596:63"
           ],
           "spinSpeed + 360": [
-            "606:87"
+            "607:87"
           ],
           "spinSpeed - 360": [
-            "611:87"
+            "612:87"
           ]
         }
       }

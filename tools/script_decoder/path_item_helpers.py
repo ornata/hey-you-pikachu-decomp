@@ -14,7 +14,7 @@ from .stack import incoming_edges
 # Independently reviewed full expanded native contracts, not all-active purity.
 NATIVE_BINDINGS = {
     'actorScriptGetAreaPathPointCoordinate': dict(arguments=3, review_sha256='86b5998903dea69b9c71670ac35eef019d4ce209d0e670e6984b5e644644cad5'),
-    'actorScriptFindItemNearPosition': dict(arguments=8, review_sha256='465a7f5139c9da97e48bde95fd4d4a0327758e657e1341e56bd53d211dfac552'),
+    'actorScriptFindItemNearPosition': dict(arguments=8, review_sha256='814bc5813d562cf03cb14a4733f4d5eae02c9b42acc2184792772080b3032e55'),
 }
 
 

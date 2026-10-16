@@ -74,8 +74,11 @@ class ItemKindNameTests(unittest.TestCase):
     def test_catalog_only_known_ids_named_without_replacing_display_labels(self):
         catalog = self.catalog()
         names = items.item_kind_names()
-        self.assertEqual(len(names), 18)
-        self.assertEqual(set(names), {81, 138, *range(106, 122)})
+        self.assertEqual(len(names), 22)
+        self.assertEqual(set(names), {8, 77, 78, 79, 81, 138, *range(106, 122)})
+        self.assertEqual({kind: names[kind] for kind in (8, 77, 78, 79)}, {
+            8: 'ITEM_KIND_BANANA', 77: 'ITEM_KIND_BANANA_PEEL',
+            78: 'ITEM_KIND_PINATA', 79: 'ITEM_KIND_CRACKED_PINATA'})
         self.assertEqual([row['item_kind'] for row in catalog['entries']], list(range(166)))
         for row in catalog['entries']:
             if row['item_kind'] in names:

@@ -11,9 +11,9 @@ from .context import ROOT, ROM_SHA1
 from .native_frames import fingerprint, function_source
 
 SOURCE_PINS = {
-    'include/item_kind_ids.h': '501aa9315352cf4e56bee5ee6862fa3ab2969ef905b919c8eda3a079a08da183',
+    'include/item_kind_ids.h': '432bfe51ab298842e328ba696e3878329fcaa0b5bdc5cfa37bad0a3cf5ce3f7b',
     'include/item_kind.h': 'ff12c7e80c6dedfc7f2295f4f024aeff00dd88738f836fdbba9ffff3f77d34b5',
-    'src/ovl/item_registry.c': 'd00b8c1eb04936759811886aebbf1db9b9a51be8fbb5cd415bc43d3d244bde27',
+    'src/ovl/item_registry.c': '9421d4548bbfa60527365e5879edde39f017c4a658debde447c3a611f9b86fa4',
     'src/ovl/item_special_behaviors.c': '76f22ffeb515724a971b2929b66a8c5cf7a0220e63aaec43006169b2d60f6092',
     'include/item_types.h': '70cd1080b3fa819ba4e5997fe11582348f322c9d0c8e2055fc942325984111bc',
     'include/actor_script.h': 'b35b0c9ae80929cf2c8abafe678b8b52d3386be97c8c4fada69d9bdbe351640e',
@@ -24,7 +24,7 @@ SOURCE_PINS = {
     'src/game/actor_model_parts.c': '90c895f0d49d62252524789852093a98fea25e46fe7f9d23cd528e86e84bb2c1',
     'src/game/motion_playback.c': '739841587dad79444dc772fde04d29609db6d15a760ef00954a7b35ceb9941bc',
     'src/game/object_hierarchy.c': 'd2e4e761161617f2989d1abbd165c9e4eb3089ffca22168f14c5efb73517f7eb',
-    'src/ovl/item_physics.c': 'd91e16a5fa9d24f1d005cc161534d028837735edacbf6ded48dffb0cdeb9fa9a',
+    'src/ovl/item_physics.c': '9a642ca2bd1b9dacadbf521c5386c2e163a34eac71964cd9fd1d512274813a64',
     'include/object_template.h': '4ac4abe8965ed6eb5ae1f8c32153a0b670b14ebe030d4f7bbb4fbee84c098a26',
     'include/object_kind_callbacks.h': '16b8c7d03046d15ff1cbeef889b8568337d7637b7039a7c6f9c0e2ab4d1eaa8f',
 }

@@ -22,7 +22,7 @@ _CREATE_NATIVES = {'actorScriptCreateItem', 'actorScriptCreateStationaryItem'}
 _ARGUMENT_NAMES = ('x', 'y', 'z', 'pitch_degrees', 'yaw_degrees', 'kind')
 
 
-_KIND_NAMES_SHA256 = '5194cadb089ec064b2d7f416ac8a378cd0137db5aaf5c98e5a9cc2b12df10037'
+_KIND_NAMES_SHA256 = '65b123e1aad122d4f76b4902ea6e8ade7b01e16be7b05d5f406a968d5c68b373'
 
 
 def item_kind_names():
