@@ -504,6 +504,17 @@ Six catalog labels lack an exact vocabulary-label match because of case,
 punctuation or alternate recognition spellings; the report preserves both views.
 It does not merge catalog indices with global word IDs.
 
+Category ten is broader than this catalog. Its values zero through seven include
+scene-specific aliases: value one can identify Oddish, Gloom or Vileplume in
+dictionary seven. The bedroom catalog uses values eight through 160, while
+161 is a treasure-label family outside that catalog. These are voice selectors,
+not actor kinds or universal species IDs. The bedroom receipt paths subtract
+eight from the message value without a local range check; category ten alone
+therefore does not prove a valid bedroom catalog index. Dictionary selection and
+the actual payload remain necessary evidence. The observed receipt slot is later
+compared with a selected name and a sentinel; these receipt paths do not establish
+an out-of-range array access.
+
 The request analyzer recognizes the guarded group conversion and records a
 conditional dictionary domain. Its precondition is a valid catalog argument from
 0 through 152 with intact, nonoverlapping VM frames. It does not prove caller
@@ -2503,6 +2514,21 @@ run action chains and return zero instead of selecting categories one and two.
 There is no directive-plus-one conversion. These observations leave response
 categories one and two numeric; they do not establish universal
 interaction meanings or emotional valence.
+
+The smaller feedback and question domains are named in
+[`voice_feedback_questions.h`](../include/voice_feedback_questions.h). Category
+four has one insulting-label family; category five distinguishes general praise,
+cuteness and "terrific" requests. Category eleven's zero value covers the two
+retained counting-question labels, both in dictionary ten. Together these five
+selectors cover eleven word records. The names describe vocabulary requests and
+do not promise a friendship change, a recipient reaction or a valid count.
+
+The reviewed bedroom response flow distinguishes the cute praise value from the
+other praise values. Its insulting-message path can request a meter adjustment
+and an attached track, subject to the surrounding guards. The reviewed Olivine
+lakeshore counting-question branch checks the category without reading its
+argument zero. Category nine remains numeric: its dictionary-thirteen value one
+mixes cute, give and throw labels, so it cannot inherit category five's names.
 
 Category 18 has a separate destination-request domain, named by
 [`VoiceMapDestinationValue`](../include/voice_map_destination.h). Its 18 retained

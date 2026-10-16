@@ -45,7 +45,7 @@ class DirectiveVocabularyTests(unittest.TestCase):
         with patch.object(vocabulary, 'VocabularyBank', bank), patch.object(vocabulary, 'directive_names', return_value=self.names), patch.object(vocabulary, 'dictionary_names', return_value={}):
             return vocabulary.vocabulary_catalog(image, dictionary_count=count, validate_phrases=False,
                 validate_general_commands=False, validate_map_destinations=False, validate_item_noun_groups=False,
-                validate_directives=enabled)
+                validate_directives=enabled, validate_feedback_questions=False)
 
     def test_scoped_annotations_preserve_unknowns_ids_and_indexes(self):
         report = self.catalog()

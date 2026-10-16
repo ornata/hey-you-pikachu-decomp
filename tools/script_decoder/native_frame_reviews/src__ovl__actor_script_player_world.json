@@ -795,7 +795,8 @@
         "file:include/hud.h",
         "file:include/voice_commands.h",
         "file:include/voice_item_selector.h",
-        "file:include/voice_directives.h"
+        "file:include/voice_directives.h",
+        "file:include/voice_feedback_questions.h"
       ],
       "preconditions": [
         "OS_MESG_BLOCK is invoked from a valid ordinary libultra thread, not an interrupt/exception callback; CP0/MI access and initialized exception/dispatch machinery are available. Current running-thread record, ready queue and queue wait lists are valid, distinct, writable records with sentinel termination and priority ordering; caller stack/context satisfy original o32/64-bit-save/FPU alignment and context rules.",

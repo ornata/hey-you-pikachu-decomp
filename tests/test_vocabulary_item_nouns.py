@@ -42,7 +42,7 @@ class ItemNounVocabularyTests(unittest.TestCase):
         image, bank = authored_vocabulary(records, dictionaries)
         with patch.object(vocabulary, 'VocabularyBank', bank), patch.object(vocabulary, 'item_noun_group_names', return_value=self.names), patch.object(vocabulary, 'dictionary_names', return_value={}):
             return vocabulary.vocabulary_catalog(image, dictionary_count=count, validate_phrases=False,
-                validate_general_commands=False, validate_map_destinations=False, validate_item_noun_groups=enabled, validate_directives=False)
+                validate_general_commands=False, validate_map_destinations=False, validate_item_noun_groups=enabled, validate_directives=False, validate_feedback_questions=False)
 
     def test_scoped_annotations_preserve_records_and_entry_indexes(self):
         report = self.catalog()

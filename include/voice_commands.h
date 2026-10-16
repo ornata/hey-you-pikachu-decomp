@@ -9,6 +9,7 @@
 #include "voice_phrases.h"
 #include "voice_item_selector.h"
 #include "voice_directives.h"
+#include "voice_feedback_questions.h"
 
 /// Gameplay quality flags combined with device warnings in message argument 1.
 /// \ingroup VoiceInteraction

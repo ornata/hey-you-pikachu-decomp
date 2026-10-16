@@ -1282,12 +1282,17 @@
     "file:include/voice_commands.h": {
       "kind": "file",
       "file": "include/voice_commands.h",
-      "sha256": "1d9f185fe1d00d170d9d985f253a20a220e9087e0f659d6b786d236619ec52d0"
+      "sha256": "502bc9fb517aeb06b1ab2f8428e97ac075ec3c4e7bcf9de255c158adf36e0e7e"
     },
     "file:include/voice_directives.h": {
       "kind": "file",
       "file": "include/voice_directives.h",
       "sha256": "8d393fcab26d70a1b29631a7c3390801b2c19fc5c51574b37e491ac7bd6590f2"
+    },
+    "file:include/voice_feedback_questions.h": {
+      "kind": "file",
+      "file": "include/voice_feedback_questions.h",
+      "sha256": "b3ed8ab26f632a5d4a9f0a308f4a61abd5964e590c50f23e802d0050429f2410"
     },
     "file:include/voice_item_selector.h": {
       "kind": "file",
@@ -4328,7 +4333,7 @@
     },
     {
       "file": "native_frame_reviews/src__ovl__actor_script_collection_profile.json",
-      "sha256": "936a0cf102eaaecf0a7c2018430558db3a956c195ae84a2243f8fcea0428c2bd"
+      "sha256": "2e9dfaa662e88888d3121d419e480ca09f1684ff17ed9ba73e8dafe69a02842f"
     },
     {
       "file": "native_frame_reviews/src__ovl__actor_script_messages_items.json",
@@ -4336,7 +4341,7 @@
     },
     {
       "file": "native_frame_reviews/src__ovl__actor_script_player_world.json",
-      "sha256": "dcbb219bdc611820ecea673cc28671f4f0eb911076609ea47cab1f2902a8294b"
+      "sha256": "354e6bbd7585eaff1e28ecc9f589f98f6b46499a7aef70945211a8938d65033c"
     },
     {
       "file": "native_frame_reviews/src__ovl__script_demo_item_commands.json",

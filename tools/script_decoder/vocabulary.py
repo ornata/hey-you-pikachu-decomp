@@ -141,6 +141,29 @@ def directive_names():
     return _reviewed_enum(code, 'VoiceDirectiveValue', 'VOICE_DIRECTIVE_', DIRECTIVE_MAPPING_SHA256)
 
 
+FEEDBACK_QUESTION_CATEGORIES = frozenset((4, 5, 11))
+FEEDBACK_QUESTION_BINDINGS = {
+    4: dict(category_constant='VOICE_INSULT_MESSAGE_TYPE', enum='VoiceInsultValue',
+            prefix='VOICE_INSULT_', mapping_digest='07b0eb1b3adf233bd150fa017d06323261e59152d06a24373ef0dc94ccef8e93'),
+    5: dict(category_constant='VOICE_PRAISE_MESSAGE_TYPE', enum='VoicePraiseValue',
+            prefix='VOICE_PRAISE_', mapping_digest='9d2ab51b0b31758d30c58f4bfa865ea2fe874c59c76323d322a8642715235088'),
+    11: dict(category_constant='VOICE_COUNT_QUESTION_MESSAGE_TYPE', enum='VoiceCountQuestionValue',
+             prefix='VOICE_COUNT_QUESTION_', mapping_digest='78767da9de4a2b27f431881f4f49fc2ea7eceaa1a87bdba3b8d1d769be5a7ffd'),
+}
+
+
+def feedback_question_names():
+    """Read scoped feedback/count-question labels without naming category-nine traffic."""
+    if set(FEEDBACK_QUESTION_BINDINGS) != FEEDBACK_QUESTION_CATEGORIES:
+        raise ValueError('incomplete or unexpected feedback/question category bindings')
+    code = code_only((ROOT / 'include/voice_feedback_questions.h').read_text())
+    names = {}
+    for category, binding in FEEDBACK_QUESTION_BINDINGS.items():
+        _category_literal(code, binding['category_constant'], category)
+        names[category] = _reviewed_enum(code, binding['enum'], binding['prefix'], binding['mapping_digest'])
+    return names
+
+
 def dictionary_names():
     """Read explicitly named selections while leaving other descriptors numeric."""
     code = code_only((ROOT / 'include/voice_recognition.h').read_text())
@@ -151,7 +174,7 @@ def dictionary_names():
     return names
 
 
-def vocabulary_catalog(image, dictionary_count=43, *, validate_phrases=True, validate_general_commands=True, validate_map_destinations=True, validate_item_noun_groups=True, validate_directives=True):
+def vocabulary_catalog(image, dictionary_count=43, *, validate_phrases=True, validate_general_commands=True, validate_map_destinations=True, validate_item_noun_groups=True, validate_directives=True, validate_feedback_questions=True):
     """Link a reviewed descriptor prefix to bounded words and gameplay metadata."""
     if not 1 <= dictionary_count <= 256:
         raise ValueError('dictionary prefix bound must be between 1 and 256')
@@ -161,6 +184,7 @@ def vocabulary_catalog(image, dictionary_count=43, *, validate_phrases=True, val
     map_destinations = map_destination_names() if validate_map_destinations else {}
     item_noun_groups = item_noun_group_names() if validate_item_noun_groups else {}
     directives = directive_names() if validate_directives else {}
+    feedback_questions = feedback_question_names() if validate_feedback_questions else {}
     selections = dictionary_names()
     words_address = image.symbol('gVoiceWordDefinitions')[1]
     dictionaries_address = image.symbol('gVoiceDictionaries')[1]
@@ -190,6 +214,8 @@ def vocabulary_catalog(image, dictionary_count=43, *, validate_phrases=True, val
             row['recovered_item_noun_group_name'] = item_noun_groups[command_value]
         if command_type == 3 and command_value in directives:
             row['recovered_directive_name'] = directives[command_value]
+        if command_type in feedback_questions and command_value in feedback_questions[command_type]:
+            row['recovered_feedback_question_name'] = feedback_questions[command_type][command_value]
         words.append(row)
     raw, dictionary_location = bank.read(dictionaries_address, dictionary_count * 8)
     dictionaries = []
@@ -222,6 +248,10 @@ def vocabulary_catalog(image, dictionary_count=43, *, validate_phrases=True, val
     if directives and {word['command_value'] for word in words if 'recovered_directive_name' in word
                        and any(member['dictionary_id'] < 43 for member in word['dictionary_memberships'])} != set(directives):
         raise ValueError('named directives need membership in the reviewed43 dictionary prefix')
+    for category, names in feedback_questions.items():
+        if {word['command_value'] for word in words if word['command_type'] == category and 'recovered_feedback_question_name' in word
+            and any(member['dictionary_id'] < 43 for member in word['dictionary_memberships'])} != set(names):
+            raise ValueError('named feedback/question selectors need membership in the reviewed43 dictionary prefix')
     return dict(mapping=dict(rom_start=bank.start, rom_end=bank.end, ram_start=bank.base,
                              sha256=hashlib.sha256(image.read_rom(bank.start, bank.size)).hexdigest(),
                              original_loader=0x800404E8),

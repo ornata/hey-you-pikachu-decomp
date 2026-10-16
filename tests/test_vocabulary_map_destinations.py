@@ -45,7 +45,7 @@ class MapDestinationTests(unittest.TestCase):
         image, bank = authored_vocabulary(records, dictionaries)
         with patch.object(vocabulary, 'VocabularyBank', bank), patch.object(vocabulary, 'map_destination_names', return_value=self.names), patch.object(vocabulary, 'dictionary_names', return_value={}):
             return vocabulary.vocabulary_catalog(image, dictionary_count=dictionary_count, validate_phrases=False,
-                                                  validate_general_commands=False, validate_map_destinations=enabled, validate_item_noun_groups=False, validate_directives=False)
+                                                  validate_general_commands=False, validate_map_destinations=enabled, validate_item_noun_groups=False, validate_directives=False, validate_feedback_questions=False)
 
     def test_category_only_annotation_preserves_records_and_memberships(self):
         report = self.catalog()

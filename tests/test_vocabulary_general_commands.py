@@ -54,7 +54,7 @@ class GeneralCommandTests(unittest.TestCase):
     def catalog(self, **options):
         image, bank = self.fixture(**options)
         with patch.object(vocabulary, 'VocabularyBank', bank), patch.object(vocabulary, 'general_command_names', return_value=self.names), patch.object(vocabulary, 'dictionary_names', return_value={}):
-            return vocabulary.vocabulary_catalog(image, dictionary_count=options.get('count', 43), validate_phrases=False, validate_map_destinations=False, validate_item_noun_groups=False, validate_directives=False)
+            return vocabulary.vocabulary_catalog(image, dictionary_count=options.get('count', 43), validate_phrases=False, validate_map_destinations=False, validate_item_noun_groups=False, validate_directives=False, validate_feedback_questions=False)
 
     def test_category_scoping_and_original_indices_preserved(self):
         result = self.catalog()
@@ -80,7 +80,7 @@ class GeneralCommandTests(unittest.TestCase):
     def test_independent_opt_out_does_not_load_general_enum(self):
         image, bank = self.fixture()
         with patch.object(vocabulary, 'VocabularyBank', bank), patch.object(vocabulary, 'general_command_names', side_effect=AssertionError('disabled')), patch.object(vocabulary, 'dictionary_names', return_value={}):
-            result = vocabulary.vocabulary_catalog(image, validate_phrases=False, validate_general_commands=False, validate_map_destinations=False, validate_item_noun_groups=False, validate_directives=False)
+            result = vocabulary.vocabulary_catalog(image, validate_phrases=False, validate_general_commands=False, validate_map_destinations=False, validate_item_noun_groups=False, validate_directives=False, validate_feedback_questions=False)
             self.assertTrue(all('recovered_general_command_name' not in word for word in result['words']))
 
 
