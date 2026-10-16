@@ -156,14 +156,14 @@ void itemUpdateModeAndOrientation(u8 *object) {
     u8 *state = ((RuntimeObjectPrefix *)object)->state.bytes;
 
     gItemModeUpdateHandlers[((ItemStatePrefix *)state)->mode](object);
-    if (((ItemStatePrefix *)state)->flags & 0x800) {
+    if (((ItemStatePrefix *)state)->flags & ITEM_STATE_RESET_ROTATION) {
         ((RuntimeObjectPrefix *)object)->rotation[0] = 0.0F;
         ((RuntimeObjectPrefix *)object)->rotation[1] = 0.0F;
         ((RuntimeObjectPrefix *)object)->rotation[2] = 0.0F;
     }
-    if (((ItemStatePrefix *)state)->flags & 0x40000) {
+    if (((ItemStatePrefix *)state)->flags & ITEM_STATE_FACE_CAMERA) {
         objectOrientTowardCamera(object);
-    } else if (((ItemStatePrefix *)state)->flags & 0x80000) {
+    } else if (((ItemStatePrefix *)state)->flags & ITEM_STATE_FACE_CAMERA_HORIZONTALLY) {
         objectFaceCameraHorizontally(object);
     }
 }

@@ -929,6 +929,22 @@ is necessary, with allocation, registry, animation, terrain and later borrowed-r
 obligations remaining explicit. A structural link
 alone does not establish creation safety or execution.
 
+Each catalog entry also exposes authored `initial_state_flags`, their recovered
+`ItemStateFlag` names and an explicit unresolved-bit mask. These defaults are
+separate from live item state and object-hierarchy flags. Recovered item flags
+cover rotation reset, full or horizontal camera facing, world collision-grid
+exclusion, material-controlled child visibility, airborne motion and shrinking.
+Grid exclusion does not disable terrain physics; material visibility governs the
+child hierarchy while its parent is visible. Full camera facing takes precedence
+over horizontal facing, and either can override rotation reset.
+
+`search_priority_maximum` and `search_priority_replenishment_per_second` describe
+selection priority, independently of model scale or physical growth. Creation
+starts priority at its maximum; weighted searches clear the selected item's
+priority, and updates replenish depleted priority up to the kind's maximum.
+The weighted-distance penalty is described below; it is not normalized by each
+kind's maximum. Catalog values do not establish an item's current eligibility.
+
 The ordinary item-creation review covers all 122 reachable retail templates and
 the sole nonnull texture-motion initializer, with the original allocator and
 registry helpers. It covers material-track initialization and the negative-Y

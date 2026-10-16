@@ -652,7 +652,7 @@
     "file:include/item_types.h": {
       "kind": "file",
       "file": "include/item_types.h",
-      "sha256": "a11ff3ec0e7d9256425797d27c1d7222f58360b5f27a4bf4128119f9a762f991"
+      "sha256": "33c68ce9008694f64c913435c659a0ba17a2e43587e6e7aa84257c03ee950349"
     },
     "file:include/keyed_pool.h": {
       "kind": "file",
@@ -1582,12 +1582,12 @@
     "file:src/ovl/item_registry.c": {
       "kind": "file",
       "file": "src/ovl/item_registry.c",
-      "sha256": "6b1dc940985c75bdf7a49ca060dcd1a2f3672dfe3e091fec4a2166b9afa854c9"
+      "sha256": "d6473c14b47617c2e335f6e272d203a355376fd27be48dd263e52e9912a3568b"
     },
     "file:src/ovl/item_special_behaviors.c": {
       "kind": "file",
       "file": "src/ovl/item_special_behaviors.c",
-      "sha256": "601e2e3a91c7b79e74bd16fc4994a75a23166e03dffc86a86c7bd1c4460e68c1"
+      "sha256": "a454f917278d8e9a576bd0d342d63f1b2cb85050e0ff8650be47da8ecbefe894"
     },
     "file:src/ovl/player_companion.c": {
       "kind": "file",
@@ -3635,7 +3635,7 @@
       "kind": "function",
       "file": "src/ovl/item_registry.c",
       "function": "itemCreate",
-      "sha256": "e7e723feac86d0f200466ecaa5931064c987c406cd1e1576e928c3c94c9e688d"
+      "sha256": "9ab8320be5494087113ac9b0f8ac4e4356132d46380ce768dddcbe02b558a98e"
     },
     "function:src/ovl/item_registry.c:itemDestroy": {
       "kind": "function",

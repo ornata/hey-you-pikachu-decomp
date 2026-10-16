@@ -12,6 +12,20 @@
 typedef enum ItemStateFlag {
     ITEM_STATE_SPIN_ENABLED = 0x20,      ///< Enable the item's angular spin response.
     ITEM_STATE_MATERIAL_ENABLED = 0x200, ///< Enable the item material draw path.
+    /// Reset all rotation axes before applying either camera-facing rule.
+    ITEM_STATE_RESET_ROTATION = 0x800,
+    /// Exclude world-owned items from collision-grid registration; physics still applies.
+    ITEM_STATE_SKIP_COLLISION_GRID = 0x10000,
+    /// Face the camera; takes precedence over horizontal camera facing.
+    ITEM_STATE_FACE_CAMERA = 0x40000,
+    /// Face the camera horizontally when full camera facing is disabled.
+    ITEM_STATE_FACE_CAMERA_HORIZONTALLY = 0x80000,
+    /// Let the material animation value govern child visibility while the parent is visible.
+    ITEM_STATE_MATERIAL_CONTROLS_CHILD_VISIBILITY = 0x100000,
+    /// Airborne motion state, cleared on floor contact and set when no floor is contacted.
+    ITEM_STATE_AIRBORNE = 0x1000000,
+    /// Shrink during each item update; other disposal conditions remain independent.
+    ITEM_STATE_SHRINK_ON_UPDATE = 0x20000000,
     /// Bypass holder-specific restrictions on pickup and unforced release.
     /// Other item restrictions still apply; successful release clears this permission.
     ITEM_STATE_HELD_TRANSFER_ALLOWED = 0x40000000

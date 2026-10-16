@@ -198,7 +198,7 @@ void itemUpdateRollingRotation(u8 *object, u8 *state) {
     f32 sp34;
 
     itemFlags = ((ItemStatePrefix *)state)->flags;
-    if (!(itemFlags & 0x01000000)) {
+    if (!(itemFlags & ITEM_STATE_AIRBORNE)) {
         if (itemFlags & 0x10) {
             ((ItemStatePrefix *)state)->rotationVelocityX =
                 (f32)((2.0F * ((ItemStatePrefix *)state)->velocityX) / gRuntimeFrameSeconds);
@@ -210,7 +210,7 @@ void itemUpdateRollingRotation(u8 *object, u8 *state) {
             ((ItemStatePrefix *)state)->rotationVelocityX =
                 (f32)((57.295776F * vector2NormalizeComponentsApprox(&sp38, &sp34)) /
                       (*(f32 *)((s8 *)object + (u32) & ((RuntimeObjectPrefix *)0)->radius)));
-            if (!(((ItemStatePrefix *)state)->flags & 0x01000000)) {
+            if (!(((ItemStatePrefix *)state)->flags & ITEM_STATE_AIRBORNE)) {
                 ((ItemStatePrefix *)state)->rotationVelocityY =
                     (mathApproachAngleDegrees(((RuntimeObjectPrefix *)object)->rotation[1],
                                               mathUnitDirectionDegrees(sp34, sp38), 0.2F, 60.0F, 300.0F) -
@@ -364,7 +364,7 @@ void itemUpdateGroundAndAirMotion(u8 *object) {
         return;
     }
     ((ItemStatePrefix *)state)->flags &= 0xFFDFFFFF;
-    if (!(((ItemStatePrefix *)state)->flags & 0x01000000)) {
+    if (!(((ItemStatePrefix *)state)->flags & ITEM_STATE_AIRBORNE)) {
         itemUpdateGroundVelocity(object, state, (s32)&node, &drag);
     } else {
         drag = itemUpdateSpin(object, 0, 0);
@@ -390,7 +390,7 @@ void itemUpdateGroundAndAirMotion(u8 *object) {
     }
     collision = flags;
     if (collision != 0) {
-        if (((flags & 0x6D) || ((flags & 0x12) && (((ItemStatePrefix *)state)->flags & 0x01000000) &&
+        if (((flags & 0x6D) || ((flags & 0x12) && (((ItemStatePrefix *)state)->flags & ITEM_STATE_AIRBORNE) &&
                                 (fabsf(((ItemStatePrefix *)state)->downwardVelocity) > 18.0F))) &&
             ((fabsf(((ItemStatePrefix *)state)->velocityX) > 9.0F) ||
              (fabsf(((ItemStatePrefix *)state)->downwardVelocity) > 9.0F) ||
@@ -419,7 +419,7 @@ void itemUpdateGroundAndAirMotion(u8 *object) {
             itemBeginShrinkingDisposal(object);
             return;
         }
-        if ((dx != 0.0F) || (dy != 0.0F) || (dz != 0.0F) || (((ItemStatePrefix *)state)->flags & 0x01000000) ||
+        if ((dx != 0.0F) || (dy != 0.0F) || (dz != 0.0F) || (((ItemStatePrefix *)state)->flags & ITEM_STATE_AIRBORNE) ||
             (((ItemStatePrefix *)state)->spinSpeed > 0.0F)) {
             if (drag == 0) {
                 itemUpdateRollingRotation(object, state);
@@ -469,7 +469,7 @@ void itemUpdateGroundAndAirMotion(u8 *object) {
             ((ItemStatePrefix *)state)->flags &= 0xF2FFFFFF;
             return;
         }
-        ((ItemStatePrefix *)state)->flags |= 0x01000000;
+        ((ItemStatePrefix *)state)->flags |= ITEM_STATE_AIRBORNE;
     }
 }
 

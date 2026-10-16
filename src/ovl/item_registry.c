@@ -1905,7 +1905,7 @@ void itemEnableShrinking(u8 *item) {
     s32 *itemState;
 
     itemState = ((RuntimeObjectPrefix *)item)->state.words;
-    *itemState |= 0x20000000;
+    *itemState |= ITEM_STATE_SHRINK_ON_UPDATE;
 }
 
 #include "scene_configuration.h"
@@ -2046,17 +2046,17 @@ void itemUpdate(u8 *object) {
         itemStartDirectionMotion(object, 0.5F, 0.0F, 720.0F);
     }
     directionAnimationUpdate(&((ItemState *)state)->direction);
-    if (((ItemStatePrefix *)state)->flags & 0x20000000) {
+    if (((ItemStatePrefix *)state)->flags & ITEM_STATE_SHRINK_ON_UPDATE) {
         itemShrink(object, 0.12F);
     }
     if (!(((RuntimeObjectPrefix *)object)->flags & 2) &&
         ((flags = ((ItemStatePrefix *)state)->flags,
           (((ItemStatePrefix *)state)->materialAnimationActive != 0 && (flags & ITEM_STATE_MATERIAL_ENABLED))) ||
-         (flags & 0x100000))) {
+         (flags & ITEM_STATE_MATERIAL_CONTROLS_CHILD_VISIBILITY))) {
         animationIntegerTrackEvaluate(&((ItemStatePrefix *)state)->materialTrack, &changed, gRuntimeFrameSeconds);
         child = ((RuntimeObjectPrefix *)object)->child.bytes;
         if (child != NULL && !(((RuntimeObjectPrefix *)object)->flags & 2) &&
-            (((ItemStatePrefix *)state)->flags & 0x100000)) {
+            (((ItemStatePrefix *)state)->flags & ITEM_STATE_MATERIAL_CONTROLS_CHILD_VISIBILITY)) {
             if (changed != 0) {
                 objectClearHierarchyFlags(child, 2);
             } else {
@@ -2075,7 +2075,8 @@ void itemUpdate(u8 *object) {
     }
     itemUpdateModeAndOrientation(object);
     if (((ItemStatePrefix *)state)->state == ITEM_OWNERSHIP_WORLD &&
-        !(((RuntimeObjectPrefix *)object)->flags & 0x2000) && !(((ItemStatePrefix *)state)->flags & 0x10000) &&
+        !(((RuntimeObjectPrefix *)object)->flags & 0x2000) &&
+        !(((ItemStatePrefix *)state)->flags & ITEM_STATE_SKIP_COLLISION_GRID) &&
         (collisionGridFindOverlap(object), itemCanBePickedUp(object, 1) != 0 || itemCanBePickedUp(object, 0) != 0)) {
         ((ItemStatePrefix *)state)->collisionKey = collisionGridRegisterObject(object);
     }
@@ -2151,7 +2152,7 @@ u8 *itemCreate(f32 x, f32 y, f32 z, f32 pitch, f32 yaw, s32 kind) {
     itemInitializeState(object);
     state = (ItemStatePrefix *)((RuntimeObjectPrefix *)object)->state.bytes;
     state->kind = kind;
-    state->flags = gItemKinds[kind].stateFlags | 0x1000000;
+    state->flags = gItemKinds[kind].stateFlags | ITEM_STATE_AIRBORNE;
     state->bounceCount = gItemKinds[kind].initialBounceCount;
     state->searchPriority = gItemKinds[kind].searchPriorityMax;
     state->state = ITEM_OWNERSHIP_WORLD;

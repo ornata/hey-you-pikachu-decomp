@@ -2,7 +2,12 @@
 
 import struct
 import unittest
+import hashlib
+import tempfile
+from pathlib import Path
+from unittest.mock import patch
 
+from tools.script_decoder import items
 from tools.script_decoder.formats import decode_vm
 from tools.script_decoder.progress_fields import progress_field_requests
 from tools.script_decoder.stack import recover_arguments
@@ -22,6 +27,74 @@ NATIVES = {
     888: dict(address=0x8011C98C, functions=['actorScriptCreateAttachedEffect'], inline_operands=[]),
     999: dict(address=0x80000000, functions=['unreviewedCommand'], inline_operands=[]),
 }
+
+
+class ItemCatalogMetadataTests(unittest.TestCase):
+    def setUp(self):
+        self.directory = tempfile.TemporaryDirectory()
+        self.addCleanup(self.directory.cleanup)
+        self.root = Path(self.directory.name)
+        (self.root / 'include').mkdir()
+        (self.root / 'include/item_kind.h').write_text('enum { ITEM_STORAGE_CLASS_TEST = 1 };')
+        self.header = self.root / 'include/item_types.h'
+        self.header.write_text('''
+            enum RuntimeObjectFlags { ITEM_STATE_UNRELATED = 0x80000000 };
+            typedef enum ItemStateFlag {
+                ITEM_STATE_SPIN_ENABLED = 0x20,
+                ITEM_STATE_MATERIAL_ENABLED = 0x200
+            } ItemStateFlag;
+        ''')
+
+    def test_authenticated_bounded_catalog_preserves_unknown_bits_and_priority(self):
+        data = bytearray(166 * 0x74)
+        for kind in range(166):
+            struct.pack_into('>i', data, kind * 0x74, kind)
+        struct.pack_into('>I', data, 4, 0x80000020)
+        struct.pack_into('>ff', data, 0x10, 3.5, -0.25)
+        struct.pack_into('>I', data, 165 * 0x74 + 4, 0x200)
+
+        class Image:
+            def symbol(self, name):
+                self.assert_name = name
+                return (name, 0x80000000)
+
+            def read_address(self, address, size):
+                if (address, size) != (0x80000000, 166 * 0x74):
+                    raise AssertionError('catalog read escaped its authenticated extent')
+                return bytes(data), dict(address=address, section='.ovl', rom_offset=0)
+
+        image = Image()
+        with patch.object(items, 'ROOT', self.root):
+            with self.assertRaisesRegex(ValueError, 'table differs'):
+                items.item_kind_catalog(image)
+            digest = hashlib.sha256(data).hexdigest()
+            with patch.object(items, '_TABLE_SHA256', digest):
+                catalog = items.item_kind_catalog(image)
+                self.assertEqual(catalog['count'], 166)
+                first, last = catalog['entries'][0], catalog['entries'][-1]
+                self.assertEqual(first['initial_state_flags'], 0x80000020)
+                self.assertEqual(first['initial_state_flag_names'], ['ITEM_STATE_SPIN_ENABLED'])
+                self.assertEqual(first['initial_state_unresolved_flags'], 0x80000000)
+                self.assertEqual(first['search_priority_maximum'], 3.5)
+                self.assertEqual(first['search_priority_replenishment_per_second'], -0.25)
+                self.assertEqual(last['initial_state_flag_names'], ['ITEM_STATE_MATERIAL_ENABLED'])
+                self.assertEqual(last['initial_state_unresolved_flags'], 0)
+                self.assertEqual(last['configuration'], 0x80000000 + 165 * 0x74)
+                self.assertEqual(first['display_names']['default']['status'], 'null')
+                data[4] ^= 1
+                with self.assertRaisesRegex(ValueError, 'table differs'):
+                    items.item_kind_catalog(image)
+
+    def test_state_flags_reject_aliases_composites_and_implicit_values(self):
+        for body in ('ITEM_STATE_A = 1, ITEM_STATE_B = 1',
+                     'ITEM_STATE_A = 1, ITEM_STATE_A = 2',
+                     'ITEM_STATE_A = 3', 'ITEM_STATE_A = 0',
+                     'ITEM_STATE_A = 0x100000000', 'ITEM_STATE_A',
+                     'ITEM_STATE_A = 1 | 2'):
+            with self.subTest(body=body):
+                self.header.write_text('typedef enum ItemStateFlag {' + body + '} ItemStateFlag;')
+                with patch.object(items, 'ROOT', self.root), self.assertRaises(ValueError):
+                    items.state_flag_names()
 
 
 def value(number, tag=0):
