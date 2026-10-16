@@ -6,6 +6,7 @@ Response categories, reaction codes, cost selectors and timed IDs stay distinct.
 
 import hashlib
 import math
+import re
 import struct
 
 from .actions import CONTRACTS, action_calls
@@ -13,6 +14,9 @@ from .formats import integer_operand
 from .functions import function_summary
 from .stack import incoming_edges, recover_arguments
 from .local_flow import local_integer_domain
+from .context import ROOT
+from .native_frames import fingerprint
+from tools.source_quality import code_only
 
 CONFIG = 0x8014FED4
 PROGRAM = 0x8013C8B8
@@ -34,6 +38,49 @@ EXTRA_ARGUMENTS = {
 COST_POLICY_ADDRESS = 0x8012A660
 COST_POLICY_BYTES = 5 * 16
 COST_POLICY_SHA256 = '73a3f9992ada4ad18dbb1b5e78948239aeaa21f4b8d62c450fa774da77538172'
+COST_POLICY_ENUM = 'ActorCostedActionPolicy'
+COST_POLICY_HEADER = 'include/actor_script.h'
+_COST_POLICY_NAMES = {
+    0: 'ACTOR_COSTED_ACTION_POLICY_THUNDER',
+    1: 'ACTOR_COSTED_ACTION_POLICY_THUNDERBOLT',
+    2: 'ACTOR_COSTED_ACTION_POLICY_THUNDERSHOCK',
+    3: 'ACTOR_COSTED_ACTION_POLICY_THUNDER_SKIP_RESOURCE_CHECK',
+    4: 'ACTOR_COSTED_ACTION_POLICY_THUNDERBOLT_SKIP_RESOURCE_CHECK',
+}
+
+
+def _cost_policy_enum(source):
+    """Require one complete, explicitly numbered reviewed policy declaration."""
+    code = code_only(source)
+    starts = list(re.finditer(r'\benum\s+' + COST_POLICY_ENUM + r'\s*\{', code))
+    if len(starts) != 1:
+        raise ValueError('cost policy enum must have one unambiguous declaration')
+    start = starts[0]
+    end = code.find('}', start.end())
+    if end < 0 or '{' in code[start.end():end]:
+        raise ValueError('cost policy enum body is malformed')
+    entries = code[start.end():end].split(',')
+    if not entries[-1].strip():
+        entries.pop()
+    names, identifiers = {}, set()
+    for entry in entries:
+        match = re.fullmatch(r'\s*(\w+)\s*=\s*(0[xX][\da-fA-F]+|\d+)\s*', entry)
+        if match is None:
+            raise ValueError('cost policy enum requires explicit integer entries')
+        name, number = match.groups()
+        value = int(number, 16 if number.lower().startswith('0x') else 10)
+        if name in identifiers or value in names:
+            raise ValueError('cost policy enum contains duplicate entries')
+        names[value] = name
+        identifiers.add(name)
+    if names != _COST_POLICY_NAMES:
+        raise ValueError('cost policy enum differs from the five reviewed selectors')
+    return names, code[start.start():end + 1]
+
+
+def cost_policy_names(source):
+    """Read the exact reviewed enum, excluding comments and other declarations."""
+    return _cost_policy_enum(source)[0]
 
 
 def cost_policy_records(raw):
@@ -80,8 +127,15 @@ def cost_policy_catalog(image):
         image.allowed = previous
     if hashlib.sha256(raw).hexdigest() != COST_POLICY_SHA256:
         raise ValueError('reviewed cost policy table authentication failed')
+    names, declaration = _cost_policy_enum((ROOT / COST_POLICY_HEADER).read_text())
+    records = cost_policy_records(raw)
+    for record in records:
+        record['policy_name'] = names[record['cost_selector']]
     return dict(address=COST_POLICY_ADDRESS, byte_count=COST_POLICY_BYTES,
-                sha256=COST_POLICY_SHA256, location=location, records=cost_policy_records(raw),
+                sha256=COST_POLICY_SHA256, location=location, records=records,
+                name_source=dict(file=COST_POLICY_HEADER, enum=COST_POLICY_ENUM,
+                                 sha256=fingerprint(declaration),
+                                 scope='Exact source enum binding; original numeric selectors and timed IDs remain authoritative.'),
                 scope='Five neighbor-delimited records, not a complete allocation or runtime bounds check.')
 
 

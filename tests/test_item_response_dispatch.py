@@ -689,5 +689,71 @@ class VmComparisonContractTests(unittest.TestCase):
             self.assertFalse(equal(value,1))
 
 
+class SentinelCallerExclusionTests(FormalForwardingTests):
+    def sentinel_fixture(self):
+        instructions,request=self.guarded_fixture()
+        actual=next(r for r in instructions if r['offset']==203)
+        actual['name']='SCRIPT_OP_PUSH_LITERAL';actual['operands']=[operand(-1)]
+        next(r for r in instructions if r['offset']==410)['operands']=[operand(1),operand(0)]
+        next(r for r in instructions if r['offset']==411)['operands']=[operand(1)]
+        next(r for r in instructions if r['offset']==412)['name']='SCRIPT_OP_NOT_EQUAL'
+        for node in instructions:
+            if 412<=node['offset']<=421:node['offset']+=1
+            for edge in node['successors']:
+                if 412<=edge['offset']<=421:edge['offset']+=1
+            if node['name'] in ('SCRIPT_OP_JUMP','SCRIPT_OP_JUMP_IF_ZERO'):
+                for value in node['operands']:
+                    if 412<=value['value']<=421:value['value']+=1
+        next(r for r in instructions if r['offset']==411)['successors']=[dict(kind='fallthrough',offset=412)]
+        instructions.append(row(412,'NEGATE',successors=[('fallthrough',413)]))
+        return sorted(instructions,key=lambda r:r['offset']),request
+
+    def test_literal_sentinel_only_excludes_syntactic_inner_edge(self):
+        instructions,request=self.sentinel_fixture()
+        result=self.analyze(instructions,request)
+        upstream=result['formal_forwarding']['upstream_callers'][0]
+        self.assertEqual(upstream['status'],'unresolved_caller_relation')
+        self.assertEqual(upstream['arguments'][0]['value'],-1)
+        proof=upstream['conditional_sentinel_exclusion']
+        self.assertEqual(proof['sentinel_value'],-1)
+        self.assertEqual(proof['excluded_inner_call_offset'],417)
+        self.assertNotIn('conditional_cost_selectors',upstream)
+
+    def test_sentinel_arm_rejoins_inner_call_and_stale_contract_reject(self):
+        from unittest.mock import patch
+        instructions,request=self.sentinel_fixture()
+        next(r for r in instructions if r['offset']==421)['successors']=[dict(kind='fallthrough',offset=415)]
+        result=self.analyze(instructions,request)
+        self.assertNotIn('conditional_sentinel_exclusion',result['formal_forwarding']['upstream_callers'][0])
+        instructions,request=self.sentinel_fixture()
+        with patch('tools.script_decoder.paired_flow.vm_comparison_contract',return_value=dict(current=False,stale=['macro'])):
+            result=self.analyze(instructions,request)
+        self.assertNotIn('conditional_sentinel_exclusion',result['formal_forwarding']['upstream_callers'][0])
+
+    def test_sentinel_arm_redefines_formal_then_revisits_guard_rejects(self):
+        instructions,request=self.sentinel_fixture()
+        next(r for r in instructions if r['offset']==421)['successors']=[dict(kind='fallthrough',offset=430)]
+        instructions.extend([row(430,'STORE_VARIABLE',[operand(1),operand(0)],[('fallthrough',431)]),
+            row(431,'JUMP',[operand(410,2)],[('branch',410)])])
+        result=self.analyze(sorted(instructions,key=lambda r:r['offset']),request)
+        if 'formal_forwarding' in result:
+            self.assertNotIn('conditional_sentinel_exclusion',result['formal_forwarding']['upstream_callers'][0])
+
+    def test_wrong_literal_bypass_and_changed_formal_reject(self):
+        for change in ('literal','bypass','write','native'):
+            instructions,request=self.sentinel_fixture()
+            if change=='literal':next(r for r in instructions if r['offset']==203)['operands']=[operand(65535)]
+            else:
+                entry=next(r for r in instructions if r['offset']==400)
+                entry['successors']=[dict(kind='fallthrough',offset=401)]
+                if change=='bypass':
+                    instructions.extend([row(401,'PUSH_LITERAL',[operand(1)],[('fallthrough',402)]),row(402,'JUMP_IF_ZERO',[operand(415,2)],[('fallthrough',410),('branch',415)])])
+                elif change=='write':instructions.append(row(401,'STORE_VARIABLE',[operand(1),operand(0)],[('fallthrough',410)]))
+                else:instructions.append(row(401,'CALL_NATIVE',successors=[('resume_or_fallthrough',410)],native=dict(functions=['unknownCommand'])))
+            result=self.analyze(sorted(instructions,key=lambda r:r['offset']),request)
+            if 'formal_forwarding'in result:
+                self.assertNotIn('conditional_sentinel_exclusion',result['formal_forwarding']['upstream_callers'][0])
+
+
 if __name__ == '__main__':
     unittest.main()

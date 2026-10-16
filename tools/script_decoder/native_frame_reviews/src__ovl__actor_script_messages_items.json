@@ -842,7 +842,7 @@
       "preconditions": [
         "One numeric handle operand lies above all protected locals/frame metadata. Integer/code-reference payloads or finite s32-representable floats are supported; floats truncate toward zero.",
         "Actor, VM, value storage, initialized handle pool and borrowed object/private state are valid and nonoverlapping. Pool capacity is positive and its chains terminate. Unavailable handles include pending destruction and toolbox-owned items.",
-        "Kinds and category meanings remain separate domains. A live spinner requires the constructor-established four-byte speed state; its stored speed can be nonpositive even though the query then returns zero.",
+        "Kinds and category meanings remain separate domains. Runtime kind 0x82 returns spinner category five regardless of stored speed; this category query does not read the spinner private state.",
         "Only immediate one-operand replacement and read-only helper storage effects are reviewed. Lookup predecessor writes target C-stack storage. Later lifetimes, concurrent mutation, invalid state and retail reachability remain outside this contract."
       ]
     },

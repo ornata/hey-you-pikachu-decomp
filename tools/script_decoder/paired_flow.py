@@ -245,6 +245,98 @@ def annotate_costed_caller_relations(instructions, requests, policies, *, preser
                 scope='Dominating branch evidence about this mode coordinate; applies to the copied mode only under the separately validated unchanged-prefix conditions.'))
         return guards
 
+    def sentinel_exclusion(entry, target, formal_slot, expression):
+        if not comparison_contract['current'] or expression.get('kind') != 'integer' or type(expression.get('value')) is not int:
+            return None
+        argc, count, frame = frame_contract(entry)
+        if not 0 <= formal_slot < argc:
+            return None
+        coordinate = frame, formal_slot
+        def reaches(start, blocked):
+            pending, seen = [start], set()
+            while pending:
+                off = pending.pop()
+                if off == target:
+                    return True
+                if off == blocked or off in seen:
+                    continue
+                charge(); seen.add(off)
+                pending.extend(successors(by[off]))
+            return False
+        for index, load in enumerate(instructions):
+            if load['name'] != 'SCRIPT_OP_LOAD_VARIABLE' or coordinates(load) != coordinate:
+                continue
+            chain = instructions[index:index+5]
+            if len(chain) < 4 or chain[1]['name'] != 'SCRIPT_OP_PUSH_LITERAL':
+                continue
+            literal = integer_operand(chain[1]['operands'][0])
+            if chain[1]['operands'][0]['tag'] not in (0,2) or type(literal) is not int or not -2147483648 <= literal < 2147483648:
+                continue
+            if chain[2]['name'] == 'SCRIPT_OP_NEGATE':
+                if literal == -2147483648:
+                    continue
+                literal = -literal
+                compare, jump = chain[3:5]
+            else:
+                chain = chain[:4]
+                compare, jump = chain[2:4]
+            if literal != expression['value'] or compare['name'] not in ('SCRIPT_OP_EQUAL','SCRIPT_OP_NOT_EQUAL') or jump['name'] != 'SCRIPT_OP_JUMP_IF_ZERO':
+                continue
+            if any(incoming.get(right['offset'],set()) != {left['offset']} or successors(left) != [right['offset']] for left,right in zip(chain,chain[1:])):
+                continue
+            true = [e['offset'] for e in jump['successors'] if e['kind']=='fallthrough']
+            false = [e['offset'] for e in jump['successors'] if e['kind']=='branch']
+            if len(true)!=1 or len(false)!=1 or reaches(entry,jump['offset']):
+                continue
+            selected = true[0] if compare['name']=='SCRIPT_OP_EQUAL' else false[0]
+            other = false[0] if compare['name']=='SCRIPT_OP_EQUAL' else true[0]
+            if reaches(selected,jump['offset']) or not reaches(other,jump['offset']):
+                continue
+            # A sentinel arm that revisits the guard may redefine the formal
+            # before a later successful test; this is not a one-pass exclusion.
+            pending, visited = [selected], set()
+            guard_offsets = {r['offset'] for r in chain}
+            revisits_guard = False
+            while pending:
+                off = pending.pop()
+                if off in guard_offsets:
+                    revisits_guard = True
+                    break
+                if off in visited:
+                    continue
+                charge(); visited.add(off)
+                pending.extend(successors(by[off]))
+            if revisits_guard:
+                continue
+            pending, prefix, natives = [load['offset']], set(), set()
+            while pending:
+                off = pending.pop()
+                if off in prefix:
+                    continue
+                charge(); prefix.add(off)
+                row = by[off]
+                if off == entry:
+                    continue
+                if row['name'] not in KNOWN_OPERATIONS or row['name'] in ('SCRIPT_OP_ENTER_FRAME','SCRIPT_OP_STORE_ELEMENT','SCRIPT_OP_CALL'):
+                    raise ValueError('sentinel prefix has unproved effects or rebinding')
+                if row['name']=='SCRIPT_OP_STORE_VARIABLE':
+                    coords = coordinates(row)
+                    if coords==coordinate or not (coords[0]==frame and 0<=coords[1]<count or root_slot(coords)):
+                        raise ValueError('sentinel prefix overwrites formal or has unbounded writer')
+                if row['name']=='SCRIPT_OP_CALL_NATIVE':
+                    natives.add(native_safe(row))
+                if not predecessors.get(off):
+                    raise ValueError('sentinel prefix lacks a valid entry')
+                pending.extend(predecessors[off])
+            return dict(status='conditional_sentinel_exclusion', actual_expression=expression,
+                wrapper_entry=entry, excluded_inner_call_offset=target, formal_index=formal_slot,
+                sentinel_value=literal, load_offset=load['offset'], comparison_offset=compare['offset'],
+                branch_offset=jump['offset'], sentinel_branch_offset=selected,
+                prefix_instruction_offsets=sorted(prefix), preserved_native_functions=sorted(natives),
+                comparison_contract=comparison_contract,
+                scope='Only this syntactic wrapper-to-shared call edge is excluded for this exact integer actual, under stable program/VM/binding, valid nonaliasing physical frames and full reviewed native prerequisites. Off-branch descendant calls, reentry, scheduler effects and whole-wrapper behavior are outside the claim. No selector policy or producer pair is inferred.')
+        return None
+
     def non_cost_guard_evidence(call, formal_entry):
         if not comparison_contract['current']:
             raise ValueError('stale VM comparison contract: ' + str(comparison_contract['stale']))
@@ -317,6 +409,7 @@ def annotate_costed_caller_relations(instructions, requests, policies, *, preser
         return None
 
     def caller_relation(call, formal_entry, formal_index, mode_index, *, mode_override=None, forwarding_stack=()):
+        nonlocal work
         argc, _, _ = frame_contract(formal_entry)
         actual = arguments(call, argc)
         if not 0 <= formal_index < len(actual) or mode_index is not None and not 0 <= mode_index < len(actual):
@@ -416,6 +509,17 @@ def annotate_costed_caller_relations(instructions, requests, policies, *, preser
                         relation['arguments'] = arguments(outer, own_argc)
                     except ValueError as argument_error:
                         relation['argument_recovery_reason'] = str(argument_error)
+                prior_work = work
+                work = 0
+                try:
+                    actual_outer = relation['arguments'] if 'arguments' in relation else arguments(outer, own_argc)
+                    exclusion = sentinel_exclusion(own_entry, call['offset'], result['slot'], actual_outer[result['slot']])
+                    if exclusion is not None:
+                        relation['conditional_sentinel_exclusion'] = exclusion
+                except (ValueError, KeyError, IndexError) as error:
+                    relation['sentinel_exclusion_diagnostics'] = [str(error)]
+                finally:
+                    work = prior_work
                 upstream.append(relation)
             supported = any(relation['status'] in ('conditional_paired_caller_relation', 'conditional_formal_forwarding_relation')
                             for relation in upstream)

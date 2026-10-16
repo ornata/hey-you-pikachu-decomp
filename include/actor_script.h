@@ -15,6 +15,20 @@
 #include "motion_playback_types.h"
 #include "animation_tracks.h"
 
+/// Known resource policies selected by actor script costed-action requests.
+/// These selectors are distinct from timed-program and motion-action identifiers.
+/// VM operands retain signed 32-bit storage; this enum does not validate them.
+/// Skipping the resource check still charges the selected repetition cost.
+/// Failure programs identify authored variants, not guaranteed gameplay outcomes.
+typedef enum ActorCostedActionPolicy {
+    ACTOR_COSTED_ACTION_POLICY_THUNDER = 0,                     ///< Thunder with resource admission checked.
+    ACTOR_COSTED_ACTION_POLICY_THUNDERBOLT = 1,                 ///< Thunderbolt with resource admission checked.
+    ACTOR_COSTED_ACTION_POLICY_THUNDERSHOCK = 2,                ///< Thundershock with resource admission checked.
+    ACTOR_COSTED_ACTION_POLICY_THUNDER_SKIP_RESOURCE_CHECK = 3, ///< Thunder without the admission check; still charged.
+    ACTOR_COSTED_ACTION_POLICY_THUNDERBOLT_SKIP_RESOURCE_CHECK =
+        4 ///< Thunderbolt without the admission check; still charged.
+} ActorCostedActionPolicy;
+
 /// Root playback workspace whose active view follows the motion playback mode.
 /// Track mode borrows curve keys; pose-blend mode stores two consecutive transforms.
 /// The full cleared extent is known, but bytes beyond these views remain unresolved.

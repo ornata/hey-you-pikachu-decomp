@@ -28,31 +28,31 @@ VM_PRESERVATION_PINS = {'actorRunScriptVm': '530f60a11aa40eaf985ddaedf886236565d
  'scriptVmRestoreStackDepth': '331329708e1311d8c9a50d5219b71f580c6b6929c1f21c9dbd2727a29e4d7794',
  'scriptVmSaveReturnLocation': '30de7c1a3e2d94e03f05de97502aafc074ed973816f03a3799fcb80281bcfeb2',
  'scriptVmRestoreReturnLocation': 'acb1f757b44289cf068cf40f85c88f7515c54cac1f61e3b235528124b0333d41'}
-NATIVE_PRESERVATION_PINS = {'actorScriptSetMessengerContactMode': 'd4eaca70214bbc1f4afe08ab190ad5ebdc83a90507cbc284adddd6928f6496cd',
- 'actorScriptAdjustPikachuSecondaryMeter': '28152370080c8f5f6b4cc01831d3e1283448ae2c69a459fb4400e628a365e2a5',
- 'actorScriptCreateAttachedEffect': 'c9ddac62038f577113d09ea8fa22ecd7867f1b2cf34e3bb7f4cddbda1d979f9c',
+NATIVE_PRESERVATION_PINS = {'actorScriptSetMessengerContactMode': '154619c961ec788ce94a56e35ae5b03072e1b06af3798c031f7cd44f97cab678',
+ 'actorScriptAdjustPikachuSecondaryMeter': '508500968db6eb0ddded3bebd199ffb34cded9493c476ac8bcccdb2132c3d8ee',
+ 'actorScriptCreateAttachedEffect': '8eb6a64516eef7448bc1d6598256ebafe45174602c3bdbf819835f3c930f62e5',
  'actorScriptPushDefaultActionMode': '904c7ebf3040ebbe3d82ceebdcf23d666d256c7c165ae8c056421834cd544974',
  'actorScriptYield': 'a32e41ad6f38946c8b93e4a70a50e6600499bea62a2a82c22900dc39e298d3dc',
  'actorScriptPushActionScriptStopped': '70c8afa259805820e65a4d63d8bb695ed5805e4efec59642dd201cc8ddd60e04',
  'actorScriptStartLoopExitAndWait': '0640615d314d7f1c6e5580040874db372aaf0318f2e39cccc3176f6c98ff7e17',
  'actorScriptRandomBelow': '45206f67a57091cbca5b17b2e640a6618c518b8c7461fc7899614bf7630e4a8f',
  'actorScriptTrackObject': '19a800aa635ba4055d743c23261c202bc2c51ea2f359ac39cfe62916fed5cc91',
- 'actorScriptSetDefaultActionMode': '07eb0f22f922eca790f2a8fb24d7ca6ddd6a054b9e3e48e2f7498e6493db392e',
- 'actorScriptStartActionScript': '934593cea28da10f36980e6c541238b6d0d98949e20645d69d80fdf2cf99ed8e',
- 'actorScriptStartActionWithMode': 'f394029c3988187cf97e019fe4d595025ef0dfc0bec7bf6de1acf6a54bc8d614',
+ 'actorScriptSetDefaultActionMode': 'd85106b4014f3d3479b2b85e8d31df59ae2041eec102cecffabe969344413e7e',
+ 'actorScriptStartActionScript': 'ca1bf9cc19f0b6e9ac92d440ad5f01a61c2931c778ac4b60037bf7df8f53e3cf',
+ 'actorScriptStartActionWithMode': '16d2404b8d08d4d5cdf2dda73eeeee99b3ec661963c411af59b02e03b9b77e03',
  'actorScriptSetSoundEffectPan': '75cc7ce489489830735fb52daf3f1280f0b2702e4d12fcef6abdd53339dc4323',
  'actorScriptSetSoundEffectVolume': 'fc2c3a2fb242129474473071f8642cbb6a134db72844cd0289516e08a36b3b1f',
  'actorScriptPlaySoundEffect': '2fe7df18adaa43193bb0eaaf1a30c1e337ebcda52c29fdd0550e466c955e41d4',
  'actorScriptPushInteractionCandidate': 'ecc2c4a2e028d78d5884071295b6d2294a276931481c369c1183024dcdeebf49',
- 'actorScriptSetHudGuideStyle': 'b22055ece492a7e9596dcfab7073e65f6f371e3ca75a2d386825df802593fbb2',
- 'actorScriptStartActionAndWait': 'f0176ef2bd0ba80b0e117e19cf60a187481f6697ff997ce943bcd8e3ea120a11',
- 'actorScriptSetHorizontalMovementSuppressed': '6b40f43eb64fada65913ea90e68a7d25e53e1a382c5a045dfe3eab33fc349c46',
- 'actorScriptSetDestination': 'b5d87400e9fdee392b1a9ff79c0a8f779e9ac60647d28de5881468b4e8762915',
+ 'actorScriptSetHudGuideStyle': 'c2df9a1154e8b680907605d060330c9aba08ccb766f31839414027e594ca3e23',
+ 'actorScriptStartActionAndWait': 'd247a9fcc4bcfcb560c15a6f1120fcd4c98f0c37f1371d853460461d531397be',
+ 'actorScriptSetHorizontalMovementSuppressed': '6b88050c5d9f1de249106804c039818c6044ae8ae223580666553aa4011f4754',
+ 'actorScriptSetDestination': '0efa9a6f31532e65c922655116ca39757cef83498e3e0601ae7fadc08ce002c9',
  'actorScriptGetActorKind': '3aac60e3bdcdcb61153ac107a12540bff1511efd9bcdc1db6070a4e06b8c5d57',
- 'actorScriptStopActionScript': '0a375212619f38a1c1871f8197b4508abefdfd643f9f4159d0c277ad37d107a3',
+ 'actorScriptStopActionScript': 'b0316df61feddcc345e7e5bfc7304eb3fe683eb6dbed8445f4e2493637f6d070',
  'actorScriptGetItemKind': '3d9d842249982c2b8848170a8030dc70c208c513cf0fd8cd28bd6b9edac8f88a',
  'actorScriptGetObjectDistance': '16f67058c70921bd63c1950aa3415f2fdd74bda24cd4dec566cf3fd0ee55b161',
- 'actorScriptFindItemInFacingCone': 'd8e9f34a88ce190a7bee5839360fe498672c3eb62ec2df4b7eee49c3057578b1',
+ 'actorScriptFindItemInFacingCone': '96aa52980803a136149779f6e2fc2dd08fe7408cce05be27738833c3f4bd46c4',
  'actorScriptTrackPlayerPrimaryObject': 'd00e68a3517f8f0631050f1d302ea605c983f4af330dcb7ad4ecdf73de6ea77d',
  'actorScriptPushTrackingMode': '0ad1b4b9fe05cfb50e2931e7301900cf03b1845696a24292b2d07b218587d902',
  'actorScriptTrackPlayerSecondaryObject': 'e145f1c77aed4a134191e5c384e04a81871d9f2267b3bf6b7ccfc5409f166fbe',
@@ -60,13 +60,20 @@ NATIVE_PRESERVATION_PINS = {'actorScriptSetMessengerContactMode': 'd4eaca70214bb
  'actorScriptGetObjectType': '284eb9bfb1fd26c6ce238945ccba2f56be3b58b79c5a8d0fd4f69439380c937b',
  'actorScriptPushTotalElapsedTime': '554fe92f02256193649ee7f2e71141a68a5c3f4b5c39977d5afae6a7fbbd3e89',
  'actorScriptPushTargetApproachDistance': '117f9156e3e996b2e05ca2b2957f4bb7fb9cefdbbb67d9b10c13c66c665245b1',
- 'actorScriptGetItemState': '43a248fe3a7b2fdca33942e0c1bf9a7f010d777c3d8bc3d5e5eeef2869138132',
- 'actorScriptStartTimedAction': '3ef0e8c079957b0384aef5f3db35c025b9ad8481b0c02f90885e3cbd8bde37ef',
+ 'actorScriptGetItemState': '4272fc02bf1ff19994c1e117422c9e4a41bd438d31b4196f7ec95d5277121c60',
+ 'actorScriptStartTimedAction': 'cb8456013eba7ede23b80263b1ce282e5c0f5c8a875dd259cfb4cf73dd85ea7b',
  'actorScriptGetTargetCoordinate': '54ae646b94cbc82d1f6a23642bf31c1cb718f212f569a092f1afa64bbcf174c1',
  'actorScriptGetGroundHeightAtPosition': '5311b7e0f4e771685d0f0cfee76afe964bf4fc36a7c545a76fa9f171b732ffb9',
- 'actorScriptPushTargetHandle': '92bd31f1f81922ec60513a87725a1a96f428d11a5dec1beb1b94ebcc62487806'}
+ 'actorScriptPushTargetHandle': '92bd31f1f81922ec60513a87725a1a96f428d11a5dec1beb1b94ebcc62487806',
+ 'actorScriptPushTargetDistanceAllowance': '44b1b5ffd9da55399f98ab1a0dfb68b72e7eec0754913ab93c0c75da000f625e',
+ 'actorScriptGetBoundingRadius': '904e0e80b802309de14fdac4c9d4cc31d3ec958ea5229c6fc238bbceca520dc3',
+ 'actorScriptEnqueueMessage': 'd91e1ee8e36b31072b79a75d379408f2bf869048a42ee41ccb7b639a7b552026',
+ 'actorScriptGetObjectPlayerDistance': '3de44ca0fdd37ea0c338ac4d326e779d12f58e16d21cf708f673f1e611feec2b',
+ 'actorScriptStartInterruptibleAction': '16760ccb5f869e14d41080dfc894dc1e09fedcc8c5595f950689a5cb5d77bfa7',
+ 'actorScriptGetObjectCategory': '71edf0390b875c4d76e1c4565f347ac8f439b267fcc9447957feb3c8d0475f34'}
 LOOP_EXIT_DEFERRED_PIN = '687dd86d8dd2376c3f9d03d05ac4e12b2177dcebb5f682a77634a603ef1c3957'
-ACTION_WAIT_DEFERRED_PIN = 'e8613a3379d10ed695e93d742c6cd8c0e22077a87dfed973fe7485e5ae7e4865'
+ACTION_WAIT_DEFERRED_PIN = 'c8d17f8871c84d10b8bb2dc43ac472cd8b725bed62be229c52ba7b71936e0eda'
+INTERRUPTIBLE_DEFERRED_PIN = 'bd669454f7687914c813e2c773c4ea6006b043cd525b0dbda32a8d57ac776bb1'
 
 
 
@@ -122,15 +129,16 @@ def local_preservation_contracts(reviews, root=ROOT):
             stale_vm.append(name)
     def digest(value):
         return hashlib.sha256(json.dumps(value, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
+    deferred_pins = {'actorScriptStartLoopExitAndWait': LOOP_EXIT_DEFERRED_PIN,
+                     'actorScriptStartActionAndWait': ACTION_WAIT_DEFERRED_PIN,
+                     'actorScriptStartInterruptibleAction': INTERRUPTIBLE_DEFERRED_PIN}
     names, stale = [], []
     for name, expected in NATIVE_PRESERVATION_PINS.items():
         if name not in reviews['active'] or digest(reviews['active'][name]) != expected:
             stale.append(name)
             continue
-        if name == 'actorScriptStartLoopExitAndWait' and digest(reviews['active_deferred'].get(name)) != LOOP_EXIT_DEFERRED_PIN:
-            stale.append(name)
-            continue
-        if name == 'actorScriptStartActionAndWait' and digest(reviews['active_deferred'].get(name)) != ACTION_WAIT_DEFERRED_PIN:
+        expected_deferred = deferred_pins.get(name)
+        if expected_deferred is not None and digest(reviews['active_deferred'].get(name)) != expected_deferred:
             stale.append(name)
             continue
         names.append(name)
@@ -139,6 +147,7 @@ def local_preservation_contracts(reviews, root=ROOT):
                 native_review_sha256=NATIVE_PRESERVATION_PINS,
                 deferred_loop_exit_review_sha256=LOOP_EXIT_DEFERRED_PIN,
                 deferred_action_wait_review_sha256=ACTION_WAIT_DEFERRED_PIN,
+                deferred_interruptible_review_sha256=INTERRUPTIBLE_DEFERRED_PIN,
                 vm_source_pins=VM_PRESERVATION_PINS,
                 scope='Only these exact source-bound native footprints under their full per-row prerequisites; not a general active-native preservation claim or runtime frame-lifetime proof.')
 

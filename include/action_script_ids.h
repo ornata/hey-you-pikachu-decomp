@@ -8,10 +8,17 @@
 /// These are distinct from the motion-action IDs requested by program commands.
 /// Names describe roles supported by retained motion debug labels; this is not
 /// an exhaustive list of valid programs or a claim of rendered-animation validation.
+/// Failure names identify authored variants and do not guarantee gameplay outcomes.
 typedef enum ActionScriptId {
     ACTION_SCRIPT_NO_PROGRAM = -1, ///< Select no timed commands while preserving independent motion playback.
     ACTION_SCRIPT_TURN_TO_DESIRED_HEADING = 17,       ///< Turn toward the requested heading.
     ACTION_SCRIPT_LOOK_AROUND = 168,                  ///< Look around the actor's surroundings.
+    ACTION_SCRIPT_THUNDER = 212,                      ///< Thunder timed program.
+    ACTION_SCRIPT_THUNDER_FAILURE = 213,              ///< Thunder timed program failure variant.
+    ACTION_SCRIPT_THUNDERBOLT = 214,                  ///< Thunderbolt timed program.
+    ACTION_SCRIPT_THUNDERBOLT_FAILURE = 215,          ///< Thunderbolt timed program failure variant.
+    ACTION_SCRIPT_THUNDERSHOCK = 216,                 ///< Thundershock timed program.
+    ACTION_SCRIPT_THUNDERSHOCK_FAILURE = 217,         ///< Thundershock timed program failure variant.
     ACTION_SCRIPT_FACE_DESTINATION_UNDERGROUND = 358, ///< Face the destination while underground.
     ACTION_SCRIPT_MOVE_TO_DESTINATION = 365           ///< Move toward the destination.
 } ActionScriptId;

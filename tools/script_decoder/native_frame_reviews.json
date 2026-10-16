@@ -222,7 +222,7 @@
     "file:include/action_script_ids.h": {
       "kind": "file",
       "file": "include/action_script_ids.h",
-      "sha256": "444367ac3e76e056f62a750dafbe871388cfb5b1e056f11248ba00605c1e4544"
+      "sha256": "e65509836f3618f2b9f67423b4a42cd3a661865db9b9ba0e963be2c92e65d330"
     },
     "file:include/action_script_playback.h": {
       "kind": "file",
@@ -322,7 +322,7 @@
     "file:include/actor_script.h": {
       "kind": "file",
       "file": "include/actor_script.h",
-      "sha256": "08d5700e726edb89ab34b5ac41af403b2dfc4afbfb1ba68c3365059d5e735883"
+      "sha256": "b35b0c9ae80929cf2c8abafe678b8b52d3386be97c8c4fada69d9bdbe351640e"
     },
     "file:include/actor_script_action.h": {
       "kind": "file",
@@ -4312,7 +4312,7 @@
     },
     {
       "file": "native_frame_reviews/src__ovl__actor_script_messages_items.json",
-      "sha256": "4495ddd945d228f7cb99c0d7d1f153e19b73a2525d26ee54a92fa8bb87a9607a"
+      "sha256": "8c37204f350db238493c46cda122674819ccb68110daf6aa1deb34339cdc8401"
     },
     {
       "file": "native_frame_reviews/src__ovl__actor_script_player_world.json",

@@ -1033,12 +1033,29 @@ need not execute, return or complete its requested action. Response eighteen wit
 profile key 76 has a separate route before ordinary dispatch. Codes twenty-four
 and twenty-five remain unresolved.
 
-Eating requests reference timed programs 105, 106 and 107. Costed actions instead
-use a separate five-entry policy table: a constant cost selector links to both
-referenced timed programs, with the possible outcome depending on the resource
-check. Selectors zero and one can choose programs 212/213 and 214/215 respectively.
-Dynamic selectors remain unresolved. Timed program identifiers, motion identifiers
-and cost selectors belong to different domains.
+Eating requests reference timed programs 105, 106 and 107. Costed electric moves
+use the five retained [ActorCostedActionPolicy](../include/actor_script.h) selectors:
+
+| Policy | Move | Referenced program / insufficient variant | Cost per repetition | Admission check |
+| --- | --- | --- | --- | --- |
+| 0 | Thunder | 212 / 213 | 60 | Enabled |
+| 1 | Thunderbolt | 214 / 215 | 30 | Enabled |
+| 2 | Thundershock | 216 / 217 | 5 | Enabled |
+| 3 | Thunder | 212 / 213 | 60 | Skipped |
+| 4 | Thunderbolt | 214 / 215 | 30 | Skipped |
+
+The voice mailbox maps command eleven to policy two, twelve to one, and thirteen
+to zero. These match the retained timed programs and their motion debug identities.
+[Timed-program IDs](../include/action_script_ids.h) 212/213 request
+[motion-action IDs](../include/motion_action_ids.h) 18/19; the corresponding pairs
+are 214/215 to 20/21 and 216/217 to 22/23. The failure names identify retained
+resource variants; they do not certify rendered effects or damage.
+
+Skipped admission checks still charge resource and do not select the insufficient
+variant. This establishes electric-move identities, without identifying the
+resource meter's broader gameplay meaning. A dynamic selector keeps its original
+expression and any separately supported conditional relationships. Policy,
+timed-program and motion-action identifiers remain distinct domains.
 
 Each configuration's `costed_action_requests` lists the cost selector and repetition
 expressions separately from timed-program requests. The shared
@@ -1127,6 +1144,14 @@ and absolute tolerance of 0.001; it is not exact equality. For unchanged finite
 numeric modes, the equality region around six remains separate from those around
 other integer literals. Stale comparison or layout evidence suppresses this guard
 annotation. Nonnumeric values and NaNs are outside the admitted model.
+
+`conditional_sentinel_exclusion` records a separate wrapper guard for a specific
+integer actual. In Viridian Deep, a caller passes minus one and the wrapper skips
+its direct call to the shared action dispatcher. The alternate branch still sends
+a message, updates script state and invokes other helpers. The annotation covers
+that single wrapper-to-dispatcher edge; the raw literal and unresolved policy
+status remain visible. A changed formal, guard bypass or guard revisit prevents
+the exclusion proof.
 
 Throw and acquisition requests also expose their timed-program operands in
 `native_action_calls`. Throw consumes one program operand when its deferred
