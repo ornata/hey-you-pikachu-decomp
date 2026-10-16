@@ -433,13 +433,13 @@ s32 actorScriptPushMessengerHandle(u8 *actor) {
 /// \note Original decompilation identifier: \c func_801202A8 (0x801202A8).
 s32 actorScriptAddProgressValue(u8 *actor) {
     s32 vmAddress;
-    s32 sp24;
-    s32 sp1C;
+    s32 vmAddressCopy;
+    s32 delta;
 
     vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    sp24 = vmAddress;
-    sp1C = scriptVmPopInteger((ScriptVm *)(vmAddress));
-    scriptVmPushInteger((ScriptVm *)(vmAddress), progressAddValue(scriptVmPopInteger((ScriptVm *)(vmAddress)), sp1C));
+    vmAddressCopy = vmAddress;
+    delta = scriptVmPopInteger((ScriptVm *)(vmAddress));
+    scriptVmPushInteger((ScriptVm *)(vmAddress), progressAddValue(scriptVmPopInteger((ScriptVm *)(vmAddress)), delta));
     return 0;
 }
 
@@ -449,13 +449,14 @@ s32 actorScriptAddProgressValue(u8 *actor) {
 /// \note Original decompilation identifier: \c func_801202F8 (0x801202F8).
 s32 actorScriptSetProgressValue(u8 *actor) {
     s32 vmAddress;
-    s32 sp24;
-    s32 sp1C;
+    s32 vmAddressCopy;
+    s32 requestedValue;
 
     vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    sp24 = vmAddress;
-    sp1C = scriptVmPopInteger((ScriptVm *)(vmAddress));
-    scriptVmPushInteger((ScriptVm *)(vmAddress), progressSetValue(scriptVmPopInteger((ScriptVm *)(vmAddress)), sp1C));
+    vmAddressCopy = vmAddress;
+    requestedValue = scriptVmPopInteger((ScriptVm *)(vmAddress));
+    scriptVmPushInteger((ScriptVm *)(vmAddress),
+                        progressSetValue(scriptVmPopInteger((ScriptVm *)(vmAddress)), requestedValue));
     return 0;
 }
 
@@ -464,10 +465,10 @@ s32 actorScriptSetProgressValue(u8 *actor) {
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_80120348 (0x80120348).
 s32 actorScriptGetProgressValue(u8 *actor) {
-    s32 sp1C;
+    s32 vmAddress;
 
-    sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    scriptVmPushInteger((ScriptVm *)(sp1C), progressGetValue(scriptVmPopInteger((ScriptVm *)(sp1C))));
+    vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    scriptVmPushInteger((ScriptVm *)(vmAddress), progressGetValue(scriptVmPopInteger((ScriptVm *)(vmAddress))));
     return 0;
 }
 

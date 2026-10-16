@@ -2743,7 +2743,7 @@ unknown until supplied by a valid runtime state. Indexed loads, arithmetic and
 native-produced values are outside this analysis. Storage, frame binding and
 preservation conditions remain explicit obligations.
 
-Source-bound argument roles label original push order for 18 reviewed natives.
+Source-bound argument roles label original push order for 21 reviewed natives.
 Integer/float labels identify their numeric pop operations, without asserting a
 converted result or a successful effect. In particular, destination allowance is
 not speed, and `PostMessage` synthesizes argument1 rather than consuming it.
@@ -2827,3 +2827,47 @@ The helper does not validate the point index or reject the coordinate reader's
 The search uses shared query/tree state, so recognition establishes neither
 purity nor safe concurrent calls. Native, frame, scratch-storage and borrowed
 handle lifetime conditions remain explicit in each source-bound contract.
+
+### Indexed name selection and fishing records
+
+`name_selection_roles` describes the bedroom activity's shared root storage.
+Its initializer uses a root counter and fills one array with selected Pokémon-name
+catalog indices (0–152), and another with random integers (0–7). Three setup
+recipes obtain count ten, reset the current-entry index and request initialization.
+For those recipes the arrays occupy root slots 143–152 and 153–162. One indexed
+read captures a name index into slot 108 before its dictionary-group lookup;
+that role applies only to this write epoch because slot 108 has other writers.
+
+The initializer also changes name-selection history and the RNG. Its returning
+result is integer zero; rejection sampling does not promise termination for every
+state. Recognition does not prove that initialization reaches every read, that
+indices stay in range through waits, or that every storage region is physically
+nonoverlapping. These observations remain separate from admitted caller-source
+provenance.
+
+`fishing_record_helper_roles` recognizes three species-record classifiers. Each
+scans fifteen species entries and reads saved field 138 plus the matching index.
+It compares an integer-converted measurement with the prior record; equality
+qualifies. A qualifying value is submitted to the clamping progress setter, whose
+returned stored value is discarded. The threshold test and diagnostic text use
+the original measurement box, so a floating input follows the original VM's
+comparison semantics rather than an integer-only test.
+
+The possible returning codes are:
+
+- `100 + index` when the species and prior-record tests qualify and the original
+  boxed measurement passes the authored threshold test.
+- `index` below that threshold when a prior record is nonzero.
+- `-2` below that threshold when the prior record is zero.
+- `-1` when no species/record qualifies.
+
+Three separate indexed-source observations link per-catch array reads to these
+helpers. They do not establish array capacity, initialization, index bounds or
+safety across the known root-restart behavior.
+
+The three message producers derive their submitted measurement from their own
+object's current bounding radius: a single-precision multiply by 50, then a
+single-precision divide by 3, followed by signed integer conversion. This is a
+scaled radius-derived measure; no independent centimeter unit or universal range
+has been established. The receiving argument getter boxes the message word as an
+integer. Saved record names do not supply an additional units proof.

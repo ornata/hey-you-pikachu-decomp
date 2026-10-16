@@ -3924,7 +3924,7 @@
     {
       "function": "actorScriptAddProgressValue",
       "file": "src/ovl/actor_script_collection_profile.c",
-      "sha256": "41aa4b0b770d3af742754bd5af2c62c366d4d30feff36b5772558e93001ffd15",
+      "sha256": "e76257cdeb60315311c570c5b99b6e30339dea3886b87c2e654aa495d52ad40e",
       "effect": "replace_arguments_with_scalar",
       "arguments": 2,
       "stack_delta": -1,
@@ -3959,7 +3959,7 @@
     {
       "function": "actorScriptSetProgressValue",
       "file": "src/ovl/actor_script_collection_profile.c",
-      "sha256": "aed38df6d37839a6b8ebe41c8e63428db634547b73a8d159b423b488fb14a2b7",
+      "sha256": "e1a669368c776e8e9cfdf49fec50740a34f56dba99e9d5b5e2df4a8aa3902e89",
       "effect": "replace_arguments_with_scalar",
       "arguments": 2,
       "stack_delta": -1,
@@ -4337,7 +4337,7 @@
     {
       "function": "actorScriptGetProgressValue",
       "file": "src/ovl/actor_script_collection_profile.c",
-      "sha256": "97afcc20c59fe80d76cffd3d74914e1c90a35b9f606c28665272e092c074e246",
+      "sha256": "97302847b238cdd7047ac9ce6e54d7f2c7aacdbc165dbbc994492c3f5975e102",
       "effect": "replace_argument_with_scalar",
       "arguments": 1,
       "stack_delta": 0,
