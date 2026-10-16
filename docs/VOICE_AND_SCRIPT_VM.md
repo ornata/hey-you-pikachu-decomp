@@ -678,6 +678,28 @@ slices verify the four rates, resource ownership and HUD effects; earlier gamepl
 callbacks are outside those slices. A 2,048-row status enumeration is a separate
 host check, not 2,048 emulator runs.
 
+Motion definitions link their initializer and update callback addresses to the
+functions in the selected resident sections. Null callbacks remain explicit.
+These are resource links, not evidence that a callback ran or accepted an action.
+They let readers follow a timed program through its motion record into the
+movement behavior that supplies its completion and continuation rules.
+
+The arrival callbacks share `ActorScriptState.targetDistanceAllowance`; the old
+private `MovementState.radius` view did not identify a separate physical radius.
+The three-dimensional approach compares full distance with one plus the
+allowance. The scene-bounds approach first clamps target X/Z and replaces its Y
+with the actor world Y before comparing. Equality does not satisfy either strict
+arrival check. Other movement callbacks also use collision width, so the three
+quantities must not be merged. Ten original entry-to-arrival-branch probes confirm
+these thresholds and storage distinctions; later movement and callback completion
+remain outside those prefixes.
+
+Four collision-width loads retain float byte views at the named member's offset.
+Isolated direct-member trials change generated code, while the member-offset views
+and other shared-field conversions preserve the strict object comparison. The
+maze byte-view exception belongs to `actorApproachTargetWithinSceneBounds`, which
+owns those bounds accesses.
+
 The decoder's `pose_transitions` reconstructs the initialized pose map from
 sentinel-bounded explicit records and the 330 action definitions. Keys pair the
 current source pose with the requested initial pose. Explicit entries take

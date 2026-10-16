@@ -51,8 +51,8 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 817,
-      "unique_spellings": 449,
+      "occurrences": 773,
+      "unique_spellings": 430,
       "files": 65
     },
     "cast_offset_candidates": {
@@ -533,170 +533,86 @@
         "vector_operations.h"
       ],
       "matching_exceptions": {
-        "actorApproachTargetInThreeDimensions": "The shared maze root is MazeNode*. Bounds reads at checked MazeNode x/w/z/d offsets retain explicit byte views: direct member reads change allocated instructions under IDO. The canonical root ownership and allocation are established; a matching direct-field representation remains to be recovered.",
-        "actorAdvanceToTarget": "Adopting the established RuntimeObjectPrefix and ActorScriptState scalar members together in this callback changes allocated instructions and fails the ROM gate. Other movement callbacks accept these views. Retain this callback's byte accesses; isolate the individual field conversion and IDO load/address ordering before replacing it. Layout meaning is established, but a matching representation remains unresolved.",
-        "actorTumbleTowardTarget": "Adopting the established RuntimeObjectPrefix and ActorScriptState scalar members together in this callback changes allocated instructions and fails the ROM gate. Other movement callbacks accept these views. Retain this callback's byte accesses; isolate the individual field conversion and IDO load/address ordering before replacing it. Layout meaning is established, but a matching representation remains unresolved.",
-        "actorApproachTargetWithSlowScaleOscillation": "Adopting the established RuntimeObjectPrefix and ActorScriptState scalar members together in this callback changes allocated instructions and fails the ROM gate. Other movement callbacks accept these views. Retain this callback's byte accesses; isolate the individual field conversion and IDO load/address ordering before replacing it. Layout meaning is established, but a matching representation remains unresolved.",
-        "actorCheckTrackedTargetArrival": "Adopting the established RuntimeObjectPrefix and ActorScriptState scalar members together in this callback changes allocated instructions and fails the ROM gate. Other movement callbacks accept these views. Retain this callback's byte accesses; isolate the individual field conversion and IDO load/address ordering before replacing it. Layout meaning is established, but a matching representation remains unresolved."
+        "actorAdvanceToTarget": "Isolated conversions establish that the collisionWidth direct-member load changes IDO output in this callback; its member-offset float byte view matches the unchanged ROM and strict object baseline. The other established RuntimeObjectPrefix and ActorScriptState views now match individually and cumulatively. Preserve the collisionWidth byte access domain when investigating IDO alias/load scheduling; the field meaning is established.",
+        "actorTumbleTowardTarget": "Isolated conversions establish that the collisionWidth direct-member load changes IDO output in this callback; its member-offset float byte view matches the unchanged ROM and strict object baseline. The other established RuntimeObjectPrefix and ActorScriptState views now match individually and cumulatively. Preserve the collisionWidth byte access domain when investigating IDO alias/load scheduling; the field meaning is established.",
+        "actorApproachTargetWithSlowScaleOscillation": "Isolated conversions establish that the collisionWidth direct-member load changes IDO output in this callback; its member-offset float byte view matches the unchanged ROM and strict object baseline. The other established RuntimeObjectPrefix and ActorScriptState views now match individually and cumulatively. Preserve the collisionWidth byte access domain when investigating IDO alias/load scheduling; the field meaning is established.",
+        "actorCheckTrackedTargetArrival": "Isolated conversions establish that the collisionWidth direct-member load changes IDO output in this callback; its member-offset float byte view matches the unchanged ROM and strict object baseline. The other established RuntimeObjectPrefix and ActorScriptState views now match individually and cumulatively. Preserve the collisionWidth byte access domain when investigating IDO alias/load scheduling; the field meaning is established.",
+        "actorApproachTargetWithinSceneBounds": "The shared maze root is MazeNode*. Bounds reads at checked MazeNode x/w/z/d offsets retain explicit byte views: direct member reads change allocated instructions under IDO. The canonical root ownership and allocation are established; a matching direct-field representation remains to be recovered."
       },
       "locations": {
         "raw_offset_candidates": {
-          "obj + 0x138": [
-            "74:18"
-          ],
-          "obj + 0x1DC": [
-            "77:22"
-          ],
           "roll - 15": [
-            "157:47"
-          ],
-          "obj + 0x1EA": [
-            "235:18",
-            "551:91",
-            "982:18",
-            "1187:89",
-            "1218:85",
-            "1261:18"
-          ],
-          "actorState + 0x1EA": [
-            "455:18"
-          ],
-          "actorState + 0x11C": [
-            "483:35"
+            "159:47"
           ],
           "object + 0x44": [
-            "526:24"
+            "528:24"
           ],
           "state + 0x1EC": [
-            "527:22",
-            "657:29"
-          ],
-          "actor + 0x54": [
-            "545:20",
-            "639:26",
-            "1181:20",
-            "1253:20"
-          ],
-          "obj + 0x1EC": [
-            "548:23",
-            "1184:21",
-            "1255:21"
-          ],
-          "actor + 0x44": [
-            "548:47",
-            "657:55",
-            "1184:45",
-            "1255:45"
-          ],
-          "obj + 0x1F4": [
-            "550:23",
-            "1186:21",
-            "1257:21"
-          ],
-          "actor + 0x4C": [
-            "550:47",
-            "659:55",
-            "1186:45",
-            "1257:45"
-          ],
-          "obj + 0x1A4": [
-            "551:40",
-            "1187:38",
-            "1258:37"
-          ],
-          "obj + 0x204": [
-            "551:64",
-            "1187:62",
-            "1258:61"
-          ],
-          "state + 0xC": [
-            "649:26",
-            "649:51"
-          ],
-          "actor + 0x1C": [
-            "652:14"
-          ],
-          "state + 0x1F4": [
-            "659:29"
-          ],
-          "state + 0x1A4": [
-            "661:30"
-          ],
-          "state + 0x204": [
-            "661:56"
+            "529:22"
           ],
           "actor + 4": [
-            "752:18",
-            "1055:14"
+            "757:18",
+            "1056:14"
           ],
           "object + 4": [
             "881:39"
           ],
           "object + 8": [
             "882:35",
-            "949:35"
+            "950:35"
           ],
           "gAreaMazeRoot + 8": [
-            "904:73",
             "905:73",
-            "907:70",
-            "909:67"
+            "906:73",
+            "908:70",
+            "910:67"
           ],
           "gAreaMazeRoot + 0x14": [
-            "907:31",
-            "909:28"
+            "908:31",
+            "910:28"
           ],
           "gAreaMazeRoot + 0x10": [
-            "912:73",
             "913:73",
-            "915:70",
-            "917:67"
+            "914:73",
+            "916:70",
+            "918:67"
           ],
           "gAreaMazeRoot + 0x1C": [
-            "915:31",
-            "917:28"
+            "916:31",
+            "918:28"
           ],
           "y + 10": [
-            "1024:55"
+            "1025:55"
           ],
           "y + 11": [
-            "1041:51"
+            "1042:51"
           ],
           "actor + 0": [
-            "1055:36"
+            "1056:36"
           ],
           "pulseAngle + 210": [
-            "1080:82"
+            "1081:82"
           ],
           "pulseAngle + 40": [
-            "1083:54",
-            "1124:56"
+            "1084:54",
+            "1125:56"
           ],
           "sampleAngle + 210": [
-            "1122:62"
-          ],
-          "attachment + 0x36": [
-            "1314:18"
+            "1123:62"
           ],
           "attachment + 0x3C": [
-            "1319:32"
-          ],
-          "object + 0x2C": [
-            "1330:34"
-          ],
-          "part + 0x2C": [
-            "1332:29"
+            "1324:32"
           ],
           "partState + 4": [
-            "1335:22"
+            "1340:22"
           ]
         },
         "cast_offset_candidates": {
           "((f32 *)actor) + 0x54": [
-            "1071:26"
+            "1072:26"
           ],
           "((f32 *)object) + 0x54": [
-            "1106:28"
+            "1107:28"
           ]
         }
       }

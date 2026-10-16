@@ -93,6 +93,8 @@ def motion_definition_metadata(raw, attributes, modes, meter_policies=None, scri
                 motion_archive_id=struct.unpack_from('>h', raw, 16)[0],
                 initial_pose_id=raw[18], final_pose_id=raw[19],
                 continuation_action_id=struct.unpack_from('>h', raw, 20)[0],
+                initializer_address=struct.unpack_from('>I', raw, 28)[0],
+                update_address=struct.unpack_from('>I', raw, 32)[0],
                 scope='Original resource fields and recovered attribute meanings; unknown bits are retained. No playback, callback or transition completion is implied.')
     if meter_mask:
         policy = word & meter_mask
@@ -181,10 +183,14 @@ def action_resources(image, identifiers, record_limit=4096):
                     name.extend(byte)
                 else:
                     raise ValueError('motion debug label exceeds its bounded read')
+                metadata = motion_definition_metadata(definition, attributes, modes, meter_policies, script_flags, identities)
+                for role in ('initializer', 'update'):
+                    target = metadata[role + '_address']
+                    metadata[role + '_functions'] = image.functions(target) if target else []
                 motions.append(dict(command_offset=command['offset'], motion_action_id=motion,
                                     debug_label=name.decode('euc_jp'), debug_label_bytes=name.hex(),
                                     definition_address=definitions[1] + motion * 44,
-                                    definition=motion_definition_metadata(definition, attributes, modes, meter_policies, script_flags, identities),
+                                    definition=metadata,
                                     requested_kind=command['arguments'][1],
                                     inherits_default_kind=command['arguments'][1] == 18))
             row.update(status='decoded' if not decoded['diagnostics'] else 'unresolved',
