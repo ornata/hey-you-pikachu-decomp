@@ -2986,6 +2986,57 @@
       ],
       "evidence": "Original Ghidra 0x8011DFD8 through 0x8011E004 loads the word at 0x800EF79C and calls integer push before returning zero. No messenger, profile-write, save or recognition helper is called. The alias declaration and linker mapping are source-bound.  Bounded original pure-interpreter observations cover 19 cases across these five natives, including a point distance whose float bits differ from exact sqrt, signed/zero vectors, unavailable targets and raw signed voice status/count words. Expected distance payloads use an independent transcription of the original approximate metric and binary32 operation order. Protected frames and declared VM/object/pool/player/voice memory guards agree. No later movement, recognition, target refresh or gameplay claim. Frozen local evidence: build/semantic-review/agent-distance-voice-contracts/.",
       "runtime_status": "bounded_original_instruction_probes_passed"
+    },
+    {
+      "function": "actorScriptGetObjectPlayerDistance",
+      "file": "src/ovl/actor_script_messages_items.c",
+      "sha256": "f4335f4e74d00bc6779577853ea31f8dbbdeb310bbc8e75d730131c27433def2",
+      "effect": "replace_argument_with_scalar",
+      "arguments": 1,
+      "stack_delta": 0,
+      "result_tag": "float",
+      "scheduling": "continue",
+      "result_semantics": "Replace an object handle with its approximate three-dimensional distance from the primary player, or float minus one when unavailable.",
+      "dependencies": [
+        "file:include/object_types.h",
+        "file:include/actor_script.h",
+        "file:include/script_vm.h",
+        "file:include/script_value.h",
+        "file:docs/LOCAL_SDK_FILES.json",
+        "file:config/pikachu.yaml",
+        "file:tools/materialize_ultralib.py",
+        "function:src/ovl/script_vm.c:scriptVmPushValue",
+        "function:src/ovl/script_vm.c:scriptVmPushFloat",
+        "function:src/ovl/script_vm.c:scriptValueSetFloat",
+        "function:src/ovl/script_vm.c:scriptVmPopValue",
+        "function:src/ovl/script_vm.c:scriptVmPopInteger",
+        "function:src/ovl/script_vm.c:scriptValueGetInteger",
+        "function:src/game/trigonometry.c:vector3LengthApprox",
+        "function:src/game/trigonometry.c:mathHypotApprox",
+        "file:include/vector_metrics.h",
+        "function:src/ovl/actor_script_queries.c:objectResolveAvailableHandle",
+        "function:src/game/object_hierarchy.c:objectFindLiveByHandle",
+        "file:src/game/object_hierarchy.c",
+        "function:src/game/keyed_pool.c:keyedPoolGetValue",
+        "function:src/game/keyed_pool.c:keyedPoolFindEntry",
+        "file:include/keyed_pool_types.h",
+        "file:include/item_types.h",
+        "file:include/object_flags.h",
+        "file:include/object_lookup.h",
+        "file:include/object_distance.h",
+        "file:include/player_types.h",
+        "file:include/player_state.h",
+        "file:config/symbol_addrs.txt"
+      ],
+      "preconditions": [
+        "The caller has initialized live RuntimeObjectPrefix and ActorScriptState storage and a live saved VM/value buffer. Operands and the resulting slot lie above protected locals and frame metadata. Source objects, sampled globals and C-stack storage are disjoint from VM contexts, values, frames and program storage. The VM is not replaced and objects are not destroyed or concurrently mutated during the call. The only VM changes are the declared operand pops, result tag/payload and stack depth.",
+        "Sampled world and target coordinates are initialized binary32 values. All coordinates, differences and arithmetic intermediates must remain finite. The approximate-length helper folds X and Y, then Z, using two bounded planar refinements rather than an exact square root. The original floating-point environment remains in force; exact Euclidean rounding is not promised.",
+        "One signed numeric handle operand is converted to integer; finite float handles must be signed-32-bit representable and are truncated. The handle pool has positive capacity, initialized entries and valid acyclic chains. Lookup writes only a local predecessor output. Zero, missing and destruction-marked targets are unavailable; runtime items with toolbox ownership (4) are also unavailable, requiring valid item-state storage when runtime kind is 0x86. Other targets need only valid RuntimeObjectPrefix positions. Target may equal caller.",
+        "The original ROM-authenticated SDK bcopy used by typed value conversion and construction copies only the scalar payload between live local storage and ScriptValues. Local boxes and temporary vectors are synchronously consumed and no C-stack pointer is retained. Strict matching and original SDK materialization remain prerequisites. There is no allocation, callback, RNG, transport, scheduler change or resource lifetime extension, and no gameplay reachability is established.",
+        "The initialized primary-player position at gPlayerState (0x800EF6A0) and resolved target world position remain readable and finite. The local vector is deliberately stored in Z, Y, X component order: d[0] is player Z minus object Z, d[1] is player Y minus object Y, and d[2] is player X minus object X. vector3LengthApprox folds those components in that order, so floating-point approximation and rounding must not be replaced with a different ordering or exact square root. Missing targets receive float -1, not zero. No player position, actor target state or registry entry is written."
+      ],
+      "evidence": "Original Ghidra 0x8011CBF8 through 0x8011CC90 saves the VM, pops and resolves the handle, and pushes -1.0 when unavailable. The successful path loads gPlayerState at 0x800EF6A0 and target world coordinates, stores X difference at local vector +8, Y at +4 and Z at +0, calls vector3LengthApprox at 0x8003A5FC and pushes its float. This establishes the actual Z/Y/X folding order. Complete unchanged resolver, registry and approximate-metric leaves reuse independently reviewed original Ghidra evidence.  Bounded original pure-interpreter observations cover 17 cases across these five natives: Z/Y/X approximate-distance folding distinguished from X/Y/Z; unavailable float -1; item counts including nominal over-capacity; raw signed title states and request-flag gating; and the exact 2500-byte global bank cleared by authenticated original _bzero with neighboring guards preserved. Protected VM/frame/caller/player/pool memory and continuation agree. The first reset fixture had overlapping capture-page patches; splitting that authored patch fixed the fixture, after which all 17 cases were rerun. No additional cleanup, allocation safety, eventual menu transition or gameplay claim. Frozen local evidence: build/semantic-review/agent-capacity-title-contracts/.",
+      "runtime_status": "bounded_original_instruction_probes_passed"
     }
   ]
 }

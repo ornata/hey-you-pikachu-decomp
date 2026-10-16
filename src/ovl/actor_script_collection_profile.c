@@ -1170,15 +1170,15 @@ s32 actorScriptUpdateChapterAfterVisit(u8 *actor) {
     return 0;
 }
 
-/// Provide the remaining item-object capacity.
-/// \param actor Actor whose script VM receives the number of available item slots.
+/// Provide the nominal remaining item-object capacity.
+/// \param actor Actor whose script VM receives the nominal spare item count, which does not guarantee allocation.
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_80121260 (0x80121260).
 s32 actorScriptPushAvailableItemSlots(u8 *actor) {
-    s32 sp1C;
+    s32 vmAddress;
 
-    sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    scriptVmPushInteger((ScriptVm *)(sp1C), itemGetAvailableSlots());
+    vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    scriptVmPushInteger((ScriptVm *)(vmAddress), itemGetAvailableSlots());
     return 0;
 }
 
@@ -1187,11 +1187,11 @@ s32 actorScriptPushAvailableItemSlots(u8 *actor) {
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_80121298 (0x80121298).
 s32 actorScriptResetGlobalVariables(u8 *actor) {
-    s32 sp1C;
+    s32 vmAddress;
 
-    sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
     scriptVmResetGlobals();
-    scriptVmPushInteger((ScriptVm *)(sp1C), 0);
+    scriptVmPushInteger((ScriptVm *)(vmAddress), 0);
     return 0;
 }
 
@@ -1200,10 +1200,10 @@ s32 actorScriptResetGlobalVariables(u8 *actor) {
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_801212D0 (0x801212D0).
 s32 actorScriptPushTitleScreenState(u8 *actor) {
-    s32 sp1C;
+    s32 vmAddress;
 
-    sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    scriptVmPushInteger((ScriptVm *)(sp1C), titleScreenGetState());
+    vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    scriptVmPushInteger((ScriptVm *)(vmAddress), titleScreenGetState());
     return 0;
 }
 
@@ -1212,10 +1212,10 @@ s32 actorScriptPushTitleScreenState(u8 *actor) {
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_80121308 (0x80121308).
 s32 actorScriptRequestTitleMenu(u8 *actor) {
-    s32 sp1C;
+    s32 vmAddress;
 
-    sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
     titleScreenRequestMenu();
-    scriptVmPushInteger((ScriptVm *)(sp1C), 0);
+    scriptVmPushInteger((ScriptVm *)(vmAddress), 0);
     return 0;
 }

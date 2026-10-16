@@ -20,6 +20,8 @@ typedef enum ActorScriptMessageKind {
 
 /// Message copied into an actor's single pending-message slot.
 ///
+/// Categories can be shared by recognized voice traffic and scripted
+/// notifications; a category alone does not establish a voice payload.
 /// Argument meanings are defined by the producer. Voice commands carry a
 /// command value, quality flags, voice level, duration, and interaction candidate.
 /// Inspecting message fields does not acknowledge delivery; a forced post may

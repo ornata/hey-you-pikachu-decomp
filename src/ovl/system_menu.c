@@ -1051,10 +1051,13 @@ void systemMenuAppendMemoryDetails(void) {
 /// \note Original decompilation identifier: \c func_8011A9D4 (0x8011A9D4).
 void systemMenuAppendProgressDetails(void) {
     char buffer[80];
-    sprintf(buffer, "\n%s%s%s%s\n%s%s%s%s\n%s%s%s\ndis %d ang %d\nshop %d\n", progressGetValue(0xB9) ? "Pw" : "Xx",
-            progressGetValue(0xAC) ? "Ck" : "Xx", progressGetValue(0xBA) ? "Tb" : "Xx",
+    sprintf(buffer, "\n%s%s%s%s\n%s%s%s%s\n%s%s%s\ndis %d ang %d\nshop %d\n",
+            progressGetValue(PROGRESS_FIELD_FRIENDSHIP_MILESTONE_9_EARNED) ? "Pw" : "Xx",
+            progressGetValue(0xAC) ? "Ck" : "Xx",
+            progressGetValue(PROGRESS_FIELD_FRIENDSHIP_MILESTONE_10_EARNED) ? "Tb" : "Xx",
             progressGetValue(0x89) ? "Pn" : "Xx", progressGetValue(0xAD) ? "Sp" : "Xx",
-            progressGetValue(0xAF) ? "Dg" : "Xx", progressGetValue(0xBD) ? "Cy" : "Xx",
+            progressGetValue(0xAF) ? "Dg" : "Xx",
+            progressGetValue(PROGRESS_FIELD_FRIENDSHIP_MILESTONE_13_EARNED) ? "Cy" : "Xx",
             progressGetValue(0xAE) ? "Hr" : "Xx", progressGetValue(PROGRESS_FIELD_GAME_CLEARED) ? "Gc" : "Xx",
             progressGetValue(0xF) ? "Cs" : "Xx",
             progressGetValue(PROGRESS_FIELD_ERRAND_BOX_INSTRUCTIONS_RECORDED) ? "Cb" : "Xx",

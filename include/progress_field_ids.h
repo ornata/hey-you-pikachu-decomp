@@ -246,7 +246,41 @@ enum {
         159,                                      ///< All-world-record congratulations path processed.
     PROGRESS_FIELD_FRONT_YARD_DOOR_ENABLED = 160, ///< Bedroom passage to the front yard replaces its initial proxy.
     PROGRESS_FIELD_QUIZ_VARIANT_UNLOCK_STAGE =
-        162 ///< Zero: picture quiz; one: shadow unlocked; two: strobe-shadow unlocked.
+        162, ///< Zero: picture quiz; one: shadow unlocked; two: strobe-shadow unlocked.
+    PROGRESS_FIELD_PICTURE_QUIZ_HIGH_SCORE_BITS_0_7 = 163,  ///< Bits 0 through 7 of the saved picture quiz high score.
+    PROGRESS_FIELD_PICTURE_QUIZ_HIGH_SCORE_BITS_8_11 = 164, ///< Bits 8 through 11 of the saved picture quiz high score.
+    PROGRESS_FIELD_PICTURE_QUIZ_HIGH_SCORE_BITS_12_13 =
+        165,                                               ///< Bits 12 through 13 of the saved picture quiz high score.
+    PROGRESS_FIELD_SHADOW_QUIZ_HIGH_SCORE_BITS_0_7 = 166,  ///< Bits 0 through 7 of the saved shadow quiz high score.
+    PROGRESS_FIELD_SHADOW_QUIZ_HIGH_SCORE_BITS_8_11 = 167, ///< Bits 8 through 11 of the saved shadow quiz high score.
+    PROGRESS_FIELD_SHADOW_QUIZ_HIGH_SCORE_BITS_12_13 = 168, ///< Bits 12 through 13 of the saved shadow quiz high score.
+    PROGRESS_FIELD_STROBE_SHADOW_QUIZ_HIGH_SCORE_BITS_0_7 =
+        169, ///< Bits 0 through 7 of the saved strobe-shadow quiz high score.
+    PROGRESS_FIELD_STROBE_SHADOW_QUIZ_HIGH_SCORE_BITS_8_11 =
+        170, ///< Bits 8 through 11 of the saved strobe-shadow quiz high score.
+    PROGRESS_FIELD_STROBE_SHADOW_QUIZ_HIGH_SCORE_BITS_12_13 =
+        171, ///< Bits 12 through 13 of the saved strobe-shadow quiz high score.
+    PROGRESS_FIELD_FRIENDSHIP_MILESTONE_0_EARNED =
+        176, ///< Saved award flag for friendship milestone 0; initial meeting does not increase friendship level.
+    PROGRESS_FIELD_FRIENDSHIP_MILESTONE_1_EARNED = 177,  ///< Saved award flag for friendship milestone 1.
+    PROGRESS_FIELD_FRIENDSHIP_MILESTONE_2_EARNED = 178,  ///< Saved award flag for friendship milestone 2.
+    PROGRESS_FIELD_FRIENDSHIP_MILESTONE_3_EARNED = 179,  ///< Saved award flag for friendship milestone 3.
+    PROGRESS_FIELD_FRIENDSHIP_MILESTONE_4_EARNED = 180,  ///< Saved award flag for friendship milestone 4.
+    PROGRESS_FIELD_FRIENDSHIP_MILESTONE_5_EARNED = 181,  ///< Saved award flag for friendship milestone 5.
+    PROGRESS_FIELD_FRIENDSHIP_MILESTONE_6_EARNED = 182,  ///< Saved award flag for friendship milestone 6.
+    PROGRESS_FIELD_FRIENDSHIP_MILESTONE_7_EARNED = 183,  ///< Saved award flag for friendship milestone 7.
+    PROGRESS_FIELD_FRIENDSHIP_MILESTONE_8_EARNED = 184,  ///< Saved award flag for friendship milestone 8.
+    PROGRESS_FIELD_FRIENDSHIP_MILESTONE_9_EARNED = 185,  ///< Saved award flag for friendship milestone 9.
+    PROGRESS_FIELD_FRIENDSHIP_MILESTONE_10_EARNED = 186, ///< Saved award flag for friendship milestone 10.
+    PROGRESS_FIELD_FRIENDSHIP_MILESTONE_11_EARNED = 187, ///< Saved award flag for friendship milestone 11.
+    PROGRESS_FIELD_FRIENDSHIP_MILESTONE_12_EARNED = 188, ///< Saved award flag for friendship milestone 12.
+    PROGRESS_FIELD_FRIENDSHIP_MILESTONE_13_EARNED = 189, ///< Saved award flag for friendship milestone 13.
+    PROGRESS_FIELD_FRIENDSHIP_MILESTONE_14_EARNED = 190, ///< Saved award flag for friendship milestone 14.
+    PROGRESS_FIELD_FRIENDSHIP_MILESTONE_15_EARNED = 191, ///< Saved award flag for friendship milestone 15.
+    PROGRESS_FIELD_FRIENDSHIP_MILESTONE_16_EARNED = 192, ///< Saved award flag for friendship milestone 16.
+    PROGRESS_FIELD_FRIENDSHIP_MILESTONE_17_EARNED = 193, ///< Saved award flag for friendship milestone 17.
+    PROGRESS_FIELD_FRIENDSHIP_MILESTONE_18_EARNED = 194, ///< Saved award flag for friendship milestone 18.
+    PROGRESS_FIELD_FRIENDSHIP_MILESTONE_19_EARNED = 195  ///< Saved award flag for friendship milestone 19.
 };
 
 /// Area-relative progress selectors resolved against the current gameplay area.

@@ -237,20 +237,20 @@ s32 actorScriptGetPointDistance(u8 *actor) {
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011CBF8 (0x8011CBF8).
 s32 actorScriptGetObjectPlayerDistance(u8 *actor) {
-    s32 vm;
-    f32 d[3];
-    u8 *obj;
+    s32 vmAddress;
+    f32 distanceComponents[3];
+    u8 *resolvedObject;
 
-    vm = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    obj = objectResolveAvailableHandle(scriptVmPopInteger((ScriptVm *)(vm)));
-    if (obj == NULL) {
-        scriptVmPushFloat((ScriptVm *)(vm), -1.0F);
+    vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    resolvedObject = objectResolveAvailableHandle(scriptVmPopInteger((ScriptVm *)(vmAddress)));
+    if (resolvedObject == NULL) {
+        scriptVmPushFloat((ScriptVm *)(vmAddress), -1.0F);
         return 0;
     }
-    d[2] = ((&gPlayerState))->position[0] - ((RuntimeObjectPrefix *)obj)->worldPosition[0];
-    d[1] = ((&gPlayerState))->position[1] - ((RuntimeObjectPrefix *)obj)->worldPosition[1];
-    d[0] = ((&gPlayerState))->position[2] - ((RuntimeObjectPrefix *)obj)->worldPosition[2];
-    scriptVmPushFloat((ScriptVm *)(vm), vector3LengthApprox(d));
+    distanceComponents[2] = ((&gPlayerState))->position[0] - ((RuntimeObjectPrefix *)resolvedObject)->worldPosition[0];
+    distanceComponents[1] = ((&gPlayerState))->position[1] - ((RuntimeObjectPrefix *)resolvedObject)->worldPosition[1];
+    distanceComponents[0] = ((&gPlayerState))->position[2] - ((RuntimeObjectPrefix *)resolvedObject)->worldPosition[2];
+    scriptVmPushFloat((ScriptVm *)(vmAddress), vector3LengthApprox(distanceComponents));
     return 0;
 }
 

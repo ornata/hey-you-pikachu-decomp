@@ -518,6 +518,11 @@
       "file": "include/item_participation.h",
       "sha256": "d7a16323285f19cc3870e9a45ff3bd296612367e853313b8f9282ba05674efcc"
     },
+    "file:include/item_queries.h": {
+      "kind": "file",
+      "file": "include/item_queries.h",
+      "sha256": "7d9ea097b547b8f7c002fbcc6cb91f8d1b5ba34943d54b14583f747ca37c341b"
+    },
     "file:include/item_response.h": {
       "kind": "file",
       "file": "include/item_response.h",
@@ -751,7 +756,7 @@
     "file:include/progress_field_ids.h": {
       "kind": "file",
       "file": "include/progress_field_ids.h",
-      "sha256": "5d8fb53c9775b47c29b94ed52d12b6013051d35fbc7defef125b16dec1460f75"
+      "sha256": "69c892868390351c69e4a56939cc6050df82a9672968cfdb065cabc230d9b67f"
     },
     "file:include/progress_field_types.h": {
       "kind": "file",
@@ -842,6 +847,11 @@
       "kind": "file",
       "file": "include/script_vm_commands.h",
       "sha256": "89dd5af53ff9f3da6b05812e09d3f816719a5122f3038d0d0f25c3e7968980fc"
+    },
+    "file:include/script_vm_globals.h": {
+      "kind": "file",
+      "file": "include/script_vm_globals.h",
+      "sha256": "89d55d9da78ef168a84c7fb0fc7466651a09d95ed01ed617efc737b71f9ff1a8"
     },
     "file:include/search_tree.h": {
       "kind": "file",
@@ -958,6 +968,11 @@
       "file": "include/texture_draw_types.h",
       "sha256": "b74cd0c0e1b580eca02a05d450985d198e43cf067ed35ce6318eb1ad2275ab8d"
     },
+    "file:include/title_screen_state.h": {
+      "kind": "file",
+      "file": "include/title_screen_state.h",
+      "sha256": "ab8bc3c77749c787ee773a53d889e27be5c04c346b3ca72c0e41c30d50ab58e8"
+    },
     "file:include/ultra64.h": {
       "kind": "file",
       "file": "include/ultra64.h",
@@ -1056,7 +1071,7 @@
     "file:src/game/collection_presentation.c": {
       "kind": "file",
       "file": "src/game/collection_presentation.c",
-      "sha256": "b01d776d06bfedd74914a34ad1d45bc0be5dcc6224b39409145bbb5eb0de3e6a"
+      "sha256": "a26fd2fded6aa1a93862d718ec49205eb04416dad5673d5c3650e86bbe4deca0"
     },
     "file:src/game/collision_grid.c": {
       "kind": "file",
@@ -1183,6 +1198,11 @@
       "file": "src/game/texture_images_word_map.c",
       "sha256": "ff68aaff12bc72a976d94a6dbd248cc7c61a6751630804323c1a8568e25341cf"
     },
+    "file:src/game/title_screen.c": {
+      "kind": "file",
+      "file": "src/game/title_screen.c",
+      "sha256": "b8bb4ecbf8fa52b634e72fe57afb5345c00fd56356128c7ef9f11ac6e0bc360b"
+    },
     "file:src/game/trigonometry.c": {
       "kind": "file",
       "file": "src/game/trigonometry.c",
@@ -1216,12 +1236,12 @@
     "file:src/ovl/actor_script_collection_profile.c": {
       "kind": "file",
       "file": "src/ovl/actor_script_collection_profile.c",
-      "sha256": "dabd723700699a2a66f4f7c6af32a615c8408776b8975f9f24d28fae4bcf49d2"
+      "sha256": "60ef7e09bf4a9f2575ab31b911b27bccdae8ab4602cb8d3a22fafed4e9ffb67c"
     },
     "file:src/ovl/actor_script_messages_items.c": {
       "kind": "file",
       "file": "src/ovl/actor_script_messages_items.c",
-      "sha256": "29a80194893b38c9d9fbb4ba8ffde90f3c08addffc233cfce862bc6eb5d1e5d8"
+      "sha256": "23dbbdfc857fb7c5d6deae44d2e3300da7fe072748f0d5a4ac79172dfc8af4d8"
     },
     "file:src/ovl/actor_script_queries.c": {
       "kind": "file",
@@ -1251,7 +1271,7 @@
     "file:src/ovl/player_companion.c": {
       "kind": "file",
       "file": "src/ovl/player_companion.c",
-      "sha256": "de915fd2ec83204bc052f18db232adcae93f65c4a89546ad5ee8ec19b1543594"
+      "sha256": "1924fe9aeacae7505b9ae0f634a6bba5c08fb033d6667a7ed6a0855b5640a35c"
     },
     "file:src/ovl/script_vm.c": {
       "kind": "file",
@@ -1495,7 +1515,7 @@
       "kind": "function",
       "file": "src/game/collection_presentation.c",
       "function": "progressUpdateChapterAfterVisit",
-      "sha256": "caf62aa4d16a81216d1de78e4de13a935530455dd7e45859dfde91aafd1783e7"
+      "sha256": "bae989be7ebc7e62b2cf92f316df8b903ae79ba52a11532dc72046f93a51140a"
     },
     "function:src/game/collision_grid.c:collisionGridUnregisterObject": {
       "kind": "function",
@@ -2168,6 +2188,18 @@
       "file": "src/game/sound_effect_player.c",
       "function": "soundEffectPlayerStop",
       "sha256": "f940973ba7412cc3cfdd8b6d736fd8a9790e3cafc61a6cb095dadf86e840b983"
+    },
+    "function:src/game/title_screen.c:titleScreenGetState": {
+      "kind": "function",
+      "file": "src/game/title_screen.c",
+      "function": "titleScreenGetState",
+      "sha256": "17cb206787be654fdecc77b18c336249d5f141b1c43ac030ab625a32fa435253"
+    },
+    "function:src/game/title_screen.c:titleScreenRequestMenu": {
+      "kind": "function",
+      "file": "src/game/title_screen.c",
+      "function": "titleScreenRequestMenu",
+      "sha256": "803bdcba9b033e14a64dd790535df49490833620cf742c4a4c88841c5a50361c"
     },
     "function:src/game/trigonometry.c:mathCosDegrees": {
       "kind": "function",
@@ -2877,6 +2909,12 @@
       "sha256": "397e1c36d42586244dd35048356e5266b111f7342eb962ab8234d29ab3487d1c",
       "function": "itemDestroy"
     },
+    "function:src/ovl/item_registry.c:itemGetAvailableSlots": {
+      "kind": "function",
+      "file": "src/ovl/item_registry.c",
+      "function": "itemGetAvailableSlots",
+      "sha256": "4a2a7a82f8ea26c3b451bae2e3042534ca7efa6eaa77d4297351f487ee61d88d"
+    },
     "function:src/ovl/item_registry.c:itemGetClass": {
       "kind": "function",
       "file": "src/ovl/item_registry.c",
@@ -3189,6 +3227,12 @@
       "sha256": "84eead0150468d5b8692af98595b420c851eec23fa94e17ccacaaf488d9b89e1",
       "function": "scriptVmReadIntegerOperand"
     },
+    "function:src/ovl/script_vm.c:scriptVmResetGlobals": {
+      "kind": "function",
+      "file": "src/ovl/script_vm.c",
+      "function": "scriptVmResetGlobals",
+      "sha256": "7f170315a496d096740f40854c554b02ed5d6982c3f2af310d2a2d0769ef29f1"
+    },
     "macro:src/game/save_progress.c:TRACE": {
       "kind": "macro",
       "file": "src/game/save_progress.c",
@@ -3426,7 +3470,12 @@
     "actorScriptGetObjectHorizontalDistance",
     "actorScriptPushHorizontalTargetDistance",
     "actorScriptPushVoiceCommandStatus",
-    "actorScriptPushDeliveredVoiceCount"
+    "actorScriptPushDeliveredVoiceCount",
+    "actorScriptGetObjectPlayerDistance",
+    "actorScriptPushAvailableItemSlots",
+    "actorScriptPushTitleScreenState",
+    "actorScriptRequestTitleMenu",
+    "actorScriptResetGlobalVariables"
   ],
   "callback_files": [
     {
@@ -3435,11 +3484,11 @@
     },
     {
       "file": "native_frame_reviews/src__ovl__actor_script_collection_profile.json",
-      "sha256": "d6d924a6636dab684ec5b864f047b80f3e1c2c30a956903e76d1b80182a679a4"
+      "sha256": "2baeeb6268fcdcccd77e632b347cfa3cf0915d5286bb8f3fce13aca4bcaf46f7"
     },
     {
       "file": "native_frame_reviews/src__ovl__actor_script_messages_items.json",
-      "sha256": "bdafb21d85096ccfa0af069a48466000e0206e3f4ac675976a33f100e1ddf8a7"
+      "sha256": "369a80df31ed66f6ddac63d8484dd8a1921ade4dab1190f7b9084dd36d2aa26d"
     },
     {
       "file": "native_frame_reviews/src__ovl__actor_script_player_world.json",
