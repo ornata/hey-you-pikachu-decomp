@@ -58,6 +58,7 @@ from .scroll_boards import scroll_board_requests
 from .scroll_presets import scroll_board_presets
 from .rps_rounds import rps_rounds
 from .activity_workflows import activity_workflow_roles
+from .workflow_cleanup import workflow_cleanup_roles
 
 
 def companion_sites(image):
@@ -273,6 +274,8 @@ def catalog(image, max_instructions=100000):
                                               if not decoded['diagnostics'] else dict(status='unresolved', rounds=[], scope='Incomplete decoded CFG.')),
                              activity_workflow_roles=(activity_workflow_roles(decoded['instructions'], snapshot=literal_context_snapshot)
                                                       if not decoded['diagnostics'] else dict(status='unresolved', workflows=[], producers=[], dispatches=[], episodes=[], scope='Incomplete decoded CFG.')),
+                             workflow_cleanup_roles=(workflow_cleanup_roles(decoded['instructions'], snapshot=literal_context_snapshot)
+                                                     if not decoded['diagnostics'] else dict(status='unresolved', stores=[], restores=[], cleanups=[], scope='Incomplete decoded CFG.')),
                              messenger_contact_requests=messenger_contact_requests(decoded['instructions'], contact_policies),
                              costed_action_requests=costed_action_requests(decoded['instructions'], cost_policies['records'],
                                  preserved_natives=local_preservation['preserved_native_functions']),
@@ -376,7 +379,7 @@ def main(argv=None):
         report['elf_sha256'] = hashlib.sha256(args.elf.read_bytes()).hexdigest()
         report['decoder_sha256'] = hashlib.sha256(Path(__file__).with_name('formats.py').read_bytes()).hexdigest()
         report['analysis_sha256'] = {name: hashlib.sha256(Path(__file__).with_name(name + '.py').read_bytes()).hexdigest()
-                                     for name in ('catalog', 'stack', 'messages', 'actions', 'scenarios', 'actors', 'functions', 'table_returns', 'vocabulary', 'dictionaries', 'name_catalog', 'saved_dictionary', 'native_frames', 'control_schemes', 'windows', 'caller_frames', 'progress_fields', 'items', 'effects', 'transitions', 'responses', 'local_flow', 'paired_flow', 'contacts', 'motion_archives', 'model_parts', 'callee_contexts', 'native_arguments', 'caller_sources', 'path_item_helpers', 'name_selection_roles', 'fishing_record_helpers', 'fishing_measurement_roles', 'object_query_roles', 'item_noun_helpers', 'companion_snapshots', 'scene_region_snapshots', 'private_status_snapshots', 'tracked_creature_predicates', 'passage_access', 'request_arguments', 'scroll_boards', 'scroll_presets', 'rps_rounds', 'activity_workflows')}
+                                     for name in ('catalog', 'stack', 'messages', 'actions', 'scenarios', 'actors', 'functions', 'table_returns', 'vocabulary', 'dictionaries', 'name_catalog', 'saved_dictionary', 'native_frames', 'control_schemes', 'windows', 'caller_frames', 'progress_fields', 'items', 'effects', 'transitions', 'responses', 'local_flow', 'paired_flow', 'contacts', 'motion_archives', 'model_parts', 'callee_contexts', 'native_arguments', 'caller_sources', 'path_item_helpers', 'name_selection_roles', 'fishing_record_helpers', 'fishing_measurement_roles', 'object_query_roles', 'item_noun_helpers', 'companion_snapshots', 'scene_region_snapshots', 'private_status_snapshots', 'tracked_creature_predicates', 'passage_access', 'request_arguments', 'scroll_boards', 'scroll_presets', 'rps_rounds', 'activity_workflows', 'workflow_cleanup')}
         report['native_frame_review_sha256'] = review_manifest_fingerprint()
         files = {'catalog.json': report, **{name + '.json': row for name, row in decodes.items()}}
         # Validate every output before writing any content, including existing symlinks.

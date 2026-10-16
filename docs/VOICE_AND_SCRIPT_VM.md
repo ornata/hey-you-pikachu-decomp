@@ -617,6 +617,63 @@ VM and action-script definitions are fingerprinted; changed bindings or incomple
 control flow leave these roles unresolved. External helpers retain their frame,
 resource, scheduling and lifetime obligations.
 
+### Saved workflow continuations
+
+The catalog's `workflow_cleanup_roles` links complete saved-state producers,
+compaction, restore and activity cleanup routines in seven configurations.
+Each cleanup is linked to the workflow coordinate of its calling episode.
+Companion activity cleanup can restore an earlier workflow and movement target. The reviewed programs keep
+ten parallel columns of five boxed values, with a separate current-entry index. Each entry records three script attributes, native
+tracking mode, target distance allowance, target handle or destination X/Y/Z, and
+the workflow selector. The three script attributes remain partly unresolved;
+the first also participates in comparisons when choosing a full-store eviction.
+These are program-local root coordinates, not global VM field numbers.
+
+The index starts at minus one. Under the required integer index invariant of
+minus one through four, an ordinary save increments it and writes the current
+state into the new entry. When the next index equals five, the save instead selects an entry for compaction, shifts
+later entries down across all ten columns and writes the new state into entry
+four. The test is equality with five; it is not a general overflow check. A full
+save returns minus one after saving, while an ordinary save returns zero.
+Compaction leaves the last entry uncleared. A save writes either the handle
+column or the coordinate columns, leaving the unused representation unchanged.
+
+Restore first reads the selected entry, restores the three script attributes
+and tracking mode, then restores either the saved object handle and allowance
+or destination coordinates and allowance. Conditional object searches can
+update a local candidate, but the later tracking request uses the saved handle,
+not that candidate. That tracking request replaces the mode with follow mode
+on a valid target, or fixed mode on an unavailable or toolbox target; the latter
+path can retain stale target fields. Restoring a saved mode does not guarantee
+that it remains the final mode. Finally it restores the workflow selector and
+the script's allowance cell. If the index is at least one it decrements it and
+returns zero; otherwise it returns minus one without decrementing. Entry zero is retained as
+a base continuation. The reads precede this test, so minus one is not a safe
+empty-store restore sentinel.
+
+The linked cleanup optionally requests held-item action script 79, clears a
+separate script cell, resets the HUD guide, stops the current action script,
+waits for loop exit, requests timed action script 87 for half a second, and
+polls for action-script stop. It then restores the saved continuation and
+acknowledges the message. The Bedroom variant runs an additional sound helper
+while polling. The stop predicate tests for an absent sequencer command, not
+completion of the last motion. Yielding and deferred requests do not prove that
+the polling will finish, and cleanup's zero return does not establish an idle
+selector. Acknowledgment clears the pending-message flag.
+
+Three full original-VM restore probes cover valid saved indices zero, one and
+four on the fixed-destination path. They authenticate 25 executed original
+function bodies and compare saved cells, VM state, target fields and guards.
+They do not cover object searches or the nonzero tracking-mode path. Eight
+further original-VM probes cover an empty save, four full-store ordering cases
+and three standalone compaction indices, authenticating 26 original bodies.
+They confirm the conditional column writes and retained last compaction entry,
+without establishing all possible numeric inputs or live entry invariants.
+
+These interpretations require initialized, valid indexed cells and the reviewed
+native/deferred contracts. Column spacing alone does not prove physical frame
+capacity, nonaliasing, target-handle lifetime or preservation across callbacks.
+
 ### Companion status snapshots
 
 The decoder's `companion_snapshot_roles` identifies a complete reviewed status
