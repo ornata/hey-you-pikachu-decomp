@@ -576,6 +576,47 @@ function bodies. They do not execute the random generator, response effects or
 the entire live round. Deferred actions, helper effects, message provenance,
 resource lifetime and eventual completion remain separate obligations.
 
+### Conditional activity workflows
+
+The catalog's `activity_workflow_roles` links seven coordinate-scoped producers
+of `116 + RandomBelow(124 - 116)` to eight same-coordinate dispatch tests each.
+Selector 123 calls the reviewed rock-paper-scissors routine; selector 122 calls
+a reviewed player-relative request episode. The other six selectors retain
+numeric meanings. These are workflow selectors, separate from action-script IDs
+and message categories; another use of literal 123 requests an action script.
+
+The producer is conditional on a distance snapshot, a secondary-meter threshold,
+an interaction-region check and preceding random branches. Finding its complete
+37-byte prefix does not prove those guards are reached or satisfied. Eight
+original-code probes exercise the actual random generator, bounded request and
+VM store, producing 116 through 123 under constructed seed and frame conditions.
+They do not establish selection probabilities or a closed workflow domain:
+other helpers can restore a previously saved selector.
+
+For selector 122, the recognizer checks all reachable instructions of the main
+routine and two internal helpers, plus the complete status-mask getter coupled
+to the actual snapshot root. The main routine requests a player-relative escape
+destination, default action mode 7, action script 17, tracked sound kind 34 and
+secondary escape tracking. It then requests action script 0 with a five-second
+limit and action script 264. Choosing a destination does not move the actor;
+secondary tracking retains that destination and the existing allowance.
+
+A captured ordinary message flag together with a nonzero stored message type
+selects action scripts 219 and 165, followed by opaque cleanup. With that flag set, captured type
+zero selects a configuration-local caption before timer checks. Separate timer
+samples strictly greater than ten request contact mode 2; a sample strictly
+greater than sixty, or either enabled elapsed-limit flag, selects the second
+helper. That helper requests default mode 7, HUD style 0, contact mode 1 and
+action script 48 before opaque cleanup. Timer reads do not establish a shared
+starting epoch, and these resource requests do not establish emotion, physical
+movement, completion or a universal return-to-idle state.
+
+The three function spans are 380, 50 and 82 bytes, with 506 reachable bytes in
+total. Unparsed gaps and interfunction wrappers remain uninterpreted. Native,
+VM and action-script definitions are fingerprinted; changed bindings or incomplete
+control flow leave these roles unresolved. External helpers retain their frame,
+resource, scheduling and lifetime obligations.
+
 ### Companion status snapshots
 
 The decoder's `companion_snapshot_roles` identifies a complete reviewed status
