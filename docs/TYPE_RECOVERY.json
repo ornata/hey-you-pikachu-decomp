@@ -1003,6 +1003,7 @@
     },
     "src/game/flipbook_messenger.c": {
       "known_views": [
+        "action_attributes.h",
         "action_query.h",
         "actor_meters.h",
         "actor_part_shake.h",
@@ -1051,27 +1052,27 @@
       "locations": {
         "raw_offset_candidates": {
           "y - 16": [
-            "201:31",
-            "211:31"
+            "202:31",
+            "212:31"
           ],
           "vertexIndex + 1": [
-            "275:48"
+            "276:48"
           ],
           "vertexIndex + 2": [
-            "275:65",
-            "275:98"
+            "276:65",
+            "276:98"
           ],
           "vertexIndex + 3": [
-            "276:23"
+            "277:23"
           ],
           "images + 1": [
-            "334:49"
+            "335:49"
           ],
           "rowOffset - 16": [
-            "470:67"
+            "471:67"
           ],
           "rowOffset + 16": [
-            "483:67"
+            "484:67"
           ]
         }
       }

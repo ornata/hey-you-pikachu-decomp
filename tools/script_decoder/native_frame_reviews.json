@@ -197,7 +197,7 @@
     "file:include/action_attributes.h": {
       "kind": "file",
       "file": "include/action_attributes.h",
-      "sha256": "32e9ac949bf8c47b99381b7517c8e337dd18f609bf38d9d38a9980d3a6a8ffe1"
+      "sha256": "77a4a52c6b9aaa8944bf9bb12f77865f6ad9dfc8360536aa4da46e13ba807c67"
     },
     "file:include/action_continuation.h": {
       "kind": "file",
@@ -1382,7 +1382,7 @@
     "file:src/game/flipbook_messenger.c": {
       "kind": "file",
       "file": "src/game/flipbook_messenger.c",
-      "sha256": "5ba8aea7e6b42928f7bbcf3571d015f5bb4c228d2f79a1a4f226dcf237f37cc0"
+      "sha256": "f4f527f09aaedfee490d55dae070034a6fc9b413b057666946d7affe5104e376"
     },
     "file:src/game/graphics_text.c": {
       "kind": "file",

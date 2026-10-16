@@ -1,3 +1,4 @@
+#include "action_attributes.h"
 #include "random_scale.h"
 #include "text_image.h"
 #include "player_state.h"
@@ -864,7 +865,8 @@ void messengerUpdateHoming(u8 *object, s32 unused) {
     contactDistance = -1.0F;
     property = ((RuntimeObjectPrefix *)target)->kind;
     if ((((property > 0) && (property < 0x26)) && ((mode == 3) || (mode == 2))) &&
-        (((property = actionGetAttributes(target), property & 0x10000)) || ((mode == 3) && (!(property & 0x8000))))) {
+        (((property = actionGetAttributes(target), property & ACTION_ATTRIBUTE_ENABLE_MESSENGER_ORBIT)) ||
+         ((mode == 3) && (!(property & ACTION_ATTRIBUTE_SUPPRESS_OPTIONAL_MESSENGER_ORBIT))))) {
         contactDistance = vector3Length((f32 *)delta);
         delta[0] += 2.0F * mathCosDegrees(state->phase);
         delta[1] += ((2.0F * mathSinDegrees(2.0F * state->phase)) * 0.4F) + 2.0F;

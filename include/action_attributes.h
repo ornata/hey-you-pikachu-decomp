@@ -1,5 +1,5 @@
 /// \file
-/// Defines recovered action-resource attribute fields governing playback and pose transitions.
+/// Defines recovered action-resource attributes for playback, pose transitions and messenger approach.
 
 #ifndef ACTION_ATTRIBUTES_H
 #define ACTION_ATTRIBUTES_H
@@ -12,6 +12,10 @@ typedef enum ActionAttribute {
     ACTION_ATTRIBUTE_LOOP = 8,               ///< Permit another cycle unless exit, update or initialization rejects it.
     ACTION_ATTRIBUTE_CONSTRAIN_FACING_TO_TERRAIN =
         0x10, ///< Apply action-facing restrictions from movement collision flags.
+    ACTION_ATTRIBUTE_ENABLE_MESSENGER_ORBIT =
+        0x10000, ///< Enable orbital steering under messenger contact policies two and three; contact eligibility uses the unoffset target distance.
+    ACTION_ATTRIBUTE_SUPPRESS_OPTIONAL_MESSENGER_ORBIT =
+        0x8000, ///< Suppress policy-three orbital steering unless ENABLE_MESSENGER_ORBIT is set.
     ACTION_ATTRIBUTE_HIGH_UPWARD_LIMIT =
         0x200, ///< Permit upward world motion up to 30 instead of 5 during motion displacement updates.
     ACTION_ATTRIBUTE_ENABLE_TARGET_FACING =

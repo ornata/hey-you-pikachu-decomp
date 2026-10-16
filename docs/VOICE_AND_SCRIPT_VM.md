@@ -86,6 +86,20 @@ which calls `actorPostScriptMessage`. Loss of a target or an expired lifetime ca
 prevent delivery. Special recipient/contact modes can modify the prepared message;
 the table above describes it before those transformations.
 
+The recipient's messenger contact mode is a full signed word, separate from the
+projectile's flight mode. Mode one clears only the message type before attempting
+posting, then rebounds; it does not clear the arguments or skip delivery. Other
+mode values use the ordinary delivery/removal path for supported recipients.
+
+Recipient contact modes two and three can add an orbital steering offset during
+homing. Both use
+`ACTION_ATTRIBUTE_ENABLE_MESSENGER_ORBIT`; mode three also permits the offset
+unless `ACTION_ATTRIBUTE_SUPPRESS_OPTIONAL_MESSENGER_ORBIT` is set. The enabling
+bit takes precedence. These flags affect approach steering, not whether delivery
+is allowed: the contact-distance test uses the target distance before the offset.
+The setter stores arbitrary signed mode words without validation or clamping;
+zero does not mean that a supported actor ignores the message.
+
 ### 4. Inspect and acknowledge the mailbox
 
 The [actor mailbox](../src/ovl/actor_target_interaction.c) holds one pending message.

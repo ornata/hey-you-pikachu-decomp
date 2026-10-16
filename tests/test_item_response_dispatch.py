@@ -301,6 +301,33 @@ class LocalSelectorFlowTests(unittest.TestCase):
                 self.assertEqual(local_preservation_contracts(reviews, root)['preserved_native_functions'], [])
 
 
+    def test_messenger_preservation_requires_present_unchanged_expanded_review(self):
+        import tempfile
+        import json
+        from pathlib import Path
+        from tools.script_decoder.local_flow import local_preservation_contracts
+        name = 'actorScriptSetMessengerContactMode'
+        native = dict(function=name, effect='replace_argument_with_scalar', arguments=1,
+                      stack_delta=0, result_tag='integer', scheduling='continue',
+                      dependencies=[dict(kind='function', function='syntheticSetter', sha256='frozen')])
+        digest = hashlib.sha256(json.dumps(native, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            (root / 'src/ovl').mkdir(parents=True)
+            (root / 'src/ovl/script_vm.c').write_text('/* synthetic source */')
+            with patch('tools.script_decoder.local_flow.VM_PRESERVATION_PINS', {}), patch(
+                    'tools.script_decoder.local_flow.NATIVE_PRESERVATION_PINS', {name: digest}):
+                absent = local_preservation_contracts(dict(active={}, active_deferred={}), root)
+                self.assertEqual(absent['preserved_native_functions'], [])
+                self.assertEqual(absent['stale_native_reviews'], [name])
+                current = local_preservation_contracts(dict(active={name:native}, active_deferred={}), root)
+                self.assertEqual(current['preserved_native_functions'], [name])
+                changed = dict(native, dependencies=[dict(kind='function', function='syntheticSetter', sha256='changed')])
+                stale = local_preservation_contracts(dict(active={name:changed}, active_deferred={}), root)
+                self.assertEqual(stale['preserved_native_functions'], [])
+                self.assertEqual(stale['stale_native_reviews'], [name])
+
+
 class PairedSelectorFlowTests(unittest.TestCase):
     def fixture(self, extras=()):
         root = frame(0, 1)
