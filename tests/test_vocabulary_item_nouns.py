@@ -2,13 +2,13 @@
 
 import hashlib
 import json
-import struct
 import tempfile
 import unittest
 from pathlib import Path
 from unittest.mock import patch
 
 from tools.script_decoder import vocabulary
+from tests.vocabulary_fixture import authored_vocabulary
 
 
 class ItemNounVocabularyTests(unittest.TestCase):
@@ -35,32 +35,14 @@ class ItemNounVocabularyTests(unittest.TestCase):
 
     def catalog(self, *, missing=False, count=43, later_only=False, enabled=True):
         records = ((6, 166), (6, 179), (2, 166), (6, 168), (6, 177), (6, 178), (6, 51), (6, 53))
-        class Image:
-            def symbol(self, name):
-                return (None, {'gVoiceWordDefinitions': 100, 'gVoiceDictionaries': 228}[name])
-            def read_rom(self, start, size):
-                return b'x' * size
-        class Bank:
-            start, end, base, size = 1, 2, 3, 1
-            def __init__(self, image):
-                pass
-            def text(self, address):
-                return dict(address=address, ascii='synthetic', bytes_hex='')
-            def read(self, address, size):
-                if address == 100:
-                    data = b''.join(struct.pack('>IIii', 500+i, 600+i, typ, value) for i, (typ, value) in enumerate(records))
-                elif address == 228 and size == count*8:
-                    data = b''.join(struct.pack('>iI', 2, 10000+i*8) for i in range(count))
-                elif 10000 <= address < 10000+count*8:
-                    identifier = (address-10000)//8
-                    second = 1 if not missing and (not later_only or identifier >= 43) else 3
-                    data = struct.pack('>ii', 0, second)
-                else:
-                    data = b'\0' * size
-                return data, dict(address=address)
-        with patch.object(vocabulary, 'VocabularyBank', Bank), patch.object(vocabulary, 'item_noun_group_names', return_value=self.names), patch.object(vocabulary, 'dictionary_names', return_value={}):
-            return vocabulary.vocabulary_catalog(Image(), dictionary_count=count, validate_phrases=False,
-                validate_general_commands=False, validate_map_destinations=False, validate_item_noun_groups=enabled)
+        dictionaries = []
+        for identifier in range(count):
+            second = 1 if not missing and (not later_only or identifier >= 43) else 3
+            dictionaries.append([0, second])
+        image, bank = authored_vocabulary(records, dictionaries)
+        with patch.object(vocabulary, 'VocabularyBank', bank), patch.object(vocabulary, 'item_noun_group_names', return_value=self.names), patch.object(vocabulary, 'dictionary_names', return_value={}):
+            return vocabulary.vocabulary_catalog(image, dictionary_count=count, validate_phrases=False,
+                validate_general_commands=False, validate_map_destinations=False, validate_item_noun_groups=enabled, validate_directives=False)
 
     def test_scoped_annotations_preserve_records_and_entry_indexes(self):
         report = self.catalog()

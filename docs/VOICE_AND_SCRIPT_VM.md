@@ -2472,6 +2472,38 @@ mailbox posts can also use the same numeric payload. Acknowledgment clears the
 pending flag while retaining payload words, so stored fields alone do not prove
 a new voice result or current dictionary membership.
 
+Category-three requests use
+[`VoiceDirectiveValue`](../include/voice_directives.h), with 39 named selectors
+covering 91 of the 139 retained word records in that category. Names describe
+authored vocabulary families, including context-dependent alternatives; they do
+not guarantee a recipient action. Mixed-purpose values zero, sixteen and
+seventeen remain numeric, covering the other 48 records. Creature labels also
+retain this message-value domain: directive Bulbasaur is 34, whereas its actor
+configuration kind is one.
+
+The reviewed bedroom electric-attack flow maps between several namespaces:
+
+| Voice directive | Cost-policy row | Timed-program pair |
+| --- | --- | --- |
+| 11, Thundershock | 2 | 216 / 217 |
+| 12, Thunderbolt | 1 | 214 / 215 |
+| 13, Thunder | 0 | 212 / 213 |
+
+These are scoped authored requests, with admission and outcomes still governed by
+the original action machinery. The directive numbers are neither cost selectors
+nor timed-program IDs. Item-response categories are another interface, even where
+taste, smell and play requests share numeric values three, four and five.
+
+On its ordinary randomized path, the shared held-item flow chooses response
+category two when its random draw below 100 exceeds five times the item's profile
+counter, otherwise category one. A prompted classifier can replace that choice, and category one
+also serves as a fallback. In the returning classifier paths, directives three,
+four and five supply the matching response categories; directives zero and one
+run action chains and return zero instead of selecting categories one and two.
+There is no directive-plus-one conversion. These observations leave response
+categories one and two numeric; they do not establish universal
+interaction meanings or emotional valence.
+
 Category 18 has a separate destination-request domain, named by
 [`VoiceMapDestinationValue`](../include/voice_map_destination.h). Its 18 retained
 word records use eleven selectors and belong to dictionary 31, which the map

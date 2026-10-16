@@ -2,13 +2,13 @@
 
 import hashlib
 import json
-import struct
 import tempfile
 import unittest
 from pathlib import Path
 from unittest.mock import patch
 
 from tools.script_decoder import vocabulary
+from tests.vocabulary_fixture import authored_vocabulary
 
 
 def digest(names):
@@ -44,35 +44,17 @@ class GeneralCommandTests(unittest.TestCase):
                 self.parse(text)
 
     def fixture(self, *, command_type=2, missing=False, outside_prefix=False, count=43, duplicate_named_value=False):
-        class Image:
-            def symbol(self, name):
-                return (None, {'gVoiceWordDefinitions': 100, 'gVoiceDictionaries': 164}[name])
-            def read_rom(self, start, size):
-                return b'x' * size
-        class Bank:
-            start, end, base, size = 1, 2, 3, 1
-            def __init__(self, image):
-                pass
-            def text(self, address):
-                return dict(address=address, ascii='synthetic', bytes_hex='')
-            def read(self, address, size):
-                if address == 100:
-                    data = b''.join(struct.pack('>IIii', 500+i, 600+i, typ, value) for i, (typ, value) in enumerate(((2, 3), (command_type, 7), (2, 7 if duplicate_named_value else 0), (2, 4))))
-                elif address == 164 and size == count * 8:
-                    data = b''.join(struct.pack('>iI', 2, 10000+i*8) for i in range(count))
-                elif 10000 <= address < 10000 + count*8:
-                    identifier = (address-10000)//8
-                    second = (2 if duplicate_named_value else 1) if not missing and (not outside_prefix or identifier >= 43) else 2
-                    data = struct.pack('>ii', 0, second)
-                else:
-                    data = b'\0' * size
-                return data, dict(address=address)
-        return Image(), Bank
+        records = ((2, 3), (command_type, 7), (2, 7 if duplicate_named_value else 0), (2, 4))
+        dictionaries = []
+        for identifier in range(count):
+            second = (2 if duplicate_named_value else 1) if not missing and (not outside_prefix or identifier >= 43) else 2
+            dictionaries.append([0, second])
+        return authored_vocabulary(records, dictionaries)
 
     def catalog(self, **options):
         image, bank = self.fixture(**options)
         with patch.object(vocabulary, 'VocabularyBank', bank), patch.object(vocabulary, 'general_command_names', return_value=self.names), patch.object(vocabulary, 'dictionary_names', return_value={}):
-            return vocabulary.vocabulary_catalog(image, dictionary_count=options.get('count', 43), validate_phrases=False, validate_map_destinations=False, validate_item_noun_groups=False)
+            return vocabulary.vocabulary_catalog(image, dictionary_count=options.get('count', 43), validate_phrases=False, validate_map_destinations=False, validate_item_noun_groups=False, validate_directives=False)
 
     def test_category_scoping_and_original_indices_preserved(self):
         result = self.catalog()
@@ -98,7 +80,7 @@ class GeneralCommandTests(unittest.TestCase):
     def test_independent_opt_out_does_not_load_general_enum(self):
         image, bank = self.fixture()
         with patch.object(vocabulary, 'VocabularyBank', bank), patch.object(vocabulary, 'general_command_names', side_effect=AssertionError('disabled')), patch.object(vocabulary, 'dictionary_names', return_value={}):
-            result = vocabulary.vocabulary_catalog(image, validate_phrases=False, validate_general_commands=False, validate_map_destinations=False, validate_item_noun_groups=False)
+            result = vocabulary.vocabulary_catalog(image, validate_phrases=False, validate_general_commands=False, validate_map_destinations=False, validate_item_noun_groups=False, validate_directives=False)
             self.assertTrue(all('recovered_general_command_name' not in word for word in result['words']))
 
 

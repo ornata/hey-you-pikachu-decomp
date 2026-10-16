@@ -71,7 +71,7 @@ class CallerSourceTests(unittest.TestCase):
             self.assertNotIn('caller_source_provenance',contexts[0],change)
 
     def test_immediate_script_producer_requires_fresh_full_helper_shape(self):
-        import test_path_item_helpers as fixture_helpers
+        from tests import test_path_item_helpers as fixture_helpers
         from tools.script_decoder import path_item_helpers
         rows,contexts,snapshot,producer,store,load,call=self.fixture(arity=1)
         helper_rows,helper_snapshot,bindings=fixture_helpers.PathItemHelperTests().fixture()

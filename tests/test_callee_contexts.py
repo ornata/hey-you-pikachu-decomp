@@ -5,8 +5,8 @@ import unittest
 from unittest.mock import patch
 
 from tools.script_decoder.callee_contexts import literal_native_argument_contexts
-import test_item_response_dispatch as fixtures
-from test_item_response_dispatch import operand
+from tests import test_item_response_dispatch as fixtures
+from tests.test_item_response_dispatch import operand
 
 
 class CalleeContextTests(unittest.TestCase):
