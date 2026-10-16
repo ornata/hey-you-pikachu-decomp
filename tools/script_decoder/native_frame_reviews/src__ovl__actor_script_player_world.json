@@ -2331,7 +2331,7 @@
     {
       "function": "actorScriptGetItemState",
       "file": "src/ovl/actor_script_player_world.c",
-      "sha256": "4177bb2136bab4b11b290d677a54b21ceab8972ff86b4c013b62a1163cec14e4",
+      "sha256": "566d2d161558102479c74a2404940d07b0377339a031aa51c61468d7f60bc54e",
       "effect": "replace_argument_with_scalar",
       "arguments": 1,
       "stack_delta": 0,

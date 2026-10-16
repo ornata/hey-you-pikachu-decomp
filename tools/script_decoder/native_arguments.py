@@ -93,6 +93,8 @@ ROLE_BINDINGS = {'actorScriptAddProgressValue': {'arguments': [{'conversion': 'i
                                        'review_sha256': '9f2af6cbbe44cdf53c1669b7d7b7bd8ea8743f55d1377a944015a5ce94dd80b5'},
  'actorScriptGetItemKind': {'arguments': [{'conversion': 'integer', 'name': 'handle'}],
                             'review_sha256': '56d20013f5ff9c2683abc19d163c934d290ac4c9b197648ef7240c1c3ff5bcbc'},
+ 'actorScriptGetItemState': {'arguments': [{'conversion': 'integer', 'name': 'handle'}],
+                             'review_sha256': '7a6a8743a060b8ed55be2ae35362eaa184279d180783c9dbbffd52d3c024e453'},
  'actorScriptGetObjectType': {'arguments': [{'conversion': 'integer', 'name': 'handle'}],
                               'review_sha256': '978e95b72d62f43ff396f93adb5f9a939d115351be5907b7d5302f4f4b56ddb8'},
  'actorScriptGetPokemonNameDictionaryGroup': {'arguments': [{'conversion': 'integer',

@@ -107,6 +107,83 @@ class ObjectQueryRoleTests(unittest.TestCase):
             with patch.object(roles, 'HEADER_BINDINGS', bindings), patch.object(roles, 'context_snapshot', side_effect=AssertionError('Must fail before snapshot')):
                 self.assertEqual(roles.object_query_roles(self.fixture())['status'], 'unresolved')
 
+    def predicate_fixture(self, comparison='NOT_EQUAL'):
+        specs = [('LOAD_VARIABLE', [1, 3], None), ('CALL_NATIVE', [103], roles.NATIVE_NAME),
+                 ('PUSH_LITERAL', [134], None), ('EQUAL', [], None),
+                 ('LOAD_VARIABLE', [1, 3], None), ('CALL_NATIVE', [200], roles.ITEM_STATE_NATIVE),
+                 ('PUSH_LITERAL', [0], None), (comparison, [], None),
+                 ('LOGICAL_AND', [], None), ('JUMP_IF_ZERO', [1000], None)]
+        rows = []
+        offset = 100
+        names = roles.opcode_names('vm')
+        for name, values, native in specs:
+            tag = 2 if name in ('CALL_NATIVE', 'JUMP_IF_ZERO') else 0
+            size = 1 + len(values) * 5
+            edges = [dict(kind='resume_or_fallthrough' if native else 'fallthrough', offset=offset + size)]
+            if name == 'JUMP_IF_ZERO':
+                edges.append(dict(kind='branch', offset=values[0]))
+            row = dict(offset=offset, opcode=next(k for k, v in names.items() if v == 'SCRIPT_OP_' + name),
+                       name='SCRIPT_OP_' + name, size=size,
+                       operands=[dict(tag=tag, kind='code_reference' if tag == 2 else 'integer', value=v) for v in values], successors=edges)
+            if native:
+                row['native'] = dict(functions=[native])
+            rows.append(row)
+            offset += size
+        return rows
+
+    def test_eager_item_predicates_have_exact_evidence_and_branch(self):
+        for comparison, role in (('EQUAL', 'available_item_with_world_ownership'), ('NOT_EQUAL', 'available_item_with_nonzero_ownership')):
+            rows = self.predicate_fixture(comparison)
+            report = roles.recognize_object_query_roles(rows)
+            self.assertEqual(len(report['item_ownership_predicates']), 1)
+            predicate = report['item_ownership_predicates'][0]
+            self.assertEqual(predicate['role'], role)
+            self.assertEqual(predicate['instruction_evidence'], rows)
+            self.assertEqual(predicate['branch_target'], 1000)
+            self.assertTrue(predicate['both_queries_evaluated'])
+            self.assertFalse(predicate['short_circuit'])
+            self.assertFalse(predicate['actual_predicate_result_proven'])
+
+    def test_item_predicate_coordinates_literals_control_and_width_fail_closed(self):
+        for index, operand, value in ((4, 1, 4), (4, 1, 0x100000003), (2, 0, 0x100000086), (6, 0, 1), (9, 0, 0x1000003e8)):
+            rows = self.predicate_fixture()
+            rows[index]['operands'][operand]['value'] = value
+            self.assertFalse(roles.recognize_object_query_roles(rows)['item_ownership_predicates'])
+        for index in (5, 7, 8, 9):
+            rows = self.predicate_fixture()
+            rows[index]['size'] += 5
+            self.assertFalse(roles.recognize_object_query_roles(rows)['item_ownership_predicates'])
+        rows = self.predicate_fixture()
+        rows[7]['name'] = 'SCRIPT_OP_GREATER_THAN'
+        self.assertFalse(roles.recognize_object_query_roles(rows)['item_ownership_predicates'])
+        rows = self.predicate_fixture()
+        extra = dict(offset=0, successors=[dict(kind='branch', offset=rows[5]['offset'])])
+        self.assertFalse(roles.recognize_object_query_roles([extra] + rows)['item_ownership_predicates'])
+        rows = self.predicate_fixture()
+        rows[9]['successors'][1]['offset'] = 1001
+        self.assertFalse(roles.recognize_object_query_roles(rows)['item_ownership_predicates'])
+
+    def test_stale_item_evidence_leaves_raw_kind_roles_current(self):
+        snapshot = self.snapshot()
+        item_review = dict(arguments=1, evidence='synthetic item-state review')
+        snapshot[0]['active'][roles.ITEM_STATE_NATIVE] = item_review
+        with patch.object(roles, 'NATIVE_REVIEW_SHA256', roles._digest(snapshot[0]['active'][roles.NATIVE_NAME])), patch.object(roles, 'ITEM_STATE_REVIEW_SHA256', roles._digest(item_review)):
+            current = roles.object_query_roles(self.predicate_fixture(), snapshot=snapshot)
+            self.assertEqual(current['item_ownership_predicates_status'], 'conditional_roles')
+            self.assertEqual(len(current['item_ownership_predicates']), 1)
+            changed = copy.deepcopy(snapshot)
+            changed[0]['active'][roles.ITEM_STATE_NATIVE]['arguments'] = 2
+            stale = roles.object_query_roles(self.predicate_fixture(), snapshot=changed)
+            self.assertEqual(stale['status'], 'conditional_roles')
+            self.assertEqual(len(stale['comparisons']), 1)
+            self.assertEqual(stale['item_ownership_predicates_status'], 'unresolved')
+            self.assertFalse(stale['item_ownership_predicates'])
+            with patch.object(roles, 'ITEM_TYPES_SHA256', 'stale'):
+                stale = roles.object_query_roles(self.predicate_fixture(), snapshot=snapshot)
+                self.assertEqual(stale['status'], 'conditional_roles')
+                self.assertEqual(len(stale['comparisons']), 1)
+                self.assertEqual(stale['item_ownership_predicates_status'], 'unresolved')
+
     def snapshot(self):
         review = dict(arguments=1, evidence='synthetic native contract')
         return (dict(active={roles.NATIVE_NAME: review}), dict(context_vm_contract=dict(current=True)))

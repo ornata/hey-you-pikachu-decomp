@@ -60,7 +60,7 @@ NATIVE_PRESERVATION_PINS = {'actorScriptSetMessengerContactMode': '154619c961ec7
  'actorScriptGetObjectType': '978e95b72d62f43ff396f93adb5f9a939d115351be5907b7d5302f4f4b56ddb8',
  'actorScriptPushTotalElapsedTime': '554fe92f02256193649ee7f2e71141a68a5c3f4b5c39977d5afae6a7fbbd3e89',
  'actorScriptPushTargetApproachDistance': '117f9156e3e996b2e05ca2b2957f4bb7fb9cefdbbb67d9b10c13c66c665245b1',
- 'actorScriptGetItemState': '4272fc02bf1ff19994c1e117422c9e4a41bd438d31b4196f7ec95d5277121c60',
+ 'actorScriptGetItemState': '7a6a8743a060b8ed55be2ae35362eaa184279d180783c9dbbffd52d3c024e453',
  'actorScriptStartTimedAction': '94e5dd7abcf693f34a346d3efcba474903c9989379e9e08faf1b8ee1a0f316d8',
  'actorScriptGetTargetCoordinate': '54ae646b94cbc82d1f6a23642bf31c1cb718f212f569a092f1afa64bbcf174c1',
  'actorScriptGetGroundHeightAtPosition': '04e40bbd3deb205748b375e5142aef5dcd830008fd60590a9dad9478aac600ca',

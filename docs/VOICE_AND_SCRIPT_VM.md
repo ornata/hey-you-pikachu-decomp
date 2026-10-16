@@ -1428,6 +1428,30 @@ states are zero through five; a corrupted negative ownership byte can therefore
 collide with the unavailable sentinel. This query does not change ownership or
 certify that the item is available for interaction.
 
+Five configuration observations combine a raw item-kind equality with an
+ownership test: four test ownership against nonzero and one against world state
+zero. Both getters execute before `LOGICAL_AND`; the kind comparison does not
+short-circuit the ownership query. Under coherent handle and frame bindings, the
+world test identifies an available world-owned item. The nonzero test also accepts
+suspended ownership and unrecognized nonzero signed states, so it is not a
+held-item predicate. Toolbox ownership is nonzero, but the raw-kind getter filters
+that item out as unavailable.
+
+The catalog retains these as `item_ownership_predicates` inside
+`object_query_roles`, including each branch's zero target and fallthrough. These
+are local boolean fragments within larger interaction routines. They do not
+establish the routine's return value, successful interaction, pickup permission,
+termination or stable object lifetime. Repeated handle loads require valid source
+storage disjoint from operand scratch and the same intended handle at both queries.
+
+Twenty authored original-VM probes cover the two conjunctions with world, player,
+Pikachu, other-actor, toolbox, suspended and unrecognized negative ownership,
+plus missing, non-item and destroy-pending handles. Both getter entry points run
+in every probe, including false kind tests. Intermediate integer boxes, final
+booleans and guarded storage agree with the reviewed contracts. These fixtures
+test the composed query behavior, not retail path reachability or an interaction's
+effects.
+
 Six further one-argument contracts cover numeric getters:
 
 | Getter | Supported input after integer conversion | Stack result |
@@ -2767,7 +2791,7 @@ unknown until supplied by a valid runtime state. Indexed loads, arithmetic and
 native-produced values are outside this analysis. Storage, frame binding and
 preservation conditions remain explicit obligations.
 
-Source-bound argument roles label original push order for 22 reviewed natives.
+Source-bound argument roles label original push order for 23 reviewed natives.
 Integer/float labels identify their numeric pop operations, without asserting a
 converted result or a successful effect. In particular, destination allowance is
 not speed, and `PostMessage` synthesizes argument1 rather than consuming it.

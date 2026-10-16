@@ -1016,7 +1016,10 @@ s32 actorScriptTryHoldItem(u8 *actor) {
 }
 
 /// Read the ownership state of a live item, including toolbox and suspended items.
-/// \param actor Actor whose script VM supplies an item handle and receives the item state, or -1 for a missing handle or a non-item object.
+/// \param actor Actor whose script VM supplies an item handle and receives its signed ownership state, or -1 for a missing handle or a non-item object.
+/// \note The result uses ItemOwnershipState, independently of ItemMode and item-state flags.
+/// \note Nonzero does not imply a holder: toolbox and suspended states are also nonzero.
+/// \note Unrecognized signed ownership values are returned unchanged; -1 alone does not prove lookup failure.
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011F5F4 (0x8011F5F4).
 s32 actorScriptGetItemState(u8 *actor) {
@@ -1026,7 +1029,7 @@ s32 actorScriptGetItemState(u8 *actor) {
     vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
     liveObject = objectFindLiveByHandle(scriptVmPopInteger((ScriptVm *)(vmAddress)));
     if (liveObject != NULL) {
-        if (((RuntimeObjectPrefix *)liveObject)->kind == 0x86) {
+        if (((RuntimeObjectPrefix *)liveObject)->kind == RUNTIME_OBJECT_KIND_ITEM) {
             scriptVmPushInteger((ScriptVm *)(vmAddress),
                                 (s32)((ItemStatePrefix *)((RuntimeObjectPrefix *)liveObject)->state.bytes)->state);
         } else {
