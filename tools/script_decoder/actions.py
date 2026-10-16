@@ -129,7 +129,7 @@ def action_resources(image, identifiers, record_limit=4096):
     names = {int(value): name for name, value in re.findall(r'\b(ACTION_SCRIPT_\w+)\s*=\s*(-?\d+)\b', code_only((ROOT / 'include/action_script_ids.h').read_text()))}
     for identifier in sorted(identifiers):
         row = dict(script_id=identifier, table_view_bytes=table[2],
-                   scope='Literal request or static return candidate; ordinary IDs use the linked table view, -1 uses authenticated sentinel backing. No complete allocation or execution claim.')
+                   scope='Bounded linked timed-program slot; -1 uses authenticated no-program sentinel backing. Caller links are reported separately; no complete allocation, selection or execution claim.')
         if identifier in names:
             row['recovered_name'] = names[identifier]
         try:

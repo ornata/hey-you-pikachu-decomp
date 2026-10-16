@@ -1075,7 +1075,37 @@ need not execute, return or complete its requested action. Response eighteen wit
 item-kind argument 76 (tissue) has a separate route before ordinary dispatch. Codes twenty-four
 and twenty-five remain unresolved.
 
-For 53 distinct literal-argument helper calls, the decoder also records a
+Across the full program catalog, each configuration's
+`literal_native_argument_contexts` records supported literal caller inputs to a
+helper's first unchanged-formal native consumer. The current snapshot admits 1,352
+callsite contexts across 37 configurations, among 13,652 syntactic script calls.
+It covers action selectors, timed requests, item creation, overlay fading and a
+few destination/search calls. Unadmitted calls retain their original expressions;
+this is conditional context coverage rather than an execution percentage.
+
+The analysis retains literal tags, payloads and bounded producer instructions,
+including supported negation. Native-derived constants and unsupported computed
+boxing remain unresolved. Source-bound VM and native reviews, canonical complete
+static decoding, valid frame storage and stable bindings are prerequisites.
+`ENTER_FRAME` rebinds incoming argument cells in place; it does not copy them into
+a separate array. Protected caller/root storage must be disjoint from the reused
+argument cells, additional locals and saved metadata. The analysis stops at native
+entry and proves neither native success nor later helper behavior.
+
+Only reviewed `script_id` arguments extend request-derived resource links. This
+adds programs 115, 134, 153 and 246; the many default-action selectors stay in their
+own domain. Raw arguments and the separate complete resource inventory remain
+available.
+
+Three additional original-instruction prefix probes confirm the boxed arguments
+for item creation, overlay fading and destination selection, including physical
+argument-cell reuse and protected frame storage. All executed bodies and script
+prefixes authenticate against the ROM. The probes stop before target native entry;
+they do not establish target conversion, resource acceptance or gameplay outcomes,
+and do not constitute runtime coverage of all 1,352 contexts.
+
+For 53 distinct literal-argument helper calls in the shared response graph, the
+decoder also records a
 `conditional_native_argument_context` linking caller values to the first native
 that consumes unchanged formal arguments. It retains the original symbolic
 arguments and checks the intervening linear prefix against current source-bound
@@ -1189,7 +1219,7 @@ scheduler preservation proof.
 
 The shared two-argument action helper has its own dispatch mode, separate from a
 cue-selection tag. Its costed-action branch consumes the first argument as a cost
-selector only when the copied second argument equals six. Some callers obtain the
+selector only when the second argument equals six. Some callers obtain the
 first argument from a producer that also updates a borrowed mode variable. Its
 return value must therefore be interpreted together with that mode: mode six
 pairs only with selectors zero/one/two, while other modes can pair with timed
@@ -2240,7 +2270,7 @@ slots, including programs without a recovered caller. `action_script_resources`
 keeps the separate links derived from script requests and producer return values.
 `motion_definitions` inventories all 330 definition records, including callback-only
 resources and continuations without direct timed-program callers. The current
-headers name 277 definitions and 278 positive timed programs, plus the no-program
+headers name 282 definitions and 284 positive timed programs, plus the no-program
 sentinel; these are identity-coverage counts, not a percentage of full understanding.
 Neither membership nor a recovered name proves that a program is selected or safe
 for a particular actor.
@@ -2259,6 +2289,21 @@ without resetting their rotations, then initializes only listed tracks. Thus thi
 playback does not drive the omitted child rotations; separate controllers may
 still change them. Part numbers alone do not identify arms, hands or a rendered
 pose.
+
+`pikachu_model_parts` joins those tracks to the authenticated template forest and
+configured functional roles. Parts 48–54 and 55–61 are two complete chains below
+part 41. Their attachment endpoints are parts 53 and 60; terminal parts 54 and 61
+select appearance slots zero and one. The forest's root sibling remains a separate
+root, rather than being assigned as a Pikachu child. Graphics addresses remain
+opaque, including segmented display-list references.
+
+`ActorAttachmentMode` names the configured midpoint, first point, second point and
+raised-point selections. For Pikachu, mode zero averages parts 60 and 53; modes one
+and two select them individually. Mode three uses part 118 plus the caller's
+vertical offset. Modes four and five retain numeric identities for parts 119 and
+66. Missing selected parts fall back to configured part 63; unsupported modes leave
+the output unchanged. These are lookup rules, not proof of live-part availability
+or anatomical identities.
 
 The native selector, timed-program ID and motion-action ID are separate domains:
 
@@ -2447,7 +2492,7 @@ sequencer times, not guarantees of wall-clock delivery, successful acquisition o
 successful launch. Missing items, interruption and later gameplay effects retain
 their own checks.
 
-`motion_action_ids.h` names 277 of the 330 authored definitions. The named
+`motion_action_ids.h` names 282 of the 330 authored definitions. The named
 families include foot tapping, drawing, jumping and falling, item gestures,
 fishing and pulling, head/posture changes, species locomotion and explicit pose
 bridges. A shared motion archive does not imply a shared looping contract: the
@@ -2466,6 +2511,14 @@ names preserve the individual authored identities without repairing that link or
 inferring a shared species. Adaptive target-turn motion 196 refreshes tracking;
 its pivot counterpart 197 uses the stored target instead. Their C continuation
 selectors now use the corresponding names.
+
+Further identities come from operations rather than guessed bodily gestures:
+forward-throw response motion 16 requests a forward held-item launch; its selected
+cue branches differ in later transformation behavior. Motion 115 selects the raised
+attachment, and motion 210 reuses the greeting cue program without a skeletal
+archive. Treasure-chest motion 305 applies a constant archived pose rather than
+resetting general actor state. Registered motion 322 bridges posture IDs zero and
+34; it does not transform the actor into another species.
 
 The treasure-chest target-effect resource requests an effect at the tracked or
 stored target position. Its visual style is unresolved, so its name does not

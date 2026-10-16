@@ -705,7 +705,8 @@ void itemUpdateStationaryMode(u8 *unused) {
 void baseballCapUpdateHeldVisibility(u8 *object) {
     u8 *objectState = ((RuntimeObjectPrefix *)object)->state.bytes;
     if ((((ItemStatePrefix *)objectState)->state == ITEM_OWNERSHIP_PIKACHU) &&
-        (((ActorScriptState *)((RuntimeObjectPrefix *)((u8 *)gPikachuActor))->state.pointer)->attachmentMode == 3)) {
+        (((ActorScriptState *)((RuntimeObjectPrefix *)((u8 *)gPikachuActor))->state.pointer)->attachmentMode ==
+         ACTOR_ATTACHMENT_RAISED)) {
         itemSetScale(object, 0.0F);
         return;
     }

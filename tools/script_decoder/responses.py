@@ -15,7 +15,7 @@ from .formats import integer_operand
 from .items import reaction_code_names
 from .functions import function_summary
 from .stack import incoming_edges, recover_arguments
-from .local_flow import local_integer_domain, local_preservation_contracts
+from .local_flow import local_integer_domain, local_preservation_contracts, vm_comparison_contract
 from .context import ROOT
 from .native_frames import fingerprint, native_frame_reviews
 from tools.source_quality import code_only
@@ -335,7 +335,7 @@ def dispatch_branches(instructions, entry, *, frame=1, variable=0):
     return sorted(branches, key=lambda b: b['response_code'])
 
 
-def annotate_literal_native_contexts(instructions, graphs, *, root=ROOT, limit=256):
+def annotate_literal_native_contexts(instructions, graphs, *, root=ROOT, limit=256, validated_snapshot=None):
     """Link concrete constant caller actuals to a callee's first formal consumer.
 
     Only an exclusive linear prefix is admitted. Source-bound native preservation
@@ -347,9 +347,15 @@ def annotate_literal_native_contexts(instructions, graphs, *, root=ROOT, limit=2
     for graph in graphs:
         for edge in graph['script_calls']:
             edge.pop('conditional_native_argument_context', None)
-    reviews = native_frame_reviews(root)
-    preservation = local_preservation_contracts(reviews, root)
-    if preservation['stale_vm_functions']:
+    if validated_snapshot is None:
+        reviews = native_frame_reviews(root)
+        preservation = local_preservation_contracts(reviews, root)
+    else:
+        reviews, preservation = validated_snapshot
+    vm_contract = preservation.get('context_vm_contract') or vm_comparison_contract(root)
+    if preservation['stale_vm_functions'] or not vm_contract['current']:
+        return
+    if len({r.get('offset') for r in instructions}) != len(instructions):
         return
     admitted = set(preservation['preserved_native_functions'])
     by = {r['offset']: r for r in instructions}
@@ -357,7 +363,14 @@ def annotate_literal_native_contexts(instructions, graphs, *, root=ROOT, limit=2
     incoming = incoming_edges(instructions)
     frames = {o:r for o,r in by.items() if r['name']=='SCRIPT_OP_ENTER_FRAME'}
 
+    def native_provenance(value):
+        if isinstance(value, dict):
+            return 'function' in value or any(native_provenance(v) for v in value.values())
+        return isinstance(value, list) and any(native_provenance(v) for v in value)
+
     def constant(value):
+        if native_provenance(value):
+            return False
         number = value.get('value')
         if value.get('kind')=='integer':
             return type(number) is int and -2147483648 <= number <= 2147483647
@@ -378,16 +391,48 @@ def annotate_literal_native_contexts(instructions, graphs, *, root=ROOT, limit=2
 
     def prove(edge):
         call=by[edge['instruction_offset']]
+        if len(call.get('operands', [])) != 1:
+            raise ValueError('context CALL operand arity is invalid')
         entry=integer_operand(call['operands'][0])
+        successors=call.get('successors', [])
+        if (len(successors)!=2 or
+            sorted((e['kind'],e['offset']) for e in successors)!=
+            sorted([('call',entry),('return_continuation',call['offset']+call['size'])])):
+            raise ValueError('context CALL target or continuation disagrees with decoded edges')
         if call['name']!='SCRIPT_OP_CALL' or entry!=edge['target_offset'] or entry not in frames:
             raise ValueError('context does not identify one decoded script call')
         header=frames[entry]
+        if len(header.get('operands', [])) != 3:
+            raise ValueError('context ENTER_FRAME operand arity is invalid')
         argc,count,frame=map(integer_operand,header['operands'])
         if any(type(v)is not int for v in(argc,count,frame)) or not 0<argc<=count<=2147483645 or not 1<=frame<32:
             raise ValueError('context has an unsupported callee frame contract')
         actual=arguments(call,argc)
         if len(actual)!=argc or not all(constant(v)for v in actual):
             raise ValueError('context actuals are not bounded numeric constants')
+        # Retain exact literal boxing rather than retagging code references.
+        cursor=indices[call['offset']]-1;boxed=[]
+        for value in reversed(actual):
+            chain=[];negated=False
+            if cursor < 0:
+                raise ValueError('context literal producer is missing')
+            if instructions[cursor]['name']=='SCRIPT_OP_NEGATE':
+                if instructions[cursor]['operands']:
+                    raise ValueError('context NEGATE operand arity is invalid')
+                chain.append(instructions[cursor]);cursor-=1;negated=True
+            if cursor < 0:
+                raise ValueError('context literal producer is missing')
+            producer=instructions[cursor]
+            if producer['name']!='SCRIPT_OP_PUSH_LITERAL' or len(producer['operands'])!=1:
+                raise ValueError('context literal producer chain is not supported')
+            raw_operand=producer['operands'][0]
+            if type(raw_operand.get('tag')) is not int or raw_operand['tag'] not in (0,1,2):
+                raise ValueError('context literal boxing tag is unsupported')
+            chain.append(producer);cursor-=1
+            boxed.append(dict(raw_literal_operand=raw_operand,
+                output_tag=(1 if value['kind']=='float' else 0) if negated else raw_operand['tag'],
+                producer_instructions=[dict(instruction_offset=r['offset'],name=r['name'],operands=r['operands']) for r in reversed(chain)]))
+        boxed.reverse()
         prefix=[entry];native_pins={};previous=header
         for _ in range(limit):
             successors=previous.get('successors',[])
@@ -397,6 +442,9 @@ def annotate_literal_native_contexts(instructions, graphs, *, root=ROOT, limit=2
             if previous['offset']+previous['size']!=off or incoming.get(off,set())!={previous['offset']}:
                 raise ValueError('context prefix is not adjacent and exclusively entered')
             name=row['name'];prefix.append(off)
+            expected_operands={'SCRIPT_OP_LOAD_VARIABLE':2,'SCRIPT_OP_STORE_VARIABLE':2,'SCRIPT_OP_PUSH_LITERAL':1,'SCRIPT_OP_DISCARD':0}
+            if name in expected_operands and len(row.get('operands',[]))!=expected_operands[name]:
+                raise ValueError('context prefix operand arity is invalid')
             if name=='SCRIPT_OP_CALL_NATIVE':
                 functions=row.get('native',{}).get('functions',[])
                 if len(functions)!=1 or functions[0]not in reviews['active']:
@@ -413,15 +461,18 @@ def annotate_literal_native_contexts(instructions, graphs, *, root=ROOT, limit=2
                     if names is not None and len(names) != arity:
                         raise ValueError('consumer argument names disagree with current source arity')
                     return dict(status='conditional_literal_actual_context',caller_offset=call['offset'],callee_entry=entry,
-                        frame_index=frame,argument_count=argc,local_count=count,caller_actuals=actual,
+                        frame_index=frame,argument_count=argc,local_count=count,caller_actuals=actual,caller_actual_boxing=boxed,vm_implementation_binding=vm_contract,
+                        call_operands=call['operands'],callee_header_operands=header['operands'],
+                        caller_producer_window=[dict(instruction_offset=r['offset'],name=r['name'],operands=r['operands']) for r in instructions[max(0,indices[call['offset']]-32):indices[call['offset']]]],
                         consumer_native_offset=off,consumer_function=function,
                         raw_callee_arguments=dict(zip(names,raw))if names is not None else raw,
                         contextual_arguments=dict(zip(names,resolved))if names is not None else resolved,
                         prefix_instruction_offsets=prefix,intervening_native_review_sha256=native_pins,
                         consumer_review_sha256=hashlib.sha256(json.dumps(review,sort_keys=True,separators=(',',':')).encode()).hexdigest(),
                         vm_source_pins=preservation['vm_source_pins'],
-                        preconditions=['Caller arguments lie above protected operand/frame floors; matching ENTER_FRAME copies this concrete callsite actuals into valid callee formals.',
-                            'Active caller/root/callee values and frame metadata are physically disjoint; absolute frame bases, scaled offsets and complete values remain allocated and nonwrapping.',
+                        preconditions=['Instruction identities, operand tags/values/payloads and complete static successors come from canonical authenticated decoding; arbitrary graph edits or missing predecessors are outside this proof.',
+                            'Caller arguments lie above protected operand/frame floors; matching ENTER_FRAME aliases this concrete callsite incoming operand cells as callee formals.',
+                            'Protected caller/root storage is physically disjoint from the reused incoming argument cells, additional callee locals and saved frame metadata; absolute frame bases, scaled offsets and complete values remain allocated and nonwrapping.',
                             'Program/VM/owner/frame bindings remain stable, with no asynchronous mutation; every intervening native and original SDK prerequisite applies.',
                             'The consumer review input-conversion, object/resource and operand prerequisites remain obligations; contextual values are boxed input expressions, not converted results or proof of validity.',
                             'This potentially reachable syntactic call context only; no enclosing predicate feasibility, native outcome, later helper execution, restoration, callbacks or scheduler safety is established.'],

@@ -3454,7 +3454,8 @@
         "file:include/hud.h",
         "file:include/actor_meters.h",
         "file:include/pikachu_actor.h",
-        "file:include/action_attributes.h"
+        "file:include/action_attributes.h",
+        "file:include/actor_parts.h"
       ],
       "preconditions": [
         "The caller RuntimeObjectPrefix, ActorScriptState, captured VM, program and owned value buffer remain live and stable. All consumed operands lie above protected locals and frame metadata, and the post-pop depth has room for one result. Integer conversion accepts signed integer/code-reference payloads or finite f32 values whose truncated result fits s32; float conversion accepts f32 or signed integer/code-reference operands. Writable helper state, native stack and result storage do not overlap protected VM/context/program storage. No unrelated concurrent actor, registry, resource or context mutation, destruction or reentry is covered; explicitly reviewed original SDK worker effects retain their separate prerequisites. Original SDK memory primitives and matching SDK inputs are required; VM value copies do not retain native-stack pointers. These are immediate source-bound contracts, without a gameplay-reachability or later-lifetime claim.",

@@ -583,7 +583,8 @@
           "file:tools/materialize_ultralib.py",
           "function:src/ovl/script_vm.c:actorUpdateScriptVm",
           "file:include/script_action_flags.h",
-          "file:include/item_response.h"
+          "file:include/item_response.h",
+          "file:include/actor_parts.h"
         ],
         "phases": [
           {
@@ -1023,7 +1024,8 @@
           "file:src/ovl/actor_script_actions.c",
           "file:src/game/actor_model_parts.c",
           "file:src/game/hud.c",
-          "file:include/action_script_ids.h"
+          "file:include/action_script_ids.h",
+          "file:include/actor_parts.h"
         ],
         "preconditions": [
           "Two numeric startup operands, cost selector then repetition count, lie above protected locals and frame metadata. Integer/code-reference values or finite s32-representable floats are supported; floats truncate toward zero. Selector is zero through four in the authenticated retained table prefix. Repetition count and resource calculations must remain valid finite gameplay values.",

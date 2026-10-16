@@ -248,7 +248,8 @@
           "function:src/ovl/script_vm.c:actorUpdateScriptVm",
           "function:src/ovl/script_vm.c:scriptVmPushInteger",
           "function:src/ovl/script_vm.c:scriptVmDestroy",
-          "file:include/messenger_contact.h"
+          "file:include/messenger_contact.h",
+          "file:include/actor_parts.h"
         ],
         "preconditions": [
           "At each invocation the original actor, its state, retained VM/context and owned value storage are valid and distinct from all constructors, heaps, registries, DMA/workspace, C stacks and borrowed resources. One numeric replacement-kind operand lies above protected locals and frame metadata and remains there through initialization/waiting; completion accepts integer/code-reference or finite signed-32-representable float conversion to actor kind1..37.",

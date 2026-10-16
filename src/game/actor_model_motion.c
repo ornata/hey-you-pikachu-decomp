@@ -988,7 +988,7 @@ void actorGetConfiguredAttachmentPosition(u8 *actor, f32 heightOffset, f32 *posi
 
     state = ((RuntimeObjectPrefix *)actor)->state.actor;
     switch ((u32)state->attachmentMode) {
-    case 0:
+    case ACTOR_ATTACHMENT_CONFIGURED_MIDPOINT:
         actorGetPartWorldPosition(actor, actorConfigGetFirstAttachmentPartId(((RuntimeObjectPrefix *)actor)->kind),
                                   first);
         actorGetPartWorldPosition(actor, actorConfigGetSecondAttachmentPartId(((RuntimeObjectPrefix *)actor)->kind),
@@ -997,15 +997,15 @@ void actorGetConfiguredAttachmentPosition(u8 *actor, f32 heightOffset, f32 *posi
         (position)[1] = (f32)((first[1] + second[1]) * 0.5F);
         (position)[2] = (f32)((first[2] + second[2]) * 0.5F);
         return;
-    case 1:
+    case ACTOR_ATTACHMENT_CONFIGURED_FIRST:
         actorGetPartWorldPosition(actor, actorConfigGetFirstAttachmentPartId(((RuntimeObjectPrefix *)actor)->kind),
                                   position);
         return;
-    case 2:
+    case ACTOR_ATTACHMENT_CONFIGURED_SECOND:
         actorGetPartWorldPosition(actor, actorConfigGetSecondAttachmentPartId(((RuntimeObjectPrefix *)actor)->kind),
                                   position);
         return;
-    case 3:
+    case ACTOR_ATTACHMENT_RAISED:
         actorGetPartWorldPosition(actor, 0x76, position);
         (position)[1] = ((position)[1] + heightOffset);
         return;

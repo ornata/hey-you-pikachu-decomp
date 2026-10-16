@@ -6,6 +6,16 @@
 
 #include <ultra64.h>
 
+/// Select the actor parts used to determine a held-item attachment position.
+/// Encodings 4 and 5 select other retained parts whose roles remain unresolved.
+/// Existing fields and interfaces store these selectors as integers.
+typedef enum ActorAttachmentMode {
+    ACTOR_ATTACHMENT_CONFIGURED_MIDPOINT = 0, ///< Midpoint of the two configured attachment parts.
+    ACTOR_ATTACHMENT_CONFIGURED_FIRST = 1,    ///< First configured attachment part.
+    ACTOR_ATTACHMENT_CONFIGURED_SECOND = 2,   ///< Second configured attachment part.
+    ACTOR_ATTACHMENT_RAISED = 3               ///< Raised attachment part, with the requested vertical offset.
+} ActorAttachmentMode;
+
 /// Initialize the shared actor-part registry before allocating actor part tables.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80016354 (0x80016354).

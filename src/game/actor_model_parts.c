@@ -832,7 +832,7 @@ Gfx *actorPartGetLinkedItemModel(u8 *object) {
     u8 *target;
     state = ((RuntimeObjectPrefix *)object)->root.object->state.actor;
     targetId = state->heldItemHandle;
-    if (targetId == 0 || state->attachmentMode != 3) {
+    if (targetId == 0 || state->attachmentMode != ACTOR_ATTACHMENT_RAISED) {
         return ((RuntimeObjectPrefix *)object)->displayList;
     }
     target = objectResolveAvailableHandle(targetId);

@@ -103,29 +103,31 @@ typedef enum ActionScriptId {
     ACTION_SCRIPT_THROW_ITEM_TO_PLAYER = 114,     ///< Requests throw item to player with inherited cue selection.
     ACTION_SCRIPT_THROW_ITEM_TO_TARGET = 115,     ///< Requests throw item to target with inherited cue selection.
     ACTION_SCRIPT_DISCARD_HELD_ITEM_VARIANT_2_CUE_6 =
-        116,                                 ///< Requests discard held item variant 2 with fixed cue-kind selector 6.
-    ACTION_SCRIPT_LOOK_UP = 118,             ///< Requests look up with inherited cue selection.
-    ACTION_SCRIPT_LOOK_UP_CUE_0 = 119,       ///< Requests look up with fixed cue-kind selector 0.
-    ACTION_SCRIPT_TAP_HEAD_CUE_10 = 123,     ///< Requests tap head with fixed cue-kind selector 10.
-    ACTION_SCRIPT_SLEEP_START_CUE_11 = 124,  ///< Requests sleep start with fixed cue-kind selector 11.
-    ACTION_SCRIPT_SLEEP_START_CUE_0 = 125,   ///< Begin sleep with fixed cue-kind selector zero.
-    ACTION_SCRIPT_SLEEP_START_CUE_3 = 126,   ///< Beginning of the sleep sequence with cue selector 3.
-    ACTION_SCRIPT_SLEEP_LOOP_CUE_11 = 127,   ///< Requests sleep loop with fixed cue-kind selector 11.
-    ACTION_SCRIPT_WAKE_UP = 128,             ///< Wake from sleep.
-    ACTION_SCRIPT_WAKE_UP_CUE_0 = 129,       ///< Requests wake up with fixed cue-kind selector 0.
-    ACTION_SCRIPT_WAKE_UP_CUE_2 = 130,       ///< Requests wake up with fixed cue-kind selector 2.
-    ACTION_SCRIPT_WAKE_UP_CUE_11 = 131,      ///< Requests wake up with fixed cue-kind selector 11.
-    ACTION_SCRIPT_WAKE_TO_SITTING = 132,     ///< Requests wake to sitting with inherited cue selection.
-    ACTION_SCRIPT_PUT_DOWN = 133,            ///< Putting-down gesture with inherited cue selection.
-    ACTION_SCRIPT_PUSH_START = 134,          ///< Requests push start with inherited cue selection.
-    ACTION_SCRIPT_PEACE_SIGN_CUE_0 = 135,    ///< Peace-sign gesture with fixed cue-kind selector zero.
-    ACTION_SCRIPT_PEACE_SIGN_CUE_1 = 136,    ///< Requests peace sign with fixed cue-kind selector 1.
-    ACTION_SCRIPT_PEACE_SIGN_CUE_2 = 137,    ///< Requests peace sign with fixed cue-kind selector 2.
-    ACTION_SCRIPT_PEACE_SIGN_CUE_3 = 138,    ///< Requests peace sign with fixed cue-kind selector 3.
-    ACTION_SCRIPT_FROG_JUMP = 139,           ///< Requests frog jump with inherited cue selection.
-    ACTION_SCRIPT_SCRATCH_HEAD_CUE_10 = 140, ///< Head-scratching gesture with fixed cue-kind selector ten.
-    ACTION_SCRIPT_SCRATCH_HEAD_CUE_0 = 141,  ///< Requests scratch head with fixed cue-kind selector 0.
-    ACTION_SCRIPT_PROUD_POSE_CUE_2 = 142,    ///< Proud-pose gesture with fixed cue-kind selector two.
+        116, ///< Requests discard held item variant 2 with fixed cue-kind selector 6.
+    ACTION_SCRIPT_USE_RAISED_HELD_ITEM_ATTACHMENT_CUE_0 =
+        117,                                ///< Request raised held-item attachment handling with fixed cue selector 0.
+    ACTION_SCRIPT_LOOK_UP = 118,            ///< Requests look up with inherited cue selection.
+    ACTION_SCRIPT_LOOK_UP_CUE_0 = 119,      ///< Requests look up with fixed cue-kind selector 0.
+    ACTION_SCRIPT_TAP_HEAD_CUE_10 = 123,    ///< Requests tap head with fixed cue-kind selector 10.
+    ACTION_SCRIPT_SLEEP_START_CUE_11 = 124, ///< Requests sleep start with fixed cue-kind selector 11.
+    ACTION_SCRIPT_SLEEP_START_CUE_0 = 125,  ///< Begin sleep with fixed cue-kind selector zero.
+    ACTION_SCRIPT_SLEEP_START_CUE_3 = 126,  ///< Beginning of the sleep sequence with cue selector 3.
+    ACTION_SCRIPT_SLEEP_LOOP_CUE_11 = 127,  ///< Requests sleep loop with fixed cue-kind selector 11.
+    ACTION_SCRIPT_WAKE_UP = 128,            ///< Wake from sleep.
+    ACTION_SCRIPT_WAKE_UP_CUE_0 = 129,      ///< Requests wake up with fixed cue-kind selector 0.
+    ACTION_SCRIPT_WAKE_UP_CUE_2 = 130,      ///< Requests wake up with fixed cue-kind selector 2.
+    ACTION_SCRIPT_WAKE_UP_CUE_11 = 131,     ///< Requests wake up with fixed cue-kind selector 11.
+    ACTION_SCRIPT_WAKE_TO_SITTING = 132,    ///< Requests wake to sitting with inherited cue selection.
+    ACTION_SCRIPT_PUT_DOWN = 133,           ///< Putting-down gesture with inherited cue selection.
+    ACTION_SCRIPT_PUSH_START = 134,         ///< Requests push start with inherited cue selection.
+    ACTION_SCRIPT_PEACE_SIGN_CUE_0 = 135,   ///< Peace-sign gesture with fixed cue-kind selector zero.
+    ACTION_SCRIPT_PEACE_SIGN_CUE_1 = 136,   ///< Requests peace sign with fixed cue-kind selector 1.
+    ACTION_SCRIPT_PEACE_SIGN_CUE_2 = 137,   ///< Requests peace sign with fixed cue-kind selector 2.
+    ACTION_SCRIPT_PEACE_SIGN_CUE_3 = 138,   ///< Requests peace sign with fixed cue-kind selector 3.
+    ACTION_SCRIPT_FROG_JUMP = 139,          ///< Requests frog jump with inherited cue selection.
+    ACTION_SCRIPT_SCRATCH_HEAD_CUE_10 = 140,         ///< Head-scratching gesture with fixed cue-kind selector ten.
+    ACTION_SCRIPT_SCRATCH_HEAD_CUE_0 = 141,          ///< Requests scratch head with fixed cue-kind selector 0.
+    ACTION_SCRIPT_PROUD_POSE_CUE_2 = 142,            ///< Proud-pose gesture with fixed cue-kind selector two.
     ACTION_SCRIPT_GROUND_SPIN_WITH_LIFT_CUE_3 = 144, ///< Requests ground spin with lift with fixed cue-kind selector 3.
     ACTION_SCRIPT_GROUND_SPIN_WITH_LIFT_CUE_2 = 145, ///< Requests ground spin with lift with fixed cue-kind selector 2.
     ACTION_SCRIPT_GROUND_SPIN_WITH_LIFT_CUE_1 = 146, ///< Requests ground spin with lift with fixed cue-kind selector 1.
@@ -208,23 +210,29 @@ typedef enum ActionScriptId {
     ACTION_SCRIPT_DRAW_PICTURE_LOOK_UP_CUE_0 = 241, ///< Requests draw picture look up with fixed cue-kind selector 0.
     ACTION_SCRIPT_DRAW_PICTURE_LOOK_UP_CUE_2 = 242, ///< Requests draw picture look up with fixed cue-kind selector 2.
     ACTION_SCRIPT_DRAW_PICTURE_END_STEP_BACK_CUE_0 =
-        243,                                    ///< Requests draw picture end step back with fixed cue-kind selector 0.
-    ACTION_SCRIPT_DROWNING_START_CUE_9 = 249,   ///< Requests drowning start with fixed cue-kind selector 9.
-    ACTION_SCRIPT_DROWNING_LOOP_CUE_9 = 250,    ///< Requests drowning loop with fixed cue-kind selector 9.
-    ACTION_SCRIPT_COUNTING_GESTURE = 251,       ///< Requests counting gesture with inherited cue selection.
-    ACTION_SCRIPT_SIT_CROSS_LEGGED_CUE_1 = 253, ///< Requests sit cross legged with fixed cue-kind selector 1.
-    ACTION_SCRIPT_HOP_CUE_2 = 259,              ///< Requests hop with fixed cue-kind selector 2.
-    ACTION_SCRIPT_HOP_CUE_4 = 260,              ///< Requests hop with fixed cue-kind selector 4.
-    ACTION_SCRIPT_HEAD_DOWN_START_CUE_7 = 264,  ///< Requests head down start with fixed cue-kind selector 7.
-    ACTION_SCRIPT_COUNTING_GESTURE_CUE_1 = 266, ///< Requests counting gesture with fixed cue-kind selector 1.
-    ACTION_SCRIPT_HARMONICA = 269,              ///< Harmonica gesture with inherited cue selection.
-    ACTION_SCRIPT_TRUMPET = 270,                ///< Trumpet gesture with inherited cue selection.
-    ACTION_SCRIPT_GRASS_WHISTLE = 271,          ///< Grass-whistle gesture with inherited cue selection.
-    ACTION_SCRIPT_SIT_DOWN = 273,               ///< Begin sitting down.
-    ACTION_SCRIPT_SIT_DOWN_CUE_1 = 274,         ///< Requests sit down with fixed cue-kind selector 1.
-    ACTION_SCRIPT_SIT_DOWN_CUE_7 = 275,         ///< Requests sit down with fixed cue-kind selector 7.
-    ACTION_SCRIPT_SITTING = 276,                ///< Continue the sitting posture.
-    ACTION_SCRIPT_SITTING_SCRATCH_EAR = 277,    ///< Ear-scratching motion from the sitting posture.
+        243, ///< Requests draw picture end step back with fixed cue-kind selector 0.
+    ACTION_SCRIPT_FORWARD_THROW_RESPONSE =
+        246, ///< Request the authored forward-throw response with the default cue selector.
+    ACTION_SCRIPT_FORWARD_THROW_RESPONSE_CUE_11 =
+        247, ///< Request the authored forward-throw response with fixed cue selector 11.
+    ACTION_SCRIPT_FORWARD_THROW_RESPONSE_CUE_0 =
+        248, ///< Request the authored forward-throw response with fixed cue selector 0.
+    ACTION_SCRIPT_DROWNING_START_CUE_9 = 249,    ///< Requests drowning start with fixed cue-kind selector 9.
+    ACTION_SCRIPT_DROWNING_LOOP_CUE_9 = 250,     ///< Requests drowning loop with fixed cue-kind selector 9.
+    ACTION_SCRIPT_COUNTING_GESTURE = 251,        ///< Requests counting gesture with inherited cue selection.
+    ACTION_SCRIPT_SIT_CROSS_LEGGED_CUE_1 = 253,  ///< Requests sit cross legged with fixed cue-kind selector 1.
+    ACTION_SCRIPT_HOP_CUE_2 = 259,               ///< Requests hop with fixed cue-kind selector 2.
+    ACTION_SCRIPT_HOP_CUE_4 = 260,               ///< Requests hop with fixed cue-kind selector 4.
+    ACTION_SCRIPT_HEAD_DOWN_START_CUE_7 = 264,   ///< Requests head down start with fixed cue-kind selector 7.
+    ACTION_SCRIPT_COUNTING_GESTURE_CUE_1 = 266,  ///< Requests counting gesture with fixed cue-kind selector 1.
+    ACTION_SCRIPT_HARMONICA = 269,               ///< Harmonica gesture with inherited cue selection.
+    ACTION_SCRIPT_TRUMPET = 270,                 ///< Trumpet gesture with inherited cue selection.
+    ACTION_SCRIPT_GRASS_WHISTLE = 271,           ///< Grass-whistle gesture with inherited cue selection.
+    ACTION_SCRIPT_SIT_DOWN = 273,                ///< Begin sitting down.
+    ACTION_SCRIPT_SIT_DOWN_CUE_1 = 274,          ///< Requests sit down with fixed cue-kind selector 1.
+    ACTION_SCRIPT_SIT_DOWN_CUE_7 = 275,          ///< Requests sit down with fixed cue-kind selector 7.
+    ACTION_SCRIPT_SITTING = 276,                 ///< Continue the sitting posture.
+    ACTION_SCRIPT_SITTING_SCRATCH_EAR = 277,     ///< Ear-scratching motion from the sitting posture.
     ACTION_SCRIPT_WATERMELON_STRIKE_START = 279, ///< Requests watermelon strike start with inherited cue selection.
     ACTION_SCRIPT_WATERMELON_STRIKE_END_CUE_17 =
         280, ///< Requests watermelon strike end with fixed cue-kind selector 17.
@@ -233,9 +241,11 @@ typedef enum ActionScriptId {
     ACTION_SCRIPT_WATERMELON_STANCE = 283,        ///< Requests watermelon stance with inherited cue selection.
     ACTION_SCRIPT_WATERMELON_STEP_IN_PLACE = 284, ///< Requests watermelon step in place with inherited cue selection.
     ACTION_SCRIPT_WATERMELON_WALK = 285,          ///< Requests watermelon walk with inherited cue selection.
-    ACTION_SCRIPT_SQUIRTLE_BIPED_STANCE = 287,    ///< Requests squirtle biped stance with inherited cue selection.
-    ACTION_SCRIPT_BIPED_FACE_TARGET = 288,        ///< Requests biped face target with inherited cue selection.
-    ACTION_SCRIPT_SQUIRTLE_GREET = 289,           ///< Requests squirtle greet with inherited cue selection.
+    ACTION_SCRIPT_GREETING_CUE_PLAYBACK =
+        286, ///< Request retained greeting cue playback with the default cue selector.
+    ACTION_SCRIPT_SQUIRTLE_BIPED_STANCE = 287, ///< Requests squirtle biped stance with inherited cue selection.
+    ACTION_SCRIPT_BIPED_FACE_TARGET = 288,     ///< Requests biped face target with inherited cue selection.
+    ACTION_SCRIPT_SQUIRTLE_GREET = 289,        ///< Requests squirtle greet with inherited cue selection.
     ACTION_SCRIPT_SQUIRTLE_GREET_ANYWHERE_VARIANT =
         290,                              ///< Requests squirtle greet anywhere variant with inherited cue selection.
     ACTION_SCRIPT_SQUIRTLE_WHISPER = 292, ///< Requests squirtle whisper with inherited cue selection.
@@ -267,8 +277,10 @@ typedef enum ActionScriptId {
     ACTION_SCRIPT_TREASURE_CHEST_JUMP_UP = 315, ///< Requests treasure chest jump up with inherited cue selection.
     ACTION_SCRIPT_TREASURE_CHEST_OPEN = 316,    ///< Requests treasure chest open with inherited cue selection.
     ACTION_SCRIPT_TREASURE_CHEST_TARGET_EFFECT =
-        318,                                 ///< Requests treasure chest target effect with inherited cue selection.
-    ACTION_SCRIPT_HAUNTER_FLY = 319,         ///< Requests haunter fly with inherited cue selection.
+        318, ///< Requests treasure chest target effect with inherited cue selection.
+    ACTION_SCRIPT_TREASURE_CHEST_STATIC_POSE =
+        317,                         ///< Request the authored static treasure-chest pose with the default cue selector.
+    ACTION_SCRIPT_HAUNTER_FLY = 319, ///< Requests haunter fly with inherited cue selection.
     ACTION_SCRIPT_HAUNTER_STANCE = 320,      ///< Requests haunter stance with inherited cue selection.
     ACTION_SCRIPT_BUTTERFREE_STANCE = 324,   ///< Requests butterfree stance with inherited cue selection.
     ACTION_SCRIPT_BUTTERFREE_FLY = 325,      ///< Requests butterfree fly with inherited cue selection.

@@ -39,6 +39,8 @@ from .local_flow import local_preservation_contracts
 from .paired_flow import annotate_costed_caller_relations
 from .contacts import messenger_contact_policy_catalog, messenger_contact_requests
 from .motion_archives import motion_archive_catalog
+from .model_parts import pikachu_model_catalog
+from .callee_contexts import context_snapshot, literal_native_argument_contexts, contextual_timed_program_ids
 
 
 def companion_sites(image):
@@ -159,6 +161,7 @@ def catalog(image, max_instructions=100000):
     name_catalog = pokemon_name_catalog(image, vocabulary)
     frame_reviews = native_frame_reviews()
     local_preservation = local_preservation_contracts(frame_reviews)
+    literal_context_snapshot = context_snapshot(frame_reviews)
     controls = control_scheme_catalog(image)
     actor_by_name = {row['enum_name']: row for row in actors}
 
@@ -220,6 +223,8 @@ def catalog(image, max_instructions=100000):
                              frame_operands=frames, native_calls=dict(native_calls),
                              script_message_posts=message_posts(decoded['instructions']),
                              native_action_calls=actions,
+                             literal_native_argument_contexts=(literal_native_argument_contexts(decoded['instructions'], snapshot=literal_context_snapshot)
+                                                               if not decoded['diagnostics'] else []),
                              messenger_contact_requests=messenger_contact_requests(decoded['instructions'], contact_policies),
                              costed_action_requests=costed_action_requests(decoded['instructions'], cost_policies['records'],
                                  preserved_natives=local_preservation['preserved_native_functions']),
@@ -252,6 +257,8 @@ def catalog(image, max_instructions=100000):
         {name: review['arguments'] for name, review in frame_reviews['active'].items()
          if type(review.get('arguments')) is int})
     resource_ids.update(response_dispatch['timed_program_resource_ids'])
+    resource_ids.update(contextual_timed_program_ids(context for row in rows
+                                                   for context in row['literal_native_argument_contexts']))
     resource_ids.update(value for row in rows for request in row['costed_action_requests']
                         for value in request['cost_policy_link'].get('policy', {}).get('referenced_timed_program_ids', []))
     resource_ids.update(value for row in rows for request in row['costed_action_requests']
@@ -263,6 +270,8 @@ def catalog(image, max_instructions=100000):
                         for value in policy['referenced_timed_program_ids'])
     source_requests = source_dictionary_requests(source, vocabulary.get('dictionaries', []))
     attach_dictionary_usage(vocabulary, rows, source_requests)
+    archives = motion_archive_catalog(image)
+    model_parts = pikachu_model_catalog(image, archives)
     return dict(schema_version=2, rom_sha1=image.sha1,
                 scope='Retained-table configuration candidates with local programs before their headers. No claim of exhaustive resource discovery or live execution.',
                 candidate_count=len(rows), diagnostic_free_candidates=len(complete),
@@ -276,7 +285,8 @@ def catalog(image, max_instructions=100000):
                 distinct_decoded_code_hashes=len({row['decoded_code_sha256'] for row in rows}),
                 action_script_resources=action_resources(image, resource_ids),
                 action_program_catalog=action_program_catalog(image),
-                motion_archives=motion_archive_catalog(image),
+                motion_archives=archives,
+                pikachu_model_parts=model_parts,
                 motion_definitions=motion_definition_catalog(image),
                 actor_kinds=actors,
                 progress_fields=progress_fields,
@@ -313,7 +323,7 @@ def main(argv=None):
         report['elf_sha256'] = hashlib.sha256(args.elf.read_bytes()).hexdigest()
         report['decoder_sha256'] = hashlib.sha256(Path(__file__).with_name('formats.py').read_bytes()).hexdigest()
         report['analysis_sha256'] = {name: hashlib.sha256(Path(__file__).with_name(name + '.py').read_bytes()).hexdigest()
-                                     for name in ('catalog', 'stack', 'messages', 'actions', 'scenarios', 'actors', 'functions', 'table_returns', 'vocabulary', 'dictionaries', 'name_catalog', 'saved_dictionary', 'native_frames', 'control_schemes', 'windows', 'caller_frames', 'progress_fields', 'items', 'effects', 'transitions', 'responses', 'local_flow', 'paired_flow', 'contacts', 'motion_archives')}
+                                     for name in ('catalog', 'stack', 'messages', 'actions', 'scenarios', 'actors', 'functions', 'table_returns', 'vocabulary', 'dictionaries', 'name_catalog', 'saved_dictionary', 'native_frames', 'control_schemes', 'windows', 'caller_frames', 'progress_fields', 'items', 'effects', 'transitions', 'responses', 'local_flow', 'paired_flow', 'contacts', 'motion_archives', 'model_parts', 'callee_contexts')}
         report['native_frame_review_sha256'] = review_manifest_fingerprint()
         files = {'catalog.json': report, **{name + '.json': row for name, row in decodes.items()}}
         # Validate every output before writing any content, including existing symlinks.
