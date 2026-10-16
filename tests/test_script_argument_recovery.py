@@ -524,5 +524,22 @@ class PoseTransitionMapTests(unittest.TestCase):
             pose_transition_catalog(UnterminatedImage(), limit=2)
 
 
+
+class TargetCoordinateStackTests(unittest.TestCase):
+    def test_unique_symbolic_getter_preserves_index_value_order(self):
+        def operand(value):return dict(tag=0,value=value)
+        rows=[dict(offset=0,name='SCRIPT_OP_PUSH_LITERAL',operands=[operand(2)],successors=[dict(kind='fallthrough',offset=1)]),
+              dict(offset=1,name='SCRIPT_OP_PUSH_LITERAL',operands=[operand(1)],successors=[dict(kind='fallthrough',offset=2)]),
+              dict(offset=2,name='SCRIPT_OP_CALL_NATIVE',operands=[],native=dict(functions=['actorScriptGetTargetCoordinate']),successors=[dict(kind='resume_or_fallthrough',offset=3)]),
+              dict(offset=3,name='SCRIPT_OP_STORE_ELEMENT',operands=[operand(0),operand(94)],successors=[])]
+        for row in rows:row['size']=1
+        recovered=recover_arguments(rows,3,2,allow_symbolic=True)
+        self.assertEqual(recovered[0],dict(kind='integer',value=2))
+        self.assertEqual(recovered[1]['result_tag'],'float')
+        self.assertEqual(recovered[1]['arguments'],[dict(kind='integer',value=1)])
+        with self.assertRaises(ValueError):recover_arguments(rows,3,2)
+        rows[2]['native']['functions'].append('ambiguousAlias')
+        with self.assertRaises(ValueError):recover_arguments(rows,3,2,allow_symbolic=True)
+
 if __name__ == '__main__':
     unittest.main()

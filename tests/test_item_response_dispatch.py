@@ -755,5 +755,48 @@ class SentinelCallerExclusionTests(FormalForwardingTests):
                 self.assertNotIn('conditional_sentinel_exclusion',result['formal_forwarding']['upstream_callers'][0])
 
 
+class IndexedHelperPreservationTests(unittest.TestCase):
+    def fixture(self, destination=(1,0), index=1):
+        helper=PairedSelectorFlowTests()
+        instructions,request=helper.fixture([('CALL',[operand(600,2)])])
+        entry=frame(600,601);entry['operands'][1]=operand(3)
+        instructions.extend([entry,row(601,'PUSH_LITERAL',[operand(index)],[('fallthrough',602)]),
+            row(602,'PUSH_LITERAL',[operand(99)],[('fallthrough',603)]),
+            row(603,'STORE_ELEMENT',[operand(destination[0]),operand(destination[1])],[('fallthrough',604)]),
+            row(604,'PUSH_LITERAL',[operand(0)],[('fallthrough',605)]),row(605,'RETURN')])
+        return sorted(instructions,key=lambda r:r['offset']),request
+
+    def analyze(self,instructions,request):
+        return PairedSelectorFlowTests().analyze(instructions,request)[0]
+
+    def test_private_and_root_writes_expose_exact_coordinates(self):
+        for destination,index,expected in [((1,0),2,2),((0,5),-1,4)]:
+            instructions,request=self.fixture(destination,index)
+            result=self.analyze(instructions,request)
+            self.assertEqual(result['status'],'conditional_paired_caller_relation')
+            write=result['intervening_helpers'][0]['writes'][0]
+            self.assertEqual(write['slot'],expected)
+            self.assertEqual(write['indexed_write']['base_slot'],destination[1])
+            self.assertEqual(write['indexed_write']['index'],index)
+            self.assertEqual(write['indexed_write']['width_bytes'],5)
+            self.assertIn('frameBase+effectiveSlot',write['indexed_write']['physical_storage_precondition'])
+            self.assertIn('full five-byte destination precedes frame metadata',write['indexed_write']['physical_storage_precondition'])
+
+    def test_unknown_index_invalid_base_escape_mode_and_overflow_fail_closed(self):
+        for destination,index in [((1,3),-1),((1,0),3),((0,2),1),((2,0),0),((0,0),2147483647),((0,0),-1)]:
+            instructions,request=self.fixture(destination,index)
+            self.assertEqual(self.analyze(instructions,request)['status'],'unresolved_caller_relation')
+        instructions,request=self.fixture()
+        node=next(r for r in instructions if r['offset']==601)
+        node['name']='SCRIPT_OP_LOAD_VARIABLE';node['operands']=[operand(1),operand(0)]
+        self.assertEqual(self.analyze(instructions,request)['status'],'unresolved_caller_relation')
+
+    def test_unknown_value_native_is_not_a_stack_effect_assumption(self):
+        instructions,request=self.fixture()
+        node=next(r for r in instructions if r['offset']==602)
+        node['name']='SCRIPT_OP_CALL_NATIVE';node['operands']=[];node['native']=dict(functions=['unknownGetter'])
+        self.assertEqual(self.analyze(instructions,request)['status'],'unresolved_caller_relation')
+
+
 if __name__ == '__main__':
     unittest.main()

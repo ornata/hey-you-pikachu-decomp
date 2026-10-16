@@ -70,7 +70,11 @@ NATIVE_PRESERVATION_PINS = {'actorScriptSetMessengerContactMode': '154619c961ec7
  'actorScriptEnqueueMessage': 'd91e1ee8e36b31072b79a75d379408f2bf869048a42ee41ccb7b639a7b552026',
  'actorScriptGetObjectPlayerDistance': '3de44ca0fdd37ea0c338ac4d326e779d12f58e16d21cf708f673f1e611feec2b',
  'actorScriptStartInterruptibleAction': '16760ccb5f869e14d41080dfc894dc1e09fedcc8c5595f950689a5cb5d77bfa7',
- 'actorScriptGetObjectCategory': '71edf0390b875c4d76e1c4565f347ac8f439b267fcc9447957feb3c8d0475f34'}
+ 'actorScriptGetObjectCategory': '71edf0390b875c4d76e1c4565f347ac8f439b267fcc9447957feb3c8d0475f34',
+ 'actorScriptGetWorldCoordinate': 'c19b99d4917df49aa4d116f2cfe63306fa993158397b8da01d3d0b83efe9380d',
+ 'actorScriptPushTimedProgramId': '387097d7c9c494ab9e2aca7c40892c26186d53e3c4bff38dde0aee2f53be6f24',
+ 'actorScriptSetTargetToFallbackObject': '2a187118853afd5bc5c144fded50742fc6e8845a1d1b92ac350c619154f12207',
+ 'actorScriptGetPlayerCoordinate': 'e35e10efdcabe31324333f82f911f78df26e38aa4727d5444f8342c4344033bc'}
 LOOP_EXIT_DEFERRED_PIN = '687dd86d8dd2376c3f9d03d05ac4e12b2177dcebb5f682a77634a603ef1c3957'
 ACTION_WAIT_DEFERRED_PIN = 'c8d17f8871c84d10b8bb2dc43ac472cd8b725bed62be229c52ba7b71936e0eda'
 INTERRUPTIBLE_DEFERRED_PIN = 'bd669454f7687914c813e2c773c4ea6006b043cd525b0dbda32a8d57ac776bb1'

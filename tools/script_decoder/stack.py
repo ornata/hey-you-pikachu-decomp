@@ -100,6 +100,9 @@ def recover_arguments(instructions, index, count, *, incoming=None, allow_float=
             if allow_symbolic and functions == ['actorScriptGetItemKind']:
                 return dict(kind='native_result', function=functions[0], arguments=[argument()], result_tag='integer',
                             scope='Runtime item-kind lookup from an integer-converted handle; zero for unavailable or non-item objects. No live handle or constant kind is inferred.')
+            if allow_symbolic and functions == ['actorScriptGetTargetCoordinate']:
+                return dict(kind='native_result', function=functions[0], arguments=[argument()], result_tag='float',
+                            scope='Runtime target coordinate selected by an integer-converted axis. Target state, axis validity and finite numeric conversion remain preconditions; no coordinate value or range is inferred.')
             if allow_symbolic and functions == ['actorScriptPushTargetDistanceAllowance']:
                 return dict(kind='native_result', function=functions[0], arguments=[], result_tag='float',
                             scope='Runtime actor target-distance allowance; no numeric range or target identity is inferred.')

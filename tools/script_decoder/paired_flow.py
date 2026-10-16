@@ -122,7 +122,28 @@ def annotate_costed_caller_relations(instructions, requests, policies, *, preser
         for off in sorted(offsets):
             row = by[off]
             if row['name'] == 'SCRIPT_OP_STORE_ELEMENT':
-                raise ValueError('intervening helper has an indirect writer')
+                coords = coordinates(row)
+                index, value = arguments(row, 2)
+                if index.get('kind') != 'integer' or type(index.get('value')) is not int:
+                    raise ValueError(f'{off}: intervening helper {entry} has an unresolved indexed writer')
+                displacement = index['value']
+                slot = coords[1] + displacement
+                if not (-2147483648 <= displacement <= 2147483647 and
+                        -2147483648 <= displacement * 5 <= 2147483647 and
+                        -2147483648 <= slot <= 2147483647):
+                    raise ValueError('intervening indexed writer has overflowing target arithmetic')
+                own = coords[0] == frame and 0 <= coords[1] < count and 0 <= slot < count
+                root = root_slot(coords) and root_slot((coords[0], slot))
+                if not (own or root):
+                    raise ValueError('intervening indexed writer escapes admitted physical frame bounds')
+                if (coords[0], slot) == mode:
+                    raise ValueError('intervening indexed writer overwrites the paired mode')
+                writes.append(dict(instruction_offset=off, frame=coords[0], slot=slot,
+                    indexed_write=dict(base_slot=coords[1], index_expression=index, index=displacement,
+                        effective_slot=slot, value_expression=value, width_bytes=5,
+                        ownership='active_callee_own_frame' if own else 'bounded_active_root_frame',
+                        physical_storage_precondition='The active values allocation contains frameBase+baseSlot and frameBase+effectiveSlot; scaled five-byte offsets and final target addresses are representable without wrap, and the full five-byte destination precedes frame metadata. Active root/caller/callee physical ranges are nonaliasing.')))
+
             if row['name'] == 'SCRIPT_OP_STORE_VARIABLE':
                 coords = coordinates(row)
                 if coords == mode:
