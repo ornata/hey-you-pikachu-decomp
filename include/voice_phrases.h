@@ -1,9 +1,44 @@
 /// \file
-/// Names recognized Pikachu-like phrase values carried by voice messages.
+/// Names recognized general-command and Pikachu-like phrase selectors carried by voice messages.
 /// These names describe vocabulary labels, not translations or guaranteed reactions.
 
 #ifndef VOICE_PHRASES_H
 #define VOICE_PHRASES_H
+
+/// Message category whose argument 0 can carry a general command or Pikachu-like phrase.
+/// The same payload may be posted by scripts; this category does not prove voice origin.
+enum { VOICE_GENERAL_COMMAND_MESSAGE_TYPE = 2 };
+
+/// Authored command-label families shared by the retained category-two vocabulary.
+/// Values are message arguments, not dictionary indices or global word IDs.
+/// Names describe vocabulary families, not guaranteed actions or reactions.
+/// Values one and two remain distinct despite overlapping recognition labels.
+/// Mixed-purpose values zero, four and eight retain their numeric representation.
+typedef enum VoiceGeneralCommandValue {
+    VOICE_GENERAL_COMMAND_HEY_OR_COME_HERE = 1,
+    VOICE_GENERAL_COMMAND_THIS_WAY_OR_COME_HERE = 2,
+    VOICE_GENERAL_COMMAND_NEVER_MIND = 3,
+    VOICE_GENERAL_COMMAND_TAG_YOURE_IT = 5,
+    VOICE_GENERAL_COMMAND_HELLO = 6,
+    VOICE_GENERAL_COMMAND_FAREWELL = 7,
+    VOICE_GENERAL_COMMAND_GO_AWAY = 9,
+    VOICE_GENERAL_COMMAND_GOOD_MORNING = 11,
+    VOICE_GENERAL_COMMAND_GOOD_NIGHT = 12,
+    VOICE_GENERAL_COMMAND_THANK_YOU = 13,
+    VOICE_GENERAL_COMMAND_SORRY = 14,
+    VOICE_GENERAL_COMMAND_I_CHOOSE_YOU = 15,
+    VOICE_GENERAL_COMMAND_WAKE_UP = 16,
+    VOICE_GENERAL_COMMAND_DANCE = 17,
+    VOICE_GENERAL_COMMAND_I_LOVE_YOU = 18,
+    VOICE_GENERAL_COMMAND_HANG_ON = 19,
+    VOICE_GENERAL_COMMAND_STATUS_QUESTION = 20,
+    VOICE_GENERAL_COMMAND_WHAT_IS_IT = 21,
+    VOICE_GENERAL_COMMAND_LOOK_OUT = 33,
+    VOICE_GENERAL_COMMAND_DO_SOMETHING_OR_LISTEN = 34,
+    VOICE_GENERAL_COMMAND_ROCK = 35,
+    VOICE_GENERAL_COMMAND_SCISSORS = 36,
+    VOICE_GENERAL_COMMAND_PAPER = 37
+} VoiceGeneralCommandValue;
 
 /// Message category whose argument 0 can carry a VoicePikachuPhraseValue.
 /// This category also carries other dictionary-defined command values.

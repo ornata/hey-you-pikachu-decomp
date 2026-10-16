@@ -2449,6 +2449,29 @@ records remain separate with their own dictionary memberships. The decoder check
 the names against the retained display labels and requires dictionary membership.
 These are recognized phrases, without a recovered translation or emotional meaning.
 
+`VoiceGeneralCommandValue` names 23 further category-two command-label families,
+covering 65 retained word records. Greeting, farewell, attention, gratitude and
+rock/scissors/paper selectors describe authored vocabulary, not guaranteed
+reactions. Values one and two remain distinct even though both include
+come-here labels. Values zero, four and eight combine different purposes and
+remain numeric. Neither command values nor phrase values are dictionary entry
+indices or global word IDs. The catalog annotates these scoped names without
+replacing the original record identities or memberships.
+
+The entryway and front-yard command routines snapshot mailbox type and argument
+zero in root slots four and five. Their category-two/farewell-seven guard requests
+item disposal when the current interaction candidate is an item. That candidate
+is captured independently of message argument four; it is not necessarily the
+message's original target. The branch requests disposal and a sound, then rejoins
+the command loop. It does not define the whole routine's purpose or return value.
+
+Those routines request dictionary one, whose reviewed entries contain no
+category-two/farewell-seven record; dictionary zero does contain that command.
+This leaves recognition, timing and delivery reachability unresolved. Scripted
+mailbox posts can also use the same numeric payload. Acknowledgment clears the
+pending flag while retaining payload words, so stored fields alone do not prove
+a new voice result or current dictionary membership.
+
 The bedroom response selector's guarded table connects them to timed programs:
 
 | Phrase selector | Timed program |

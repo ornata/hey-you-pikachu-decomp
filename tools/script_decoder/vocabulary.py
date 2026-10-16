@@ -7,6 +7,7 @@ Original text stays in local decoder output and is never embedded in this tool.
 """
 
 import hashlib
+import json
 import struct
 import re
 
@@ -62,6 +63,39 @@ def phrase_names():
     return names
 
 
+# Reviewed names/value mapping only; never original vocabulary strings or word IDs.
+GENERAL_COMMAND_MAPPING_SHA256 = 'a56b993efe2d8849a6fce460d44952dddb16c08f241dfa41991ec29a79cbaea1'
+
+
+def general_command_names():
+    """Read the exact reviewed general-command enum without accepting aliases."""
+    code = code_only((ROOT / 'include/voice_phrases.h').read_text())
+    categories = re.findall(r'\bVOICE_GENERAL_COMMAND_MESSAGE_TYPE\s*=\s*(0[xX][\da-fA-F]+|\d+)\s*(?=[,}])', code)
+    if len(categories) != 1 or int(categories[0], 0) != 2 or len(re.findall(r'\bVOICE_GENERAL_COMMAND_MESSAGE_TYPE\s*=', code)) != 1:
+        raise ValueError('general command category disagrees with reviewed category2')
+    enums = re.findall(r'\btypedef\s+enum\s+VoiceGeneralCommandValue\s*\{([^}]+)\}\s*VoiceGeneralCommandValue\s*;', code)
+    if len(enums) != 1 or len(re.findall(r'\benum\s+VoiceGeneralCommandValue\b', code)) != 1:
+        raise ValueError('missing or duplicate general command enum')
+    body = enums[0].strip()
+    declarations = body.split(',')
+    if declarations[-1].strip() == '':
+        declarations.pop()
+    names, identifiers = {}, set()
+    for declaration in declarations:
+        match = re.fullmatch(r'\s*(VOICE_GENERAL_COMMAND_\w+)\s*=\s*(0[xX][\da-fA-F]+|\d+)\s*', declaration)
+        if match is None:
+            raise ValueError('malformed general command declaration')
+        name, value = match[1], int(match[2], 0)
+        if name in identifiers or value in names or not 0 <= value <= 2147483647 or 23 <= value <= 32:
+            raise ValueError('duplicate or unsupported general command selector')
+        names[value] = name
+        identifiers.add(name)
+    digest = hashlib.sha256(json.dumps(names, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
+    if not names or GENERAL_COMMAND_MAPPING_SHA256 is None or digest != GENERAL_COMMAND_MAPPING_SHA256:
+        raise ValueError('general command mapping needs renewed selector review')
+    return names
+
+
 def dictionary_names():
     """Read explicitly named selections while leaving other descriptors numeric."""
     code = code_only((ROOT / 'include/voice_recognition.h').read_text())
@@ -72,12 +106,13 @@ def dictionary_names():
     return names
 
 
-def vocabulary_catalog(image, dictionary_count=43, *, validate_phrases=True):
+def vocabulary_catalog(image, dictionary_count=43, *, validate_phrases=True, validate_general_commands=True):
     """Link a reviewed descriptor prefix to bounded words and gameplay metadata."""
     if not 1 <= dictionary_count <= 256:
         raise ValueError('dictionary prefix bound must be between 1 and 256')
     bank = VocabularyBank(image)
     phrases = phrase_names() if validate_phrases else {}
+    general_commands = general_command_names() if validate_general_commands else {}
     selections = dictionary_names()
     words_address = image.symbol('gVoiceWordDefinitions')[1]
     dictionaries_address = image.symbol('gVoiceDictionaries')[1]
@@ -99,6 +134,8 @@ def vocabulary_catalog(image, dictionary_count=43, *, validate_phrases=True):
             if display['ascii'] is None or display['ascii'].rstrip('-').casefold() != expected:
                 raise ValueError('phrase selector disagrees with its retained vocabulary label')
             row['recovered_phrase_name'] = recovered
+        if command_type == 2 and command_value in general_commands:
+            row['recovered_general_command_name'] = general_commands[command_value]
         words.append(row)
     raw, dictionary_location = bank.read(dictionaries_address, dictionary_count * 8)
     dictionaries = []
@@ -119,6 +156,9 @@ def vocabulary_catalog(image, dictionary_count=43, *, validate_phrases=True):
     following, following_location = bank.read(dictionaries_address + dictionary_count * 8, 8)
     if phrases and {word['command_value'] for word in words if 'recovered_phrase_name' in word and word['dictionary_memberships']} != set(phrases):
         raise ValueError('named phrases need membership in the reviewed dictionary prefix')
+    if general_commands and {word['command_value'] for word in words if 'recovered_general_command_name' in word
+                             and any(member['dictionary_id'] < 43 for member in word['dictionary_memberships'])} != set(general_commands):
+        raise ValueError('named general commands need membership in the reviewed43 dictionary prefix')
     return dict(mapping=dict(rom_start=bank.start, rom_end=bank.end, ram_start=bank.base,
                              sha256=hashlib.sha256(image.read_rom(bank.start, bank.size)).hexdigest(),
                              original_loader=0x800404E8),
