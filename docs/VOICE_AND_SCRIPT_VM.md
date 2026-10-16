@@ -2653,6 +2653,38 @@ advancing into later entries remains unsupported. This is a distinction between
 an authenticated immediate footprint and safe future scrolling, not evidence that
 the neighboring words belong to a larger text array.
 
+The `scroll_board_presets` catalog authenticates both retained pointer views and
+their readable strings without exporting text content. It reports readable-entry
+counts separately from the nonzero words counted by the original pointer scan.
+The per-configuration `scroll_board_requests` inventory preserves all eighteen
+pushed operands, their numeric pop operations and unresolved local references.
+Colors retain their low eight bits; outline indices use signed-byte storage.
+These are conversions, not bounds checks. Uniform scale is relative to the
+current area's object scale, and speed is measured in pixels per second.
+
+The three retained creation requests are in the credits configuration. Its
+initializers set an origin near (29, 6, 43.7), scale 3.3 and speed 20.1. Each request
+uses text style zero and rotation (0, 180, -3) degrees:
+
+| Request offset | Preset | Columns × lines | Position relative to the origin | Relative scale | Speed | RGBA | Outline indices |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| 24778 | 0 | 17 × 11 | (0, 0, 0) | 3.3 | 20.1 | (255, 255, 255, 255) | (-1, 9) |
+| 24954 | 1 | 18 × 1 | (+0.1, +3.2, +0.1) | 3.3 × 1.02 | 0 | (206, 200, 184, 255) | (-1, -1) |
+| 25120 | 1 | 18 × 1 | (+0.1, -2.8, +0.27) | 3.3 × 1.06 | 0 | (206, 200, 184, 255) | (-1, -1) |
+
+The decimal values describe the authored inputs; the VM retains binary32
+rounding at each floating operation. Three original-instruction probes confirm
+all eighteen argument boxes at each native entry. The first executes the original
+local initializers; the later probes separately supply those same initial boxes.
+They stop before creation, so they do not establish rendering, allocation success
+or flow through all three creations in one live execution.
+
+Only the first returned hierarchy handle is directly stored, in root variable
+102; the other two results are discarded. There is no direct load of that root
+variable in the retained credits listing. Discarding a handle does not destroy
+its registered hierarchy. Indexed or external uses and the eventual hierarchy
+teardown remain separate lifetime questions.
+
 The four remaining allocation and text handlers now have complete conditional
 immediate reviews, including original creation callbacks, owned buffers, geometry,
 registry changes and cold-cache transfer requirements. Later drawing, GPU ownership,
@@ -3399,7 +3431,7 @@ unknown until supplied by a valid runtime state. Indexed loads, arithmetic and
 native-produced values are outside this analysis. Storage, frame binding and
 preservation conditions remain explicit obligations.
 
-Source-bound argument roles label original push order for 24 reviewed natives.
+Source-bound argument roles label original push order for 25 reviewed natives.
 Integer/float labels identify their numeric pop operations, without asserting a
 converted result or a successful effect. In particular, destination allowance is
 not speed, and `PostMessage` synthesizes argument1 rather than consuming it.

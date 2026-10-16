@@ -54,6 +54,8 @@ from .fishing_measurement_roles import fishing_measurement_roles
 from .object_query_roles import object_query_roles
 from .item_noun_helpers import item_noun_helper_roles
 from .passage_access import passage_access_requests
+from .scroll_boards import scroll_board_requests
+from .scroll_presets import scroll_board_presets
 
 
 def companion_sites(image):
@@ -176,6 +178,7 @@ def catalog(image, max_instructions=100000):
     local_preservation = local_preservation_contracts(frame_reviews)
     literal_context_snapshot = context_snapshot(frame_reviews)
     controls = control_scheme_catalog(image)
+    scroll_presets = scroll_board_presets(image)
     actor_by_name = {row['enum_name']: row for row in actors}
 
     def bind(file, site):
@@ -262,6 +265,8 @@ def catalog(image, max_instructions=100000):
                                                                if not decoded['diagnostics'] else dict(status='unresolved', predicates=[], scope='Incomplete decoded CFG.')),
                              passage_access_requests=(passage_access_requests(decoded['instructions'], snapshot=literal_context_snapshot)
                                                       if not decoded['diagnostics'] else dict(status='unresolved', requests=[], scope='Incomplete decoded CFG.')),
+                             scroll_board_requests=(scroll_board_requests(decoded['instructions'], snapshot=literal_context_snapshot)
+                                                    if not decoded['diagnostics'] else dict(status='unresolved', requests=[], scope='Incomplete decoded CFG.')),
                              messenger_contact_requests=messenger_contact_requests(decoded['instructions'], contact_policies),
                              costed_action_requests=costed_action_requests(decoded['instructions'], cost_policies['records'],
                                  preserved_natives=local_preservation['preserved_native_functions']),
@@ -342,6 +347,7 @@ def catalog(image, max_instructions=100000):
                 bedroom_name_catalog=name_catalog,
                 native_frame_effect_reviews=frame_reviews,
                 player_control_schemes=controls,
+                scroll_board_presets=scroll_presets,
                 voice_dictionary_source_requests=source_requests,
                 code_reference_roles=dict(roles), configurations=rows), decodes
 
@@ -364,7 +370,7 @@ def main(argv=None):
         report['elf_sha256'] = hashlib.sha256(args.elf.read_bytes()).hexdigest()
         report['decoder_sha256'] = hashlib.sha256(Path(__file__).with_name('formats.py').read_bytes()).hexdigest()
         report['analysis_sha256'] = {name: hashlib.sha256(Path(__file__).with_name(name + '.py').read_bytes()).hexdigest()
-                                     for name in ('catalog', 'stack', 'messages', 'actions', 'scenarios', 'actors', 'functions', 'table_returns', 'vocabulary', 'dictionaries', 'name_catalog', 'saved_dictionary', 'native_frames', 'control_schemes', 'windows', 'caller_frames', 'progress_fields', 'items', 'effects', 'transitions', 'responses', 'local_flow', 'paired_flow', 'contacts', 'motion_archives', 'model_parts', 'callee_contexts', 'native_arguments', 'caller_sources', 'path_item_helpers', 'name_selection_roles', 'fishing_record_helpers', 'fishing_measurement_roles', 'object_query_roles', 'item_noun_helpers', 'companion_snapshots', 'scene_region_snapshots', 'private_status_snapshots', 'tracked_creature_predicates', 'passage_access')}
+                                     for name in ('catalog', 'stack', 'messages', 'actions', 'scenarios', 'actors', 'functions', 'table_returns', 'vocabulary', 'dictionaries', 'name_catalog', 'saved_dictionary', 'native_frames', 'control_schemes', 'windows', 'caller_frames', 'progress_fields', 'items', 'effects', 'transitions', 'responses', 'local_flow', 'paired_flow', 'contacts', 'motion_archives', 'model_parts', 'callee_contexts', 'native_arguments', 'caller_sources', 'path_item_helpers', 'name_selection_roles', 'fishing_record_helpers', 'fishing_measurement_roles', 'object_query_roles', 'item_noun_helpers', 'companion_snapshots', 'scene_region_snapshots', 'private_status_snapshots', 'tracked_creature_predicates', 'passage_access', 'request_arguments', 'scroll_boards', 'scroll_presets')}
         report['native_frame_review_sha256'] = review_manifest_fingerprint()
         files = {'catalog.json': report, **{name + '.json': row for name, row in decodes.items()}}
         # Validate every output before writing any content, including existing symlinks.
