@@ -21,8 +21,9 @@ _ARGUMENT_NAMES = ('x', 'y', 'z', 'pitch_degrees', 'yaw_degrees', 'kind')
 def item_kind_catalog(image):
     """Read the bounded 166-entry catalog and optional bounded display names.
 
-    ItemKind supplies the 0x74 stride, model at0x54 and alternate/default name
-    pointers at0x5C/0x64. Names are independent of whether a model exists.
+    ItemKind supplies the record stride, model and name pointers, collection
+    score and five interaction-category response values. Names and query
+    values are independent of whether a model exists.
     """
     image.allowed = {'.boot', '.ovl'}
     base = image.symbol('gItemKinds')[1]
@@ -62,12 +63,16 @@ def item_kind_catalog(image):
         model, = struct.unpack_from('>I', data, offset + 0x54)
         alternate, = struct.unpack_from('>I', data, offset + 0x5C)
         default, = struct.unpack_from('>I', data, offset + 0x64)
+        collection_value, = struct.unpack_from('>i', data, offset + 0x6C)
+        interaction_responses = {str(category): data[offset + 0x17 + category]
+                                 for category in range(1, 6)}
         rows.append(dict(item_kind=kind, configuration=base + offset, model_template=model,
+                         collection_value=collection_value, interaction_responses=interaction_responses,
                          has_model_template=bool(model),
                          display_names=dict(alternate=display_name(alternate), default=display_name(default))))
     return dict(count=_COUNT, stride=_STRIDE, entries=rows,
                 table=dict(name='gItemKinds', size=len(data), sha256=_TABLE_SHA256, **location),
-                scope='Retained catalog identities and borrowed display labels only. Kinds0 and165 have null model templates; membership alone is not a valid creation contract.')
+                scope='Retained catalog identities, borrowed display labels, collection scores and unsigned interaction-category response values. Response categories do not establish transformation causes. Kinds 0 and 165 have null model templates; membership alone is not a valid creation contract.')
 
 
 def item_creation_requests(instructions, catalog):

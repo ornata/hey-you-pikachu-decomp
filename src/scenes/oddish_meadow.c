@@ -50,7 +50,7 @@ void oddishMeadowSpawnGrowthResident(f32 *position, s32 residentIndex) {
     u8 *record;
     u32 random;
 
-    state = progressGetValue(residentIndex + 0x6A);
+    state = progressGetValue(residentIndex + PROGRESS_FIELD_ODDISH_MEADOW_GROWTH_STAGE_SLOT_0);
     if (progressGetValue(PROGRESS_FIELD_SHOPPING_ERRAND_ACTIVE) == 0) {
         record = &D_8014E254_scene_oddish_meadow;
     } else {
@@ -118,13 +118,13 @@ void oddishMeadowResetCompletedGrowth(void) {
     s32 i;
     s32 count = 0;
     for (i = 0; i < 5; i++) {
-        if (progressGetValue(i + 0x6A) >= 4) {
+        if (progressGetValue(i + PROGRESS_FIELD_ODDISH_MEADOW_GROWTH_STAGE_SLOT_0) >= 4) {
             count++;
         }
     }
     if (count == 5) {
         for (i = 0; i < 5; i++) {
-            progressSetValue(i + 0x6A, 0);
+            progressSetValue(i + PROGRESS_FIELD_ODDISH_MEADOW_GROWTH_STAGE_SLOT_0, 0);
         }
     }
 }
@@ -198,7 +198,7 @@ void oddishMeadowInitializeRegularObjects(void) {
     i = 0;
     var_s2 = 0;
     for (; i < 5; i++) {
-        if (progressGetValue(i + 0x6A) >= 2) {
+        if (progressGetValue(i + PROGRESS_FIELD_ODDISH_MEADOW_GROWTH_STAGE_SLOT_0) >= 2) {
             var_s2 += 1;
         }
     }

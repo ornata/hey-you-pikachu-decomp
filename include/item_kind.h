@@ -45,7 +45,7 @@ typedef struct {
     /* 0x0C */ s32 replacement;               ///< Replacement kind selected for transformation.
     /* 0x10 */ f32 growthMax;                 ///< Maximum replenishing search priority.
     /* 0x14 */ f32 growthRate;                ///< Search-priority replenishment rate.
-    /* 0x18 */ u8 response[5];                ///< Transformation responses for causes one through five.
+    /* 0x18 */ u8 response[5];                ///< Unsigned response values for interaction categories one through five.
     /* 0x20 */ f32 scale;                     ///< Default scale relative to the scene scale.
     /* 0x24 */ f32 size;                      ///< Radius override, or ITEM_DIMENSION_FROM_MODEL for the model default.
     /* 0x28 */ f32 motionCoefficient;         ///< Base coefficient for gravity and horizontal friction.
@@ -63,7 +63,7 @@ typedef struct {
     /* 0x54 */ ItemModel *model;              ///< Borrowed model hierarchy template.
     /* 0x58 */ u8 color[4];                   ///< Environment red, green, blue and alpha components.
     /* 0x5C */ ItemText text[2];              ///< Persistent alternate names and help descriptions.
-    /* 0x6C */ s32 unk6C;                     ///< Offset 0x6C; purpose remains unresolved.
+    /* 0x6C */ s32 collectionValue;           ///< Score contributed by this kind during the collection presentation.
     /* 0x70 */ u8 unk70;                      ///< Offset 0x70; purpose remains unresolved.
     /* 0x71 */ u8 itemClass;                  ///< Item classification used by registry queries.
     /* 0x72 */ s16 availabilityField;         ///< Saved progress-field selector controlling item availability.
@@ -74,6 +74,7 @@ typedef char ItemKindBounceCountOffsetCheck[(((u32) & ((ItemKind *)0)->initialBo
 typedef char ItemKindFrictionOffsetCheck[(((u32) & ((ItemKind *)0)->frictionCoefficient) == 0x30) ? 1 : -1];
 typedef char ItemKindEffectsOffsetCheck[(((u32) & ((ItemKind *)0)->effect) == 0x40) ? 1 : -1];
 typedef char ItemKindMotionCoefficientOffsetCheck[(((u32) & ((ItemKind *)0)->motionCoefficient) == 0x28) ? 1 : -1];
+typedef char ItemKindCollectionValueOffsetCheck[(((u32) & ((ItemKind *)0)->collectionValue) == 0x6C) ? 1 : -1];
 typedef char ItemKindAvailabilityOffsetCheck[(((u32) & ((ItemKind *)0)->availabilityField) == 0x72) ? 1 : -1];
 
 /// Per-kind item motion, rendering, response and description configuration.

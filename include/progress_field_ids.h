@@ -131,9 +131,39 @@ enum {
         87, ///< Completed Cobalt-island treasure-hunt result sequences, including visits with no opened chests.
     PROGRESS_FIELD_PIKACHU_DISAPPEARANCE_EPISODES_COMPLETED =
         93, ///< Completed disappearance visits selecting first or repeat search narration.
+    PROGRESS_FIELD_DEMO_VARIANT_2_SELECTION_CREDIT =
+        95, ///< Saved selection credit for demo variant two; reset tests the previous variant.
+    PROGRESS_FIELD_DEMO_VARIANT_3_SELECTION_CREDIT =
+        96, ///< Saved selection credit for demo variant three, reset when selected.
+    PROGRESS_FIELD_DEMO_VARIANT_5_SELECTION_CREDIT =
+        97, ///< Saved selection credit for demo variant five, reset when selected.
+    PROGRESS_FIELD_DEMO_VARIANT_4_SELECTION_CREDIT =
+        98, ///< Saved selection credit for demo variant four, reset when selected.
+    PROGRESS_FIELD_DEMO_VARIANT_6_SELECTION_CREDIT =
+        99, ///< Saved selection credit for demo variant six, reset when selected.
     PROGRESS_FIELD_VILEPLUME_MEADOW_VISIT_PENDING =
-        100,                                     ///< Next meadow visit uses five Vileplume; consumed on arrival.
-    PROGRESS_FIELD_ODDISH_GROWTH_PROGRESS = 111, ///< Special meadow Oddish growth and scale progress.
+        100, ///< Next meadow visit uses five Vileplume; consumed on arrival.
+    PROGRESS_FIELD_SPRINGLEAF_ENTRANCE_GROWTH_STAGE_SLOT_0 =
+        101, ///< Springleaf entrance resident slot 0: zero/one Oddish, two/three Gloom, four or above Vileplume.
+    PROGRESS_FIELD_SPRINGLEAF_ENTRANCE_GROWTH_STAGE_SLOT_1 =
+        102, ///< Springleaf entrance resident slot 1: zero/one Oddish, two/three Gloom, four or above Vileplume.
+    PROGRESS_FIELD_SPRINGLEAF_ENTRANCE_GROWTH_STAGE_SLOT_2 =
+        103, ///< Springleaf entrance resident slot 2: zero/one Oddish, two/three Gloom, four or above Vileplume.
+    PROGRESS_FIELD_SPRINGLEAF_ENTRANCE_GROWTH_STAGE_SLOT_3 =
+        104, ///< Springleaf entrance resident slot 3: zero/one Oddish, two/three Gloom, four or above Vileplume.
+    PROGRESS_FIELD_SPRINGLEAF_ENTRANCE_GROWTH_STAGE_SLOT_4 =
+        105, ///< Springleaf entrance resident slot 4: zero/one Oddish, two/three Gloom, four or above Vileplume.
+    PROGRESS_FIELD_ODDISH_MEADOW_GROWTH_STAGE_SLOT_0 =
+        106, ///< Oddish meadow resident slot 0: zero/one Oddish, two/three Gloom, four or above Vileplume.
+    PROGRESS_FIELD_ODDISH_MEADOW_GROWTH_STAGE_SLOT_1 =
+        107, ///< Oddish meadow resident slot 1: zero/one Oddish, two/three Gloom, four or above Vileplume.
+    PROGRESS_FIELD_ODDISH_MEADOW_GROWTH_STAGE_SLOT_2 =
+        108, ///< Oddish meadow resident slot 2: zero/one Oddish, two/three Gloom, four or above Vileplume.
+    PROGRESS_FIELD_ODDISH_MEADOW_GROWTH_STAGE_SLOT_3 =
+        109, ///< Oddish meadow resident slot 3: zero/one Oddish, two/three Gloom, four or above Vileplume.
+    PROGRESS_FIELD_ODDISH_MEADOW_GROWTH_STAGE_SLOT_4 =
+        110, ///< Oddish meadow resident slot 4: zero/one Oddish, two/three Gloom, four or above Vileplume.
+    PROGRESS_FIELD_ODDISH_GROWTH_PROGRESS = 111,          ///< Special meadow Oddish growth and scale progress.
     PROGRESS_FIELD_LUCKY_HOOK_EXPLANATION_RECORDED = 154, ///< Fishing script has processed the lucky-hook explanation.
     PROGRESS_FIELD_FISHING_PROFICIENCY = 155,             ///< Adaptive fishing score, zero through fifteen.
     PROGRESS_FIELD_FISHING_TOTAL_CATCH_COUNT = 156,       ///< Cumulative caught Pokemon across fishing visits.

@@ -137,18 +137,6 @@
     {
       "file": "include/item_kind.h",
       "record": "ItemKind",
-      "member": "unk6C",
-      "line": 63,
-      "declaration": "s32 unk6C;",
-      "known_facts": "A signed word at 0x6C follows the two persistent name/help text records.",
-      "reason": "No semantic interpretation is established by the named consumers; raw or interior-alias consumers still require review.",
-      "next_evidence": "Trace catalog-tail reads in item descriptions, interactions and scene-specific consumers, including interior-symbol aliases at 0x6C.",
-      "matching_constraint": "Preserve the 0x74-byte catalog stride, signedness, width, offsets, initializer values and original strict object symbols/relocations.",
-      "evidence": "include/item_kind.h (layout and size checks); src/ovl/item_registry.c (166 authored catalog rows and creation consumers)"
-    },
-    {
-      "file": "include/item_kind.h",
-      "record": "ItemKind",
       "member": "unk70",
       "line": 64,
       "declaration": "u8 unk70;",

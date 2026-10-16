@@ -5160,10 +5160,10 @@
         "Consumed numeric operands lie above protected locals and frame metadata. Integer and code-reference payloads are s32; finite floating operands must truncate to representable s32. Caller actor/state, captured VM and writable values remain live, with no concurrent context replacement. Read catalog/object/pool storage is stable and does not overlap writable VM/value/frame storage.",
         "Only the immediate conditional source-bound query and normal return are reviewed. No retail reachability, retained-resource lifetime or later gameplay behavior is established. The wrapper returns zero to continue and replaces operands with an integer result; no pointer ownership is transferred.",
         "Converted operand is a catalog kind in0 through165, not an object handle. No bounds or live-object check occurs. The original166-entry ItemKind table has0x74-byte stride; direct interior symbol view reads signed32 at entry+0x6C. Negative or larger indices are unsupported.",
-        "The collection-value interior symbol is0x80125AAC. Read one full signed32 word, with no scaling, clamping, score accumulation or formatting. ItemKind.unk6C is this same collection value, also used by presentationGetItemCollectionValue and added to the collection-results score by its sequence consumer.",
+        "The collection-value interior symbol is0x80125AAC. Read one full signed32 word, with no scaling, clamping, score accumulation or formatting. ItemKind.collectionValue is this same collection value, also used by presentationGetItemCollectionValue and added to the collection-results score by its sequence consumer.",
         "No catalog/global object state, handle pool, iterator, registry, callback, allocation, queue or SDK transport is touched. Only VM pop/push storage and depth change. The interior symbol declarations outside the wrapper are bound by the source-unit fingerprint."
       ],
-      "evidence": "Original Ghidra 0x8011FFFC confirms direct0x74-stride signed32 load. Catalog ownership and query distinction are source-bound; no runtime claim."
+      "evidence": "Original Ghidra 0x8011FFFC confirms direct0x74-stride signed32 load. Catalog ownership and query distinction are source-bound; no runtime claim. Original pure-interpreter observations cover 51 actual retail catalog kinds, including all 49 distinct collection values (0 through 69800) and both table boundaries. These establish bounded results and protected storage only; signedness additionally relies on original word loads and the signed catalog declaration. Frozen local evidence: build/semantic-review/agent-item-catalog-contracts/."
     },
     {
       "function": "actorScriptPlayerTryHoldItem",
@@ -5378,6 +5378,38 @@
         "The reviewed original VM numeric conversion and integer push semantics, target-compatible record layouts and strict matching authentication remain prerequisites. No SDK transport, memory primitive, release callback or retained stack pointer is introduced by the restore helper. This static contract does not establish future item or hierarchy lifetimes, and no runtime claim is made."
       ],
       "evidence": "Original Ghidra wrapper 0x8011FCD0 and complete helper 0x80114C80 through 0x80114CC4 confirm direct live lookup, ownership byte zero, hierarchy-clear call with mask 2 and itemSetMode with zero. There is no release or collision-register call. Original mode helper 0x8011443C and hierarchy clear 0x80008E50 establish the conditional flag writes. No runtime claim is made.",
+      "runtime_status": "untested"
+    },
+    {
+      "function": "actorScriptPushMessengerHandle",
+      "file": "src/ovl/actor_script_collection_profile.c",
+      "sha256": "ff4882a3c33e2d71857bb45f78967d523e1205d6bc90982f5f5d93961e655992",
+      "effect": "append_scalar",
+      "arguments": 0,
+      "stack_delta": 1,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "result_semantics": "Append the currently stored messenger handle as an integer; no live-object lookup is performed.",
+      "dependencies": [
+        "function:src/ovl/script_vm.c:scriptVmPushInteger",
+        "function:src/ovl/script_vm.c:scriptVmPushValue",
+        "function:src/ovl/script_vm.c:scriptValueSetInteger",
+        "file:include/actor_script.h",
+        "file:include/object_types.h",
+        "file:include/script_vm.h",
+        "file:include/script_value.h",
+        "file:src/ovl/actor_script_collection_profile.c",
+        "file:config/symbol_addrs.txt",
+        "file:docs/LOCAL_SDK_FILES.json",
+        "file:config/pikachu.yaml",
+        "file:tools/materialize_ultralib.py"
+      ],
+      "preconditions": [
+        "The caller has live RuntimeObjectPrefix and ActorScriptState storage with a live saved VM and initialized value buffer. One result slot is writable above protected locals and frame metadata. The integer push changes only the VM stack cursor and result ScriptValue tag/payload, including the tag reset performed by scriptValueSetInteger. Actor state, sampled globals, C stack and program storage do not overlap that result slot or VM metadata. Concurrent mutation, destruction and context replacement are excluded. No allocation, callback, asynchronous operation or borrowed stack pointer retention occurs; no future object lifetime or runtime behavior is claimed.",
+        "The signed 32-bit gTrackedMessengerHandle storage at 0x80099960 is readable and stable during this call. Zero, stale and destruction-marked handles are returned unchanged. This scalar copy neither borrows a messenger pointer nor extends a messenger lifetime.",
+        "The original ROM-authenticated SDK bcopy implementation used by scriptValueSetInteger copies exactly the four-byte payload from its live C-stack scalar into the local ScriptValue. The local box is synchronously copied into the VM result slot and no pointer to it is retained. The matching SDK materialization and strict verification prerequisite remains in force; arbitrary replacement SDK implementations are outside this review."
+      ],
+      "evidence": "Original Ghidra 0x80120278 through 0x801202A4 loads the word at 0x80099960 and the caller VM, then calls integer push and returns zero. There is no registry lookup, callback or messenger-state write. The local declaration and linker address are source-bound. No runtime claim is made.",
       "runtime_status": "untested"
     }
   ]

@@ -51,8 +51,8 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 836,
-      "unique_spellings": 462,
+      "occurrences": 828,
+      "unique_spellings": 458,
       "files": 65
     },
     "cast_offset_candidates": {
@@ -4155,16 +4155,8 @@
       "matching_exceptions": {},
       "locations": {
         "raw_offset_candidates": {
-          "residentIndex + 0x6A": [
-            "53:30"
-          ],
           "state - 2": [
             "77:50"
-          ],
-          "i + 0x6A": [
-            "121:30",
-            "127:30",
-            "201:30"
           ]
         }
       }
@@ -4190,16 +4182,8 @@
       "matching_exceptions": {},
       "locations": {
         "raw_offset_candidates": {
-          "residentIndex + 0x65": [
-            "60:30"
-          ],
           "state - 2": [
             "83:50"
-          ],
-          "i + 0x65": [
-            "139:30",
-            "145:30",
-            "198:30"
           ]
         }
       }

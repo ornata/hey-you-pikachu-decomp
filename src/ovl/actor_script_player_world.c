@@ -663,7 +663,7 @@ s32 actorScriptProbeGroundMaterialAtHeightOffset(u8 *actor) {
     return 0;
 }
 
-/// Read ground height along the actor heading.
+/// Read ground height along the actor's script heading.
 /// \param actor Actor whose script VM supplies signed horizontal distance and receives the ground height, or zero when no ground node is found; the query starts at the actor height.
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011EEAC (0x8011EEAC).
@@ -675,8 +675,8 @@ s32 actorScriptGetGroundHeightAhead(u8 *actor) {
     return 0;
 }
 
-/// Read ground height ahead with a vertical query offset.
-/// \param actor Actor whose script VM supplies signed horizontal distance followed by vertical height offset and receives the ground height, or zero when no ground node is found.
+/// Read ground height along the actor's script heading with an offset query height.
+/// \param actor Actor whose script VM supplies signed horizontal distance followed by a search-height offset and receives the world ground height, or zero when no ground node is found.
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011EEF8 (0x8011EEF8).
 s32 actorScriptGetGroundHeightAtHeightOffset(u8 *actor) {
