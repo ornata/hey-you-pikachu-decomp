@@ -584,7 +584,8 @@
           "function:src/ovl/script_vm.c:actorUpdateScriptVm",
           "file:include/script_action_flags.h",
           "file:include/item_response.h",
-          "file:include/actor_parts.h"
+          "file:include/actor_parts.h",
+          "file:include/item_category.h"
         ],
         "phases": [
           {

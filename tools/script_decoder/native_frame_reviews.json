@@ -599,6 +599,11 @@
       "file": "include/interaction.h",
       "sha256": "710166720c4da2261d6613136ff12b68dae003feea3fb049425adc41edc5056b"
     },
+    "file:include/item_category.h": {
+      "kind": "file",
+      "file": "include/item_category.h",
+      "sha256": "4d4604887be44c9f26e73d4ada61060363efa80feea96e1e43e4677ec3188546"
+    },
     "file:include/item_kind.h": {
       "kind": "file",
       "file": "include/item_kind.h",
@@ -627,7 +632,7 @@
     "file:include/item_queries.h": {
       "kind": "file",
       "file": "include/item_queries.h",
-      "sha256": "7d9ea097b547b8f7c002fbcc6cb91f8d1b5ba34943d54b14583f747ca37c341b"
+      "sha256": "6ef839277312a9a4280932ceccdae920f2822d5952e846203b2f3553739b4bc2"
     },
     "file:include/item_response.h": {
       "kind": "file",
@@ -1277,7 +1282,12 @@
     "file:include/voice_commands.h": {
       "kind": "file",
       "file": "include/voice_commands.h",
-      "sha256": "15dc4f7ed05382bdc0541c0d2b6ddb2fa8f31fd5713b8baa3d4592771efa9b53"
+      "sha256": "ad45ac3453d6fa42ea5487d75f534aa759f92b18f4481663fc8deab133c1124f"
+    },
+    "file:include/voice_item_selector.h": {
+      "kind": "file",
+      "file": "include/voice_item_selector.h",
+      "sha256": "743644656d62236b4efbcb31395cf6966ea90d834b907be926fe500b0cc8a994"
     },
     "file:include/voice_phrases.h": {
       "kind": "file",
@@ -1592,7 +1602,7 @@
     "file:src/ovl/item_registry.c": {
       "kind": "file",
       "file": "src/ovl/item_registry.c",
-      "sha256": "45b5a50d6468bd258b571575448b80f860b8a454b863491dd95a08356bc2445e"
+      "sha256": "adeed7e16a4ce3a0744544201cc3b1541074a4cb347e6ec916071a9924b586f3"
     },
     "file:src/ovl/item_special_behaviors.c": {
       "kind": "file",
@@ -4309,23 +4319,23 @@
   "callback_files": [
     {
       "file": "native_frame_reviews/src__ovl__actor_script_action_commands.json",
-      "sha256": "58e7f624ed43e7dabb2bef24959ed623e76ae9a777b7f7f22bab8898b6ddae26"
+      "sha256": "927fc98f23a03b8011999e26f8a0fedc047c2eb68582c75a7b44c9e43fc21374"
     },
     {
       "file": "native_frame_reviews/src__ovl__actor_script_collection_profile.json",
-      "sha256": "4b7ab0a2365f91ec251f86aa106034bbfb5d3cf348b1f144ff3b35f0e6bc20b3"
+      "sha256": "e28ca86fd2020aabe8490c197bd1e10c6b1fa9b5d20061c501c0b3975dc13830"
     },
     {
       "file": "native_frame_reviews/src__ovl__actor_script_messages_items.json",
-      "sha256": "3dfaaa12fb24039e9d0ad84273a6a418a47e94b9552d7471ad3264f05979e65a"
+      "sha256": "a0f6d031a43b09d567cbc9d5b11da83f16abe6a722e115bdbc1722517ed547b0"
     },
     {
       "file": "native_frame_reviews/src__ovl__actor_script_player_world.json",
-      "sha256": "e908a5a085e5285ae1dd5f63b40ecb88c8d51e0dce8af313684b849b6fa40a43"
+      "sha256": "ead3fb16c1208a1e464ea8a8d91546ed2765da5c45625cb433d72ad5600bcd2d"
     },
     {
       "file": "native_frame_reviews/src__ovl__script_demo_item_commands.json",
-      "sha256": "60271d60898675eb9f2e650e4263abeba267181e4132f1943a875af694040455"
+      "sha256": "d66e8a192f4c8597933997222f09e431894ff1fb7fb49e90aa4f0d2437f84083"
     }
   ]
 }

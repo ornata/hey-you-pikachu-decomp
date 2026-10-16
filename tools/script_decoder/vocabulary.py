@@ -120,6 +120,17 @@ def map_destination_names():
                           MAP_DESTINATION_MAPPING_SHA256)
 
 
+ITEM_NOUN_GROUP_MAPPING_SHA256 = '367f5ab198e0282721f5fabd0ff35959e455d97e4ea8da5ccf13f49c3c81d9da'
+
+
+def item_noun_group_names():
+    """Read scoped noun-group requests without inventing direct item-kind aliases."""
+    code = code_only((ROOT / 'include/voice_item_selector.h').read_text())
+    _category_literal(code, 'VOICE_ITEM_NOUN_MESSAGE_TYPE', 6)
+    return _reviewed_enum(code, 'VoiceItemNounGroupValue', 'VOICE_ITEM_NOUN_GROUP_',
+                          ITEM_NOUN_GROUP_MAPPING_SHA256)
+
+
 def dictionary_names():
     """Read explicitly named selections while leaving other descriptors numeric."""
     code = code_only((ROOT / 'include/voice_recognition.h').read_text())
@@ -130,7 +141,7 @@ def dictionary_names():
     return names
 
 
-def vocabulary_catalog(image, dictionary_count=43, *, validate_phrases=True, validate_general_commands=True, validate_map_destinations=True):
+def vocabulary_catalog(image, dictionary_count=43, *, validate_phrases=True, validate_general_commands=True, validate_map_destinations=True, validate_item_noun_groups=True):
     """Link a reviewed descriptor prefix to bounded words and gameplay metadata."""
     if not 1 <= dictionary_count <= 256:
         raise ValueError('dictionary prefix bound must be between 1 and 256')
@@ -138,6 +149,7 @@ def vocabulary_catalog(image, dictionary_count=43, *, validate_phrases=True, val
     phrases = phrase_names() if validate_phrases else {}
     general_commands = general_command_names() if validate_general_commands else {}
     map_destinations = map_destination_names() if validate_map_destinations else {}
+    item_noun_groups = item_noun_group_names() if validate_item_noun_groups else {}
     selections = dictionary_names()
     words_address = image.symbol('gVoiceWordDefinitions')[1]
     dictionaries_address = image.symbol('gVoiceDictionaries')[1]
@@ -163,6 +175,8 @@ def vocabulary_catalog(image, dictionary_count=43, *, validate_phrases=True, val
             row['recovered_general_command_name'] = general_commands[command_value]
         if command_type == 18 and command_value in map_destinations:
             row['recovered_map_destination_name'] = map_destinations[command_value]
+        if command_type == 6 and command_value in item_noun_groups:
+            row['recovered_item_noun_group_name'] = item_noun_groups[command_value]
         words.append(row)
     raw, dictionary_location = bank.read(dictionaries_address, dictionary_count * 8)
     dictionaries = []
@@ -189,6 +203,9 @@ def vocabulary_catalog(image, dictionary_count=43, *, validate_phrases=True, val
     if map_destinations and {word['command_value'] for word in words if 'recovered_map_destination_name' in word
                              and any(member['dictionary_id'] == 31 for member in word['dictionary_memberships'])} != set(map_destinations):
         raise ValueError('named map destinations need membership in reviewed dictionary31')
+    if item_noun_groups and {word['command_value'] for word in words if 'recovered_item_noun_group_name' in word
+                            and any(member['dictionary_id'] < 43 for member in word['dictionary_memberships'])} != set(item_noun_groups):
+        raise ValueError('named item noun groups need membership in the reviewed43 dictionary prefix')
     return dict(mapping=dict(rom_start=bank.start, rom_end=bank.end, ram_start=bank.base,
                              sha256=hashlib.sha256(image.read_rom(bank.start, bank.size)).hexdigest(),
                              original_loader=0x800404E8),

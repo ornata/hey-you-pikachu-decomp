@@ -1700,19 +1700,19 @@ ItemCategoryRange gItemCategoryRanges[19] = {
     { 0x2, 0x1, 0x4 },
     { 0x3, 0x9, 0x13 },
     { 0x4, 0x14, 0x24 },
-    { 0x5, 0x1E, 0x24 },
+    { ITEM_CATEGORY_ACORN, 0x1E, 0x24 },
     { 0x6, 0x25, 0x31 },
-    { 0x7, 0x2D, 0x2F },
+    { ITEM_CATEGORY_GENERIC_MUSHROOM, 0x2D, 0x2F },
     { 0x8, 0x33, 0x3C },
     { 0x9, 0x3D, 0x43 },
-    { 0xA, 0x3D, 0x41 },
+    { ITEM_CATEGORY_BALLOON, 0x3D, 0x41 },
     { 0xB, 0x49, 0x4B },
     { 0xC, 0x58, 0x65 },
     { 0xD, 0x5C, 0x61 },
     { 0xE, 0x58, 0x69 },
     { 0xF, 0x66, 0x69 },
     { 0x10, 0x6A, 0x79 },
-    { 0x11, 0x7C, 0x89 },
+    { ITEM_CATEGORY_CRATE, 0x7C, 0x89 },
     { 0x12, 0x93, 0xA2 },
 };
 // clang-format on
@@ -3011,7 +3011,8 @@ s32 itemGetAvailableSlots(void) {
 
 /// Check whether an item kind belongs to a configured category.
 /// \param kind Item kind identifier to test.
-/// \param category Category identifier from zero through eighteen.
+/// \param category Membership category index from zero through eighteen; established names use ItemCategoryId.
+/// \note Voice noun-group values use a separate domain and are not accepted as category indices.
 /// \returns One if the kind belongs to the category, or zero otherwise.
 /// \note Original decompilation identifier: \c func_80114FD4 (0x80114FD4).
 s32 itemKindIsInCategory(s32 kind, s32 category) {

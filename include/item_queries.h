@@ -5,6 +5,7 @@
 #define ITEM_QUERIES_H
 
 #include "ultra64.h"
+#include "item_category.h"
 
 /// Read the remaining capacity for live items.
 /// \returns Sixty minus the live item count; negative if callers have exceeded the nominal capacity.
@@ -13,7 +14,8 @@ s32 itemGetAvailableSlots(void);
 
 /// Check whether an item kind belongs to a configured category.
 /// \param kind Item kind identifier to test.
-/// \param category Category identifier from zero through eighteen.
+/// \param category Membership category index from zero through eighteen; established names use ItemCategoryId.
+/// \note Voice noun-group values use a separate domain and are not accepted as category indices.
 /// \returns One if the kind belongs to the category, or zero otherwise.
 /// \note Original decompilation identifier: \c func_80114FD4 (0x80114FD4).
 s32 itemKindIsInCategory(s32 kind, s32 category);

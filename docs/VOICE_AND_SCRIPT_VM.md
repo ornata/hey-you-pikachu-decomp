@@ -2499,6 +2499,44 @@ indices nine or above to zero, so even an available home request does not preser
 index nine through the rest of this function. The decoder's destination names
 identify requests rather than successful transitions, recognition or delivery.
 
+Category-six item nouns have another distinct domain.
+[`VoiceItemNounGroupValue`](../include/voice_item_selector.h) names eleven group
+selectors, while [`ItemCategoryId`](../include/item_category.h) names four
+established membership categories. Neither is an allocatable item-kind ID, and
+subtracting a fixed offset does not convert between them. Held-item noun checks
+connect the domains as follows:
+
+| Noun selector | Membership category | Inclusive item-kind range |
+| --- | --- | --- |
+| 171, acorn | 5, acorn | 30–36 |
+| 172, mushroom | 7, generic mushroom | 45–47 |
+| 173, balloon | 10, balloon | 61–65 |
+| 179, crate/cardboard box | 17, crate | 124–137 |
+
+Eight retained search helpers have a conflicting outer guard: category six and
+`0 < value < 165`, followed by seven branches comparing group selectors
+166–172. Under normal entry, stable signed-integer root values and valid disjoint
+storage, those group branches cannot run. The admitted direct arm searches for
+exact kind 1–164 using the caller's distance, a 360-degree cone, world ownership
+and unweighted selection. Other guard values return the initialized zero. The
+catalog's `item_noun_helper_roles` retains the complete definition and authored
+ranges while explicitly marking the group-arm conflict; it does not repair the
+script or prove retail caller reachability.
+
+Twenty-two original front-yard helper probes confirm the guard behavior. With an
+empty valid registry, direct values one and 164 enter the real search; tested
+boundaries and group values 166–179 skip it. All return boxed zero with protected
+storage intact. This does not prove a nonzero search result or subsequent object
+lifetime. Separately, the authored dormant mushroom arm requests kinds 37–49,
+which differs from the held-item predicate's category-seven range 45–47.
+
+Direct noun labels can also depend on the dictionary. Dictionary seven uses
+lily, sunflower and skunk-blossom labels for values 51–53; other retained records
+use daisy, petunia and tulip, matching the corresponding catalog defaults. These
+aliases do not justify globally renaming item kinds 51–53. Group values 168, 177
+and 178 retain numeric identities because no category-six vocabulary record
+establishes their names in the reviewed bank.
+
 The bedroom response selector's guarded table connects them to timed programs:
 
 | Phrase selector | Timed program |

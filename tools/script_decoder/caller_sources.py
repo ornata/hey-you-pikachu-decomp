@@ -15,13 +15,13 @@ from .path_item_helpers import path_item_helper_roles
 
 # Exact expanded reviews, approved independently for their boxed integer results.
 PRODUCER_BINDINGS = {'actorScriptFindObjectInFacingCone': {'arguments': 4,
-                                       'review_sha256': '302d24fae5d2e9f8ca5dcc8ef4893336810b12b9948ede79dfa394dcf449a236',
+                                       'review_sha256': '7dd143cbd56a27637f62af157b15335695d91a57c7fcb042217448a6eb7be1e2',
                                        'result_role': 'selected_runtime_object_handle',
                                        'scope': 'No claim of surviving handle, ownership, '
                                                 'caller range validity or successful future '
                                                 'access.'},
  'actorScriptCreateItem': {'arguments': 6,
-                           'review_sha256': 'be5fec35452bd2c797d1d54c2e7db1f55ea56a8f46cacf1c0a9a166bd553067e',
+                           'review_sha256': '041cdb6f7eb693d23d3beddf25e029797b69897f44802ccaa9b12e32b37f52c4',
                            'result_role': 'created_item_handle',
                            'scope': 'Requires successful allocation and complete reviewed '
                                     'retail initializer/resource/transport domains. No '

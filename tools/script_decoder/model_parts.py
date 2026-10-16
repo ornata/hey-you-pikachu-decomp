@@ -12,7 +12,7 @@ from .native_frames import fingerprint, function_source
 
 SOURCE_PINS = {
     'include/item_kind.h': 'ff12c7e80c6dedfc7f2295f4f024aeff00dd88738f836fdbba9ffff3f77d34b5',
-    'src/ovl/item_registry.c': '45b5a50d6468bd258b571575448b80f860b8a454b863491dd95a08356bc2445e',
+    'src/ovl/item_registry.c': 'adeed7e16a4ce3a0744544201cc3b1541074a4cb347e6ec916071a9924b586f3',
     'src/ovl/item_special_behaviors.c': '76f22ffeb515724a971b2929b66a8c5cf7a0220e63aaec43006169b2d60f6092',
     'include/item_types.h': '70cd1080b3fa819ba4e5997fe11582348f322c9d0c8e2055fc942325984111bc',
     'include/actor_script.h': 'b35b0c9ae80929cf2c8abafe678b8b52d3386be97c8c4fada69d9bdbe351640e',
