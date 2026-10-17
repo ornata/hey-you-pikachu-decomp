@@ -727,6 +727,45 @@ probes cover negative and positive updates, stopping before sound-native bodies
 on the playback branches. They do not establish sound output, random-reset
 behavior, string parsing or complete live policy execution.
 
+### Activity initialization, tracking and waits
+
+The catalog's `activity_helper_roles` binds the remaining initialization,
+loop-exit and tracking helpers of each verified selector-118 family. The
+initializer and tracking helper are complete 145-byte and 50-byte functions.
+The wait helper must match the actual descendant chain of that caller's verified
+cleanup, including Bedroom's additional sound hook.
+
+Initialization resets the VM's resettable elapsed timer, preserving total elapsed
+time. It sets one scoped flag to one, clears three roots used by the companion
+snapshot, records the actor's approximate three-dimensional distance from the
+world origin, initializes another snapshot counter to 100, and requests contact
+mode two. The distance is a position norm, not distance traveled. Five store
+coordinates are linked to the actual snapshot roles; the first flag is retained
+as a separate scoped value. Inspected Ochre-deep consumers use it for first-step
+timer capture, effects, HUD setup and waypoint selection; that evidence does not
+make it a common snapshot field. Initialization does not establish a cleared workflow
+selector or an empty saved-continuation store.
+
+The tracking helper selects the player secondary target, requests action script
+18 with a deferred wait, then selects the primary target. The similar helper in
+the counter/distance policy requests script 17 in the same target order. These
+are action-script IDs, separate from actor action selectors. Secondary lookup can
+fail and retain stale target fields; primary assignment retains its handle and
+does not refresh or validate the stored destination. The sequence does not prove
+a completed turn or a stable target across the wait.
+
+The loop-exit helper requests a deferred loop exit, then timed action script 87
+for half a second and a sequencer-stop poll. Its ordinary descendant chain has
+three functions; Bedroom's has six, including the global-zero guard and sound
+state described above. Command absence is the stop predicate. Resource and
+scheduler contracts still apply, and eventual return is not established.
+
+Four full original-VM initializer probes cover zero, axis-aligned and asymmetric
+positions, including a nonexact three-dimensional norm. They authenticate 25
+executed original function bodies and compare VM, root, actor and guarded state.
+They confirm the timer and root stores without executing the deferred tracking
+sequence or the full live activity.
+
 ### Saved workflow continuations
 
 The catalog's `workflow_cleanup_roles` links complete saved-state producers,
