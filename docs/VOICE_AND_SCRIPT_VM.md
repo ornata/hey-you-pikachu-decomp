@@ -808,6 +808,51 @@ The probes stop before timed-action or external request bodies; they do not
 execute the full activity or establish selection probabilities. Full native,
 resource, numeric, frame and scheduling contracts remain required.
 
+### Walking request sequence
+
+The catalog's `walking_activity_roles` identifies seven complete selector-119
+families: a 423-byte main routine, a 76-byte message response and a 184-byte
+completion routine. Each is bound to its actual dispatch, snapshot, mask,
+initialization, shared policies, tracking and saved-workflow cleanup.
+
+The main routine starts a zero counter and a nominal five-through-nine limit
+from `RandomBelow(5) + 5`, initializes state and requests default mode one.
+Ordinary messages select the category-four policy or local response; elapsed
+flags select the shared elapsed policy. A counter strictly above the limit
+selects completion. Otherwise, when the sequencer command is absent, it samples
+the fallback target coordinates separately, adds 100 to Y and requests fixed
+tracking with zero allowance. It requests script 14 (walk-to-target start) for
+two seconds. The timed native yields before the counter increments; these are
+requests, without a guarantee of movement or completed animations.
+
+The local response requests numeric script 219 with a wait, calls the reviewed
+secondary-target/script-17/primary-target helper, requests script 163 with a wait,
+requests a clamped secondary-meter increase of ten, then calls cleanup.
+
+Completion requests script 180 (walk-to-trip cue zero), which immediately yields,
+then calls the delay helper with 1.5. The helper samples resettable VM elapsed
+time and yields while the binary32 elapsed difference is less than 1.5; equality
+returns zero. Ordinary configurations yield directly. Bedroom instead calls the
+reviewed yield/global-zero/audio chain, whose complete descendants must belong
+to this same workflow's cleanup. Its conditional sound and random-counter
+updates do not establish audible output or the shared global's purpose.
+
+After the delay, completion acknowledges the pending mailbox and initializes
+state, resetting elapsed time. It samples status and exits on mask two first,
+or otherwise on floating-point elapsed strictly greater than ten. Ten continues;
+the adjacent representable float above ten exits. It then requests HUD zero,
+tracking through script 17, script 141 (scratch-head cue zero) with a wait, and
+cleanup. Acknowledgment clears the pending flag, retaining payload fields; no
+voice origin or freshness is established. Resets, scheduling and deferred waits
+can prevent completion, so elapsed time is not a wall-clock deadline.
+
+Eight bounded original-instruction probes confirm the strict floating-point
+ten boundary. Six original-VM delay probes confirm initial sampling, retained
+yield frames, below/equal/above duration boundaries and backward clock movement.
+The delay probes use authored elapsed updates between dispatches and cover the
+ordinary direct-yield variant. They do not execute the complete activity or the
+Bedroom audio path. Source, resource, frame and native contracts remain required.
+
 ### Saved workflow continuations
 
 The catalog's `workflow_cleanup_roles` links complete saved-state producers,
