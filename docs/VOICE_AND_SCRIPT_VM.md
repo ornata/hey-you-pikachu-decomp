@@ -633,7 +633,7 @@ action mode seven. An ordinary-message flag takes precedence: stored message
 type four invokes a separate external helper, while other stored types invoke
 the local response. Otherwise, enabled elapsed-limit flags, the player-distance
 flag for at least sixty, and a counter strictly greater than the limit select
-external exit helpers. Those helpers remain explicit interpretation boundaries.
+external exit helpers. Their separately verified policies are described below.
 
 If none of these exit paths applies and the current sequencer command is absent,
 the routine calls another external helper, requests action script 237 and
@@ -663,6 +663,69 @@ parity conversion, actual random-limit initialization and below/equal/above
 counter boundaries. Seventeen executed original function bodies are authenticated.
 The probes stop before external request bodies and do not execute the full
 activity or establish a gameplay meaning for message argument zero.
+
+### Shared response and exit policies
+
+The catalog's `activity_policy_roles` follows three external response helpers
+from each verified selector-118 family. It checks every reachable local function
+and stops only at that response's verified saved-workflow cleanup. The policy's
+workflow coordinate and cleanup target must agree with the calling response.
+Message and status guards belong to that caller; these helper bodies do not
+establish a voice origin or a universal meaning for message type four.
+
+The counter/distance exit policy requests default action mode seven, HUD guide
+zero and contact mode one. It selects the player secondary target, requests
+action script 17 with a wait, then selects the primary target. It requests
+action script 48 with a wait, requests a secondary-meter adjustment of minus
+five, and invokes cleanup. Target selection and action requests do not prove
+that a turn or movement occurred; the meter adjustment remains clamped.
+Secondary-target lookup can fail and retain stale fields. Primary-target
+assignment does not validate the handle or refresh the stored position.
+
+The category-four policy requests HUD guide zero and contact mode one, attaches
+effect definition zero with animation track 167, and selects default action
+mode five. It requests action script 109 with a wait and, if a held handle is
+present, action script 79 with a wait. It selects secondary escape tracking,
+requests timed action script 15 for half a second and polls for sequencer stop,
+then requests timed action script 13 for two seconds and polls again before
+cleanup. There is no timeout or proof that either poll eventually finishes.
+For the active Pikachu, the track-167 effect request also consumes randomness
+and can add recorded reaction credit. Track 168 does not take that credit path.
+
+Six configurations use ordinary yielding polls. Bedroom additionally runs a
+conditional sound hook while polling. Its `[-1, 0]` operand reads shared global
+VM cell zero, rather than a caller-frame local. Logical negation preserves a
+floating input's tag and tests its original numeric value before the branch
+converts the Boolean result: zero
+allows the sound hook; nonzero values, including floating 0.5, skip it. Valid
+decimal-string values are parsed before this truth test. The global cell's wider
+purpose remains unresolved; other readers also use it for text and action paths.
+
+The sound hook maintains a program-local counter and conditionally requests
+sound 133 with randomized pan and volume. Positive counts decrement; negative
+counts other than minus one increment. Minus one and zero have distinct
+playback and random-reset paths, including a possible negative pause after zero.
+This preserves a separate sound-state and random-generator dependency; the
+poll is not a pure wait, and a sound request does not prove audible output.
+
+The elapsed-limit response requests HUD guide zero, attaches effect definition
+zero with animation track 168, and queues text converted from one caller-supplied
+boxed value. It requests action script 119 with a wait before cleanup. The value is
+retained as a root-coordinate dependency; the helper alone does not establish
+its textual content, resource kind or delivery. Ordinary VM string conversion
+can borrow a string value or format a numeric value into temporary text.
+
+All three policies inherit the reviewed immediate and deferred native contracts,
+valid numeric conversions, resources, handles and VM storage. Their zero returns
+do not establish an outcome or a fixed idle selector. Cleanup can restore a
+saved continuation, and external scheduling and lifetime obligations remain.
+
+Twelve bounded original-VM probes confirm the global guard and the pure counter
+updates. Twenty-one executed original function bodies are authenticated. Integer
+and floating zero take the sound-hook path; nonzero floats skip it. The counter
+probes cover negative and positive updates, stopping before sound-native bodies
+on the playback branches. They do not establish sound output, random-reset
+behavior, string parsing or complete live policy execution.
 
 ### Saved workflow continuations
 
