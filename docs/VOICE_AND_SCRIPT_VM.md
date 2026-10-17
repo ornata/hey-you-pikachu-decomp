@@ -581,8 +581,9 @@ resource lifetime and eventual completion remain separate obligations.
 The catalog's `activity_workflow_roles` links seven coordinate-scoped producers
 of `116 + RandomBelow(124 - 116)` to eight same-coordinate dispatch tests each.
 Selector 123 calls the reviewed rock-paper-scissors routine; selector 122 calls
-a reviewed player-relative request episode. The other six selectors retain
-numeric meanings. These are workflow selectors, separate from action-script IDs
+a reviewed player-relative request episode. Other targets remain numeric
+in this inventory; selector 118 has a separately verified response family below.
+These are workflow selectors, separate from action-script IDs
 and message categories; another use of literal 123 requests an action script.
 
 The producer is conditional on a distance snapshot, a secondary-meter threshold,
@@ -616,6 +617,52 @@ total. Unparsed gaps and interfunction wrappers remain uninterpreted. Native,
 VM and action-script definitions are fingerprinted; changed bindings or incomplete
 control flow leave these roles unresolved. External helpers retain their frame,
 resource, scheduling and lifetime obligations.
+
+### Repeated action requests and parity responses
+
+The catalog's `activity_response_roles` identifies seven instances of the
+selector-118 routine, linked to each program's actual workflow coordinate.
+Its complete local family has a 398-byte main function and a 138-byte response
+helper. Other workflow selectors remain separate; 118 is not an action-script
+ID or a global VM state name.
+
+The main function initializes a counter to zero and a limit from
+`RandomBelow(3) + 3`, nominally three through five under the random native's
+contract. Each iteration samples the companion status and requests default
+action mode seven. An ordinary-message flag takes precedence: stored message
+type four invokes a separate external helper, while other stored types invoke
+the local response. Otherwise, enabled elapsed-limit flags, the player-distance
+flag for at least sixty, and a counter strictly greater than the limit select
+external exit helpers. Those helpers remain explicit interpretation boundaries.
+
+If none of these exit paths applies and the current sequencer command is absent,
+the routine calls another external helper, requests action script 237 and
+increments the counter. It also explicitly yields on the loop path. The strict
+comparison is not a guarantee of a particular number of completed animations:
+requests yield, and external helpers can wait, mutate context or fail to return.
+
+The response helper calls an external helper before reading the stored message
+argument zero. It explicitly converts that value to an integer, then tests
+signed remainder by two. Floating input requires a finite, signed-32-bit
+representable result after truncation. An even result requests attached-effect
+definition zero with animation track 168, followed by action script 256 and a deferred wait;
+an odd result requests action script 234 and a deferred wait. These resource
+numbers belong to separate effect-definition, animation-track and action-script
+namespaces. No gameplay meaning for argument parity is established.
+
+After the requested action wait returns, both branches request a secondary-meter
+adjustment of ten and call the verified cleanup for the same workflow coordinate.
+That cleanup can restore a saved continuation. The meter adjustment is clamped;
+its argument does not establish a measured net change or an emotional response.
+Native, VM and shared snapshot/cleanup bindings must remain current. Captured
+message fields, indexed storage, deferred frames, resources and helper effects
+retain their documented preservation and lifetime conditions.
+
+Twenty-two bounded original-VM probes confirm signed integer and finite-float
+parity conversion, actual random-limit initialization and below/equal/above
+counter boundaries. Seventeen executed original function bodies are authenticated.
+The probes stop before external request bodies and do not execute the full
+activity or establish a gameplay meaning for message argument zero.
 
 ### Saved workflow continuations
 
