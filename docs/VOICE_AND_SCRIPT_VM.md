@@ -582,7 +582,7 @@ The catalog's `activity_workflow_roles` links seven coordinate-scoped producers
 of `116 + RandomBelow(124 - 116)` to eight same-coordinate dispatch tests each.
 Selector 123 calls the reviewed rock-paper-scissors routine; selector 122 calls
 a reviewed player-relative request episode. Other targets remain numeric
-in this inventory; selector 118 has a separately verified response family below.
+in this inventory; selectors 118 and 120 have separately verified families below.
 These are workflow selectors, separate from action-script IDs
 and message categories; another use of literal 123 requests an action script.
 
@@ -765,6 +765,48 @@ positions, including a nonexact three-dimensional norm. They authenticate 25
 executed original function bodies and compare VM, root, actor and guarded state.
 They confirm the timer and root stores without executing the deferred tracking
 sequence or the full live activity.
+
+### Sitting request sequence
+
+The catalog's `sitting_activity_roles` identifies seven complete selector-120
+families. Each has a 442-byte main routine, a 43-byte completion helper and a
+102-byte message-response helper. Workflow selector 120 is separate from action
+script 120. Actual dispatch, snapshot, mask, initialization, shared response
+policies, tracking and cleanup targets are matched within the same workflow.
+
+The main routine initializes its counter to zero and its limit from
+`RandomBelow(5) + 5`, nominally five through nine under the native contract. It
+requests action script 274 (sit-down with cue one) for two seconds, then requests
+HUD guide one and calls initialization. The timed native yields before that
+continuation; it does not wait for the two-second request to complete. Each
+iteration samples companion status and requests default action mode one.
+
+An ordinary-message flag selects the category-four shared policy or the local
+message response. Enabled elapsed-limit flags select the shared elapsed-response
+policy. A counter strictly greater than the limit selects completion. If none of
+those exits applies and the sequencer command is absent, the routine selects the
+fallback target, separately samples its target X, Y and Z coordinates, adds 100
+to sampled Y using the original binary32 arithmetic, and writes that position.
+This selects fixed tracking mode with zero allowance while retaining the stored
+handle and other state. It then requests action script 276 (sitting) for two
+seconds and increments the counter. The native request and explicit loop yield;
+no fixed count of completed animations or guaranteed vertical motion follows.
+Separate coordinate reads require coherent retained state, not an atomic sample.
+
+Completion requests action script 277 (sitting ear-scratch) with a deferred wait,
+then calls saved-workflow cleanup. The local message response also requests 277
+and waits, invokes the reviewed secondary-target/script-17/primary-target helper,
+then requests default mode three, action script 29 with a wait, and default mode
+one. It requests a clamped secondary-meter adjustment of ten before cleanup.
+Restoring mode one and reaching cleanup remain conditional on the waits returning.
+Neither branch establishes emotion, successful movement or a fixed idle state.
+
+Seventeen bounded original-VM probes confirm target-field updates, binary32
+`Y + 100`, actual random limits five through nine, and below/equal/above counter
+boundaries. Twenty-nine executed original function bodies are authenticated.
+The probes stop before timed-action or external request bodies; they do not
+execute the full activity or establish selection probabilities. Full native,
+resource, numeric, frame and scheduling contracts remain required.
 
 ### Saved workflow continuations
 
