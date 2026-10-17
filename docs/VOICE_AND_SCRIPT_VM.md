@@ -853,6 +853,66 @@ The delay probes use authored elapsed updates between dispatches and cover the
 ordinary direct-yield variant. They do not execute the complete activity or the
 Bedroom audio path. Source, resource, frame and native contracts remain required.
 
+### Approach request sequence
+
+The catalog's `approach_activity_roles` identifies seven complete selector-121
+families: a 399-byte main routine, a 76-byte message response and a 50-byte
+completion routine, plus the complete shared completion-helper call chain.
+Dispatch, snapshot, mask, initialization, response policies, script-18 tracking
+and cleanup are bound within the same workflow and originating shared caller.
+
+The main routine starts its counter at zero and selects a nominal limit of
+20 through 29 from `RandomBelow(10) + 20`. It requests HUD one, initializes state,
+samples status and requests default mode one. Ordinary messages with stored type
+four and elapsed-limit flags select the same shared policies as the walking
+sequence. Other ordinary messages select the local response. A counter strictly
+above the limit selects completion. Otherwise, when the sequencer command is
+absent, it requests tracking of the player's tertiary object. It queries the
+approximate distance from the actor's local position to the stored target,
+subtracts the allowance and clamps negative results to zero. A result strictly
+below 30 selects the fallback target; equality retains the selected state.
+A failed tertiary lookup leaves old target fields and allowance, so the query
+need not describe the current tertiary object. The routine requests script 16
+for half a second, yields through the native request and then increments its
+counter. Neither the query nor the request proves movement or action completion.
+
+The local response requests script 86 with a wait, invokes the reviewed
+secondary-target/script-18/primary-target helper, requests script 258 with a wait,
+requests a clamped secondary-meter increase of ten and calls cleanup. Completion
+requests the same meter adjustment before invoking its separate shared helper.
+
+That helper requests the fallback target, contact mode one and script 166 for
+three seconds. After the native yield it samples VM elapsed time. While the
+binary32 elapsed difference is less than five, an absent sequencer command
+causes another fallback/script-166 request; each iteration yields. It then
+requests script 125 for three seconds through the timed helper and waits for
+command absence. It requests effect definition one with track 183 and queues
+text from one borrowed script-string reference. The reference index varies by scene;
+these indices are not integer captions or a universal text identifier.
+
+The helper acknowledges the pending mailbox, requests contact mode two and
+samples elapsed again. While the new elapsed difference is less than 20, it
+acknowledges pending messages. Any nonzero prior pending flag selects effect
+definition one with track 164 and exits the loop. There is no message-category,
+content or voice-origin test here. It finally queues a retained root value
+through the native string conversion, requests script 128 with a wait and
+returns to cleanup. The root value's current type, meaning and lifetime remain
+caller prerequisites. Both time comparisons use resettable VM elapsed values;
+resets and deferred waits can prevent return.
+
+The complete ordinary helper chain includes its timed request and polling
+functions. Bedroom additionally includes the reviewed global-zero/audio chain
+at its yield sites. Those descendants must match this workflow's cleanup;
+conditional audio requests do not prove audible output or the global's meaning.
+Full frame, resource, target, native and deferred contracts remain required.
+
+Eight bounded original-VM probes confirm approach values below, at and above 30,
+allowance subtraction and clamping, unavailable-target retention, and the use of
+local actor position. Twenty-seven executed original bodies are authenticated.
+The probes stop at the timed-action entry before its body runs; they do not
+execute the full sequence or establish movement, selection probabilities or
+termination.
+
 ### Saved workflow continuations
 
 The catalog's `workflow_cleanup_roles` links complete saved-state producers,

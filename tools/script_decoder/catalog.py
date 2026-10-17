@@ -64,6 +64,7 @@ from .activity_policies import activity_policy_roles
 from .activity_helpers import activity_helper_roles
 from .sitting_activities import sitting_activity_roles
 from .walking_activities import walking_activity_roles
+from .approach_activities import approach_activity_roles
 
 
 def companion_sites(image):
@@ -290,6 +291,8 @@ def catalog(image, max_instructions=100000):
                              sitting_activity_roles=(sitting_activity_roles(decoded['instructions'], snapshot=literal_context_snapshot)
                                                      if not decoded['diagnostics'] else dict(status='unresolved', activities=[], scope='Incomplete decoded CFG.')),
                              walking_activity_roles=(walking_activity_roles(decoded['instructions'], snapshot=literal_context_snapshot)
+                                                     if not decoded['diagnostics'] else dict(status='unresolved', activities=[], scope='Incomplete decoded CFG.')),
+                             approach_activity_roles=(approach_activity_roles(decoded['instructions'], snapshot=literal_context_snapshot)
                                                      if not decoded['diagnostics'] else dict(status='unresolved', activities=[], scope='Incomplete decoded CFG.')),
                              messenger_contact_requests=messenger_contact_requests(decoded['instructions'], contact_policies),
                              costed_action_requests=costed_action_requests(decoded['instructions'], cost_policies['records'],
